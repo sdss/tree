@@ -1,8 +1,8 @@
 #
-# Makefile for SAS ups table.
+# Makefile for tree ups table.
 #
 # This Makefile is used to properly set the $SAS_ROOT environment variable
-# in the sas.table.
+# in the tree.table.
 #
 # If the script sas_root.sh recognizes the value of the $HOSTNAME variable, that will be
 # used.  Otherwise, a user can pre-set the value of $SAS_ROOT in the
@@ -18,5 +18,5 @@ all:
 
 clean:
 	- /bin/rm -f *~ sas.table
-	- /bin/mv sas.table.orig sas.table
+	- /bin/mv tree.table.orig tree.table
 

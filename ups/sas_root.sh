@@ -41,8 +41,8 @@ fi
 echo
 echo "\$SAS_ROOT = ${SAS_ROOT}"
 echo
-cp sas.table sas.table.orig
-cat >> sas.table <<EOT
+cp tree.table tree.table.orig
+cat >> tree.table <<EOT
 #
 # Base of the whole SAS tree
 #

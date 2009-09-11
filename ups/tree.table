@@ -1,0 +1,20 @@
+#
+# tree.table
+#
+# This file is the head of tree.table.  Environment variables dependent on the
+# value of $SAS_ROOT are added by sas_root.sh.  After that step, this file
+# will be saved as tree.table.orig
+#
+# $Id$
+#
+envPrepend(PATH, ${PRODUCT_DIR}/bin)
+#
+# Root of the SAS backup tree on HPSS
+#
+envSet(HPSS_ROOT,/nersc/projects/boss)
+#
+# Root of the SAM tree
+#
+envSet(SAM_ROOT,/mount/coma1/bw55/sdss3/mirror)
+#
+# SAS tree variables will be appended by sas_root.sh below this point
