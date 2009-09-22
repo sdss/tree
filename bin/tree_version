@@ -20,7 +20,7 @@ fi
 
 # Check whether we are exported. This test is not strictly necessary, but I think 
 # it is incredibly bad form to UPS tag checked-out (and not exported) code.
-svnVersion=`svnversion $TEMPLATE_DIR`
+svnVersion=`svnversion $TREE_DIR`
 if test "$svnVersion" != "exported"; then
     echo "NOTAG: $svnVersion"
     exit 1
