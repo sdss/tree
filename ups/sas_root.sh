@@ -105,6 +105,7 @@ envSet(SEGUE2_TARGET,\${SEGUE2_ROOT}/target)
 # SDSS-I, -II Archival data
 #
 envSet(ARCHIVE_ROOT,\${SAS_ROOT}/archive)
+envSet(SDSS_TARGET,\${ARCHIVE_ROOT}/sdss-target)
 envSet(SDSS_TILING,\${ARCHIVE_ROOT}/sdss-tiling)
 envSet(SEGUE_TARGET,\${ARCHIVE_ROOT}/segue1/target)
 envSet(SDSS_PLATE,\${ARCHIVE_ROOT}/plates)
