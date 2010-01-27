@@ -17,6 +17,6 @@ all:
 	/bin/bash ./sas_root.sh
 
 clean:
-	- /bin/rm -f *~ sas.table
+	- /bin/rm -f *~ tree.table
 	- /bin/mv tree.table.orig tree.table
 
