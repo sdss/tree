@@ -52,10 +52,6 @@ envSet(SAS_ROOT,${SAS_ROOT})
 #
 envSet(STAGING_DATA,\${SAS_ROOT}/apo_staging)
 #
-# Shared directories
-#
-envSet(COMMON_ROOT,\${SAS_ROOT}/common)
-#
 # CAS loading area
 #
 envSet(CAS_LOAD,\${SAS_ROOT}/casload)
@@ -97,20 +93,16 @@ envSet(APOGEE_TARGET,\${APOGEE_ROOT}/target)
 # SEGUE-II directories
 #
 envSet(SEGUE2_ROOT,\${SAS_ROOT}/groups/segue2)
-envSet(SPECTRO_REDUX,\${COMMON_ROOT}/sdss-spectro/redux)
-envSet(RAWDATA_DIR,\${COMMON_ROOT}/sdss-spectro/raw)
 envSet(SSPP_REDUX,\${SEGUE2_ROOT}/sspp)
 envSet(SEGUE2_TARGET,\${SEGUE2_ROOT}/target)
 #
 # SDSS-I, -II Archival data
 #
-envSet(ARCHIVE_ROOT,\${SAS_ROOT}/archive)
-envSet(SDSS_TARGET,\${ARCHIVE_ROOT}/sdss-target)
-envSet(SDSS_TILING,\${ARCHIVE_ROOT}/sdss-tiling)
-envSet(SEGUE_TARGET,\${ARCHIVE_ROOT}/segue1/target)
-envSet(SDSS_PLATE,\${ARCHIVE_ROOT}/plates)
-#
-# Plate design directories
-#
-envSet(PLATE_DESIGN_DATA,\${SAS_ROOT}/plates)
+envSet(COMMON_ROOT,\${SAS_ROOT}/common)
+envSet(SPECTRO_REDUX,\${COMMON_ROOT}/sdss-spectro/redux)
+envSet(RAWDATA_DIR,\${COMMON_ROOT}/sdss-spectro/raw)
+envSet(SPECTRO_MATCH,\${COMMON_ROOT}/sdss-spectro/plates)
+envSet(SDSS_TARGET,\${COMMON_ROOT}/sdss-target)
+envSet(SDSS_TILING,\${COMMON_ROOT}/sdss-tiling)
+envSet(SEGUE_TARGET,\${COMMON_ROOT}/segue1/target)
 EOT
