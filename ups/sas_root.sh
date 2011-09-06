@@ -75,6 +75,7 @@ envSet(PHOTO_CALIB,\${PHOTO_CALIB_BASE}/dr8_final)
 envSet(BOSS_LSS_REDUX,\${BOSS_ROOT}/lss)
 envSet(BOSS_MATCH,\${BOSS_ROOT}/match)
 envSet(BOSS_PHOTOOBJ,\${BOSS_ROOT}/photoObj)
+envSet(PHOTOPLATE_DIR,\${BOSS_PHOTOOBJ}/plates/2010-05-23)
 #
 # MARVELS directories
 #
@@ -86,9 +87,13 @@ envSet(MARVELS_TARGET,\${MARVELS_ROOT}/target)
 # APOGEE directories
 #
 envSet(APOGEE_ROOT,\${SAS_ROOT}/groups/apogee)
-envSet(APOGEE_DATA,\${APOGEE_ROOT}/spectro/data)
-envSet(APOGEE_REDUX,\${APOGEE_ROOT}/spectro/redux)
-envSet(APOGEE_TARGET,\${APOGEE_ROOT}/target)
+envSet(APOGEE_DATA,\${APOGEE_ROOT}/data)
+envSet(APOGEE_REDUX,\${APOGEE_ROOT}/spectro)
+# envSet(APOGEE_TARGET,\${APOGEE_ROOT}/target)
+# envSet(APOGEE_LAB,\${APOGEE_ROOT}/lab)
+# envSet(APOGEE_LAB_DATA,\${APOGEE_LAB}/data)
+# envSet(APOGEE_LAB_REDUX,\${APOGEE_LAB}/redux)
+# envSet(APOGEE_LAB_DOC,\${APOGEE_LAB}/doc)
 #
 # SEGUE-II directories
 #
