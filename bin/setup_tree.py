@@ -167,7 +167,7 @@ prepend-path PATH $PRODUCT_DIR/bin
         for output in outputs:
             filedata = to_file(env,outputs[output]['header'],outputs[output]['setenv'])
             filename = os.path.join(os.getenv('TREE_DIR'),'etc',
-                "{0}.{1}".format(env['default']['name'],outputs[output]['ext']))
+                env['default']['name']+outputs[output]['ext'])
             with open(filename,'w') as f:
                 f.write(filedata)
     return
