@@ -1,0 +1,5 @@
+etc/*.csh
+etc/*.module
+etc/*.sh
+etc/*.table
+etc/.version

@@ -118,17 +118,12 @@ def main():
     options = parser.parse_args()
     debug = options.verbose or options.test
     #
-    # Read the configuration files
+    # Configure output files
     #
-    for cfgfile in glob.glob(os.path.join(os.getenv('TREE_DIR'),'data','*.cfg')):
-        cfg = ConfigParser.SafeConfigParser()
-        cfg.optionxform = str
-        cfg.read(cfgfile)
-        env = parse_cfg(cfg,options.root)
-        print(env)
-        print(to_file(env,'# Set up tree/{name} for (t)csh.\n'))
-        print(to_file(env,'# Set up tree/{name} for (ba)sh\n','export {0}={1}'))
-        moduleheader = """#%Module1.0
+    eupsheader = """# Set up tree/{name} for EUPS.
+envPrepend(PATH,${{PRODUCT_DIR}}/bin)
+"""
+    moduleheader = """#%Module1.0
 proc ModulesHelp {{ }} {{
     global product version
     puts stderr "This module adds $product $version to various paths"
@@ -142,11 +137,39 @@ set PRODUCT_DIR "/home/products/NULL/$product/$version"
 setenv [string toupper $product]_DIR $PRODUCT_DIR
 prepend-path PATH $PRODUCT_DIR/bin
 """
-        print(to_file(env,moduleheader))
-        eupsheader = """# Set up tree/{name} for EUPS.
-envPrepend(PATH,${{PRODUCT_DIR}}/bin)
-"""
-        print(to_file(env,eupsheader,'envSet({0},{1})'))
+    outputs = {
+        'tcsh':{
+            'ext':'.csh',
+            'header':'# Set up tree/{name} for (t)csh.\n',
+            'setenv':'setenv {0} {1}'},
+        'bash':{
+            'ext':'.sh',
+            'header':'# Set up tree/{name} for (ba)sh\n',
+            'setenv':'export {0}={1}'},
+        'eups':{
+            'ext':'.table',
+            'header':eupsheader,
+            'setenv':'envSet({0},{1})'},
+        'module':{
+            'ext':'.module',
+            'header':moduleheader,
+            'setenv':'setenv {0} {1}'},
+        }
+    #
+    # Read the configuration files
+    #
+    for cfgfile in glob.glob(os.path.join(os.getenv('TREE_DIR'),'data','*.cfg')):
+        cfg = ConfigParser.SafeConfigParser()
+        cfg.optionxform = str
+        cfg.read(cfgfile)
+        env = parse_cfg(cfg,options.root)
+        # print(env)
+        for output in outputs:
+            filedata = to_file(env,outputs[output]['header'],outputs[output]['setenv'])
+            filename = os.path.join(os.getenv('TREE_DIR'),'etc',
+                "{0}.{1}".format(env['default']['name'],outputs[output]['ext']))
+            with open(filename,'w') as f:
+                f.write(filedata)
     return
 #
 #
