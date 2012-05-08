@@ -60,7 +60,7 @@ install :
 	@ echo ""
 	@ rm -rf $(INSTALL_DIR)
 	@ mkdir $(INSTALL_DIR)
-	@ cp -rpf . $(INSTALL_DIR)
+	@ cp -Rf . $(INSTALL_DIR)
 
 #
 # GNU make pre-defines $(RM).  The - in front of $(RM) causes make to

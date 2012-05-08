@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #------------------------------------------------------------------------------
 # Script to return SVN version of the tree product.
 # Change "template_version" to the name of your product to get it to work.
