@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# This file gets copied to $TREE_DIR/bin/tree_version on install
+#
+# $Id$
+#
+basename ${TREE_DIR}

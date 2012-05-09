@@ -36,9 +36,7 @@ if test -z "${SAS_ROOT}"; then
             exit 1
         fi
     fi
-    export SAS_ROOT
+    echo ${SAS_ROOT}/foo
+else
+    echo ${SAS_ROOT}
 fi
-echo
-echo "\$SAS_ROOT = ${SAS_ROOT}"
-echo
-

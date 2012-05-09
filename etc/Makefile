@@ -15,10 +15,19 @@
 #
 .PHONY : clean
 #
+# Make sure SAS_ROOT is set
+#
+SAS_ROOT = $(shell ../bin/sas_root.sh)
+#
 # This should compile all code prior to it being installed
 #
 all :
-	@ echo "etc"
+	../bin/setup_tree.py
+#
+#
+#
+install :
+	../bin/install.sh
 #
 # GNU make pre-defines $(RM).  The - in front of $(RM) causes make to
 # ignore any errors produced by $(RM).

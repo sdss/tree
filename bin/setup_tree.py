@@ -24,7 +24,7 @@ import os.path
 import sys
 import transfer
 #
-# csh()
+# to_file()
 #
 def to_file(env,header='',setenv='setenv {0} {1}'):
     """Convert config file data to .
@@ -85,6 +85,8 @@ def parse_cfg(cfg,root):
     replace = '@FILESYSTEM@'
     env['default'] = cfg.defaults()
     env['default']['FILESYSTEM'] = root
+    # env['default']['install'] = os.path.dirname(os.path.dirname(os.getenv('INSTALL_DIR')))
+    env['default']['current'] = env['default']['current'] == 'True'
     for sec in cfg.sections():
         env[sec] = OrderedDict()
         for opt in cfg.options(sec):
@@ -113,15 +115,21 @@ def main():
     parser.add_argument('-t', '--test', action='store_true', dest='test',
         help='Do not actually run commands (implies --verbose).')
     parser.add_argument('-r', '--root', action='store', dest='root',
-        default=os.getenv('SAS_ROOT'),
+        default=os.path.dirname(os.getenv('SAS_ROOT')),
         help='Override the value of $SAS_ROOT.',metavar='DIR')
     options = parser.parse_args()
     debug = options.verbose or options.test
     #
     # Configure output files
     #
+    tcshheader = """# Set up tree/{name} for (t)csh.
+alias tree_version 'echo {name}'
+"""
+    bashheader = """# Set up tree/{name} for (ba)sh.
+function tree_version {{ echo {name}; }}; export -f tree_version
+"""
     eupsheader = """# Set up tree/{name} for EUPS.
-envPrepend(PATH,${{PRODUCT_DIR}}/bin)
+addAlias(tree_version,echo {name})
 """
     moduleheader = """#%Module1.0
 proc ModulesHelp {{ }} {{
@@ -133,18 +141,21 @@ set version {name}
 conflict $product
 module-whatis   "Sets up $product $version in your environment"
 
-set PRODUCT_DIR "/home/products/NULL/$product/$version"
+set PRODUCT_DIR "@INSTALL_DIR@/$product/$version"
 setenv [string toupper $product]_DIR $PRODUCT_DIR
-prepend-path PATH $PRODUCT_DIR/bin
+set-alias tree_version "echo $version"
+"""
+    modulesversion = """#%Module1.0
+set ModulesVersion {name}
 """
     outputs = {
         'tcsh':{
             'ext':'.csh',
-            'header':'# Set up tree/{name} for (t)csh.\n',
+            'header':tcshheader,
             'setenv':'setenv {0} {1}'},
         'bash':{
             'ext':'.sh',
-            'header':'# Set up tree/{name} for (ba)sh\n',
+            'header':bashheader,
             'setenv':'export {0}={1}'},
         'eups':{
             'ext':'.table',
@@ -163,13 +174,19 @@ prepend-path PATH $PRODUCT_DIR/bin
         cfg.optionxform = str
         cfg.read(cfgfile)
         env = parse_cfg(cfg,options.root)
-        # print(env)
+        if debug:
+            print(env)
         for output in outputs:
             filedata = to_file(env,outputs[output]['header'],outputs[output]['setenv'])
             filename = os.path.join(os.getenv('TREE_DIR'),'etc',
                 env['default']['name']+outputs[output]['ext'])
             with open(filename,'w') as f:
                 f.write(filedata)
+            if output == 'module' and env['default']['current']:
+                versionname = os.path.join(os.getenv('TREE_DIR'),'etc',
+                    '.version')
+                with open(versionname,'w') as f:
+                    f.write(modulesversion.format(**env['default']))
     return
 #
 #

@@ -61,6 +61,7 @@ install :
 	@ rm -rf $(INSTALL_DIR)
 	@ mkdir $(INSTALL_DIR)
 	@ cp -Rf . $(INSTALL_DIR)
+	@ for f in $(SUBDIRS); do $(MAKE) -C $$f install ; done
 
 #
 # GNU make pre-defines $(RM).  The - in front of $(RM) causes make to
