@@ -83,7 +83,8 @@ def parse_cfg(cfg,root):
     env = OrderedDict()
     replace = '@FILESYSTEM@'
     env['default'] = cfg.defaults()
-    env['default']['FILESYSTEM'] = root
+    if env['default']['FILESYSTEM'] == replace:
+        env['default']['FILESYSTEM'] = root
     # env['default']['install'] = os.path.dirname(os.path.dirname(os.getenv('INSTALL_DIR')))
     env['default']['current'] = env['default']['current'] == 'True'
     for sec in cfg.sections():
