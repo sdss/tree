@@ -22,7 +22,6 @@ import glob
 import os
 import os.path
 import sys
-import transfer
 #
 # to_file()
 #
@@ -106,19 +105,12 @@ def main():
     # Get options
     #
     parser = argparse.ArgumentParser(description=__doc__,prog=os.path.basename(sys.argv[0]))
-    parser.add_argument('-V','--version',action='version',
-        version=("%(prog)s {0}/r{1}".format(transfer.version('$HeadURL$'),
-            __version__)),
-        help='Print version information and exit.')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
-        help='Print extra information (sets log level to DEBUG).')
-    parser.add_argument('-t', '--test', action='store_true', dest='test',
-        help='Do not actually run commands (implies --verbose).')
+        help='Print extra information.')
     parser.add_argument('-r', '--root', action='store', dest='root',
         default=os.path.dirname(os.getenv('SAS_ROOT')),
         help='Override the value of $SAS_ROOT.',metavar='DIR')
     options = parser.parse_args()
-    debug = options.verbose or options.test
     #
     # Configure output files
     #
@@ -174,7 +166,7 @@ set ModulesVersion {name}
         cfg.optionxform = str
         cfg.read(cfgfile)
         env = parse_cfg(cfg,options.root)
-        if debug:
+        if options.verbose:
             print(env)
         for output in outputs:
             filedata = to_file(env,outputs[output]['header'],outputs[output]['setenv'])

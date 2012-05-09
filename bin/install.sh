@@ -39,6 +39,7 @@ done
 #
 # Install Module files
 #
+installbase=$(dirname ${installbase})
 treemodules=''
 for m in $(echo ${MODULEPATH} | tr ':' ' '); do
     if [ -d ${m}/tree ]; then
@@ -51,7 +52,8 @@ if [ -z "${treemodules}" ]; then
 fi
 for module in *.module; do
     version=$(echo ${module} | cut -d. -f1)
-    echo cp -pf ${module} ${treemodules}/tree/${version}
+    # echo cp -pf ${module} ${treemodules}/tree/${version}
+    echo "cat ${module} | sed \"s%@INSTALL_DIR@%${installbase}%\" > ${treemodules}/tree/${version}"
 done
 echo cp -pf .version ${treemodules}/tree
 
