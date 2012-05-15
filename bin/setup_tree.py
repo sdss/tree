@@ -160,9 +160,20 @@ set ModulesVersion {name}
             'setenv':'setenv {0} {1}'},
         }
     #
+    # Find the data directory
+    #
+    datadir = os.path.join(os.getenv('TREE_DIR'),'data')
+    etcdir = os.path.join(os.getenv('TREE_DIR'),'etc')
+    if not os.path.exists(datadir):
+        datadir = os.path.join('..','data')
+        etcdir = '.'
+        if not os.path.exists(datadir):
+            print("Could not find a data directory!")
+            sys.exit(1)
+    #
     # Read the configuration files
     #
-    for cfgfile in glob.glob(os.path.join(os.getenv('TREE_DIR'),'data','*.cfg')):
+    for cfgfile in glob.glob(os.path.join(datadir,'*.cfg')):
         cfg = ConfigParser.SafeConfigParser()
         cfg.optionxform = str
         cfg.read(cfgfile)
@@ -171,12 +182,12 @@ set ModulesVersion {name}
             print(env)
         for output in outputs:
             filedata = to_file(env,outputs[output]['header'],outputs[output]['setenv'])
-            filename = os.path.join(os.getenv('TREE_DIR'),'etc',
+            filename = os.path.join(etcdir,
                 env['default']['name']+outputs[output]['ext'])
             with open(filename,'w') as f:
                 f.write(filedata)
             if output == 'module' and env['default']['current']:
-                versionname = os.path.join(os.getenv('TREE_DIR'),'etc',
+                versionname = os.path.join(etcdir,
                     '.version')
                 with open(versionname,'w') as f:
                     f.write(modulesversion.format(**env['default']))
