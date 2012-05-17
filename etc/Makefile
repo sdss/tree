@@ -33,4 +33,4 @@ install :
 # ignore any errors produced by $(RM).
 #
 clean :
-	- $(RM) *~ *.sh *.csh *.table *.module .version
+	- $(RM) *~ *.sh *.csh *.table *.module *_version .version
