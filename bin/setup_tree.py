@@ -192,7 +192,7 @@ echo {name}
             tree_versionname = os.path.join(etcdir,
                 env['default']['name']+'_version')
             with open(tree_versionname,'w') as f:
-                f.write(tree_version.format(**env['default'])
+                f.write(tree_version.format(**env['default']))
             if output == 'module' and env['default']['current']:
                 versionname = os.path.join(etcdir,
                     '.version')
