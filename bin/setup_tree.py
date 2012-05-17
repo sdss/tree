@@ -116,13 +116,13 @@ def main():
     # Configure output files
     #
     tcshheader = """# Set up tree/{name} for (t)csh.
-alias tree_version 'echo {name}'
+setenv PATH ${{TREE_DIR}}/bin:${{PATH}}
 """
     bashheader = """# Set up tree/{name} for (ba)sh.
-function tree_version {{ echo {name}; }}; export -f tree_version
+export PATH=${{TREE_DIR}}/bin:${{PATH}}
 """
     eupsheader = """# Set up tree/{name} for EUPS.
-addAlias(tree_version,echo {name})
+envPrepend(PATH,${{PRODUCT_DIR}}/bin)
 """
     moduleheader = """#%Module1.0
 proc ModulesHelp {{ }} {{
@@ -136,10 +136,13 @@ module-whatis   "Sets up $product $version in your environment"
 
 set PRODUCT_DIR "@INSTALL_DIR@/$product/$version"
 setenv [string toupper $product]_DIR $PRODUCT_DIR
-set-alias tree_version "echo $version"
+prepend-path PATH $PRODUCT_DIR/bin
 """
     modulesversion = """#%Module1.0
 set ModulesVersion {name}
+"""
+    tree_version = """#!/bin/sh
+echo {name}
 """
     outputs = {
         'tcsh':{
@@ -186,6 +189,10 @@ set ModulesVersion {name}
                 env['default']['name']+outputs[output]['ext'])
             with open(filename,'w') as f:
                 f.write(filedata)
+            tree_versionname = os.path.join(etcdir,
+                env['default']['name']+'_version')
+            with open(tree_versionname,'w') as f:
+                f.write(tree_version.format(**env['default'])
             if output == 'module' and env['default']['current']:
                 versionname = os.path.join(etcdir,
                     '.version')

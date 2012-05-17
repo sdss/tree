@@ -4,6 +4,13 @@
 #
 # $Id$
 #
+# Define function
+#
+function print_and_run {
+    echo "$@"
+    # $@
+}
+#
 # Check for INSTALL_DIR
 #
 if [ -z "${INSTALL_DIR}" ]; then
@@ -16,8 +23,11 @@ fi
 installbase=$(dirname ${INSTALL_DIR})
 for table in *.table; do
     version=$(echo ${table} | cut -d. -f1)
-    echo mkdir -p ${installbase}/${version}/ups
-    echo cp -pf ${table} ${installbase}/${version}/ups/tree.table
+    print_and_run mkdir -p ${installbase}/${version}/ups
+    print_and_run mkdir -p ${installbase}/${version}/bin
+    print_and_run cp -pf ${table} ${installbase}/${version}/ups/tree.table
+    print_and_run cp -pf ${version}_version ${installbase}/${version}/bin/tree_version
+    print_and_run chmod +x ${installbase}/${version}/bin/tree_version
     #
     # If EUPS_PATH is set, assume that the eups command is available
     #
@@ -33,7 +43,7 @@ for table in *.table; do
         else
             current=''
         fi
-        echo eups declare ${current} ${flavor} -r ${installbase}/${version} tree ${version}
+        print_and_run eups declare ${current} ${flavor} -r ${installbase}/${version} tree ${version}
     fi
 done
 #
@@ -48,12 +58,11 @@ for m in $(echo ${MODULEPATH} | tr ':' ' '); do
 done
 if [ -z "${treemodules}" ]; then
     treemodules=$(echo ${MODULEPATH} | cut -d: -f1)
-    echo mkdir -p ${treemodules}/tree
+    print_and_run mkdir -p ${treemodules}/tree
 fi
 for module in *.module; do
     version=$(echo ${module} | cut -d. -f1)
-    # echo cp -pf ${module} ${treemodules}/tree/${version}
-    echo "cat ${module} | sed \"s%@INSTALL_DIR@%${installbase}%\" > ${treemodules}/tree/${version}"
+    print_and_run "cat ${module} | sed \"s%@INSTALL_DIR@%${installbase}%\" > ${treemodules}/tree/${version}"
 done
-echo cp -pf .version ${treemodules}/tree
+print_and_run cp -pf .version ${treemodules}/tree
 
