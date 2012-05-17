@@ -8,7 +8,7 @@
 #
 function print_and_run {
     echo "$@"
-    # $@
+    eval "$@"
 }
 #
 # Check for INSTALL_DIR
