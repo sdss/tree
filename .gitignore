@@ -2,4 +2,5 @@ etc/*.csh
 etc/*.module
 etc/*.sh
 etc/*.table
+etc/*_version
 etc/.version

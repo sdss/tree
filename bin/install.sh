@@ -64,5 +64,5 @@ for module in *.module; do
     version=$(echo ${module} | cut -d. -f1)
     print_and_run "cat ${module} | sed \"s%@INSTALL_DIR@%${installbase}%\" > ${treemodules}/tree/${version}"
 done
-print_and_run cp -pf .version ${treemodules}/tree
+print_and_run cp -f .version ${treemodules}/tree
 
