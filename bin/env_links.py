@@ -63,7 +63,7 @@ def parse_cfg(cfg,root):
 def make_link(src,link,options):
     """Encapsulate link creation
     """
-    debug = options.test or options.verbose:
+    debug = options.test or options.verbose
     if debug:
         print("{0} -> {1}".format(link,src)
     if not options.test:
