@@ -67,7 +67,7 @@ def make_link(src,link,options):
     if debug:
         print("{0} -> {1}".format(link,src))
     if not options.test:
-        if os.path.exists(link):
+        if os.path.islink(link):
             os.remove(link)
         os.symlink(src,link)
     return
