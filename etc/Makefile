@@ -28,6 +28,7 @@ all :
 #
 install :
 	../bin/install.sh
+	../bin/env_links.py
 #
 # GNU make pre-defines $(RM).  The - in front of $(RM) causes make to
 # ignore any errors produced by $(RM).
