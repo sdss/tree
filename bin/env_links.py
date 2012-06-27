@@ -157,9 +157,9 @@ directory, visit <a href="http://{1}.sdss3.org/datamodel/files/">the datamodel.<
                         # targets exist. The --force option overrides this.
                         #
                         if options.force or os.path.exists(src):
-                            make_link(src,link)
+                            make_link(src,link,options)
                     else:
-                        make_link(src,link)
+                        make_link(src,link,options)
         else:
             print("{0} doesn't exist, skipping env link creation.".format(env['general']['SAS_ROOT']))
     return
