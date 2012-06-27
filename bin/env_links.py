@@ -58,6 +58,20 @@ def parse_cfg(cfg,root):
             env[sec][opt] = val
     return env
 #
+#
+#
+def make_link(src,link,options):
+    """Encapsulate link creation
+    """
+    debug = options.test or options.verbose:
+    if debug:
+        print("{0} -> {1}".format(link,src)
+    if not options.test:
+        if os.path.exists(link):
+            os.remove(link)
+        os.symlink(src,link)
+    return
+#
 # Main function
 #
 def main():
@@ -135,23 +149,17 @@ directory, visit <a href="http://{1}.sdss3.org/datamodel/files/">the datamodel.<
                 for var in env[section]:
                     if var.find('_ROOT') > 0:
                         continue
+                    src = env[section][var]
+                    link = os.path.join(envdir,var)
                     if section == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
                         #
                         # For this section only, install links only if their
                         # targets exist. The --force option overrides this.
                         #
-                        if options.force or os.path.exists(env[section][var]):
-                            if debug:
-                                print("{0} -> {1}".format(os.path.join(envdir,var),env[section][var]))
-                            if not options.test:
-                                os.symlink(env[section][var],os.path.join(envdir,var))
+                        if options.force or os.path.exists(src):
+                            make_link(src,link)
                     else:
-                        if debug:
-                            print("{0} -> {1}".format(os.path.join(envdir,var),env[section][var]))
-                        if not options.test:
-                            if os.path.exists(os.path.join(envdir,var)):
-                                os.remove(os.path.join(envdir,var))
-                            os.symlink(env[section][var],os.path.join(envdir,var))
+                        make_link(src,link)
         else:
             print("{0} doesn't exist, skipping env link creation.".format(env['general']['SAS_ROOT']))
     return
