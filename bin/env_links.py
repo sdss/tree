@@ -149,6 +149,8 @@ directory, visit <a href="http://{1}.sdss3.org/datamodel/files/">the datamodel.<
                         if debug:
                             print("{0} -> {1}".format(os.path.join(envdir,var),env[section][var]))
                         if not options.test:
+                            if os.path.exists(os.path.join(envdir,var)):
+                                os.remove(os.path.join(envdir,var))
                             os.symlink(env[section][var],os.path.join(envdir,var))
         else:
             print("{0} doesn't exist, skipping env link creation.".format(env['general']['SAS_ROOT']))
