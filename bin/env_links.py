@@ -65,7 +65,7 @@ def make_link(src,link,options):
     """
     debug = options.test or options.verbose
     if debug:
-        print("{0} -> {1}".format(link,src)
+        print("{0} -> {1}".format(link,src))
     if not options.test:
         if os.path.exists(link):
             os.remove(link)
