@@ -72,6 +72,9 @@ def main():
         help='Force the creation of some symlinks.')
     parser.add_argument('-t', '--test', action='store_true', dest='test',
         help='Only show what would be done (implies --verbose).')
+    parser.add_argument('-o', '--only', action='store', dest='only',
+        default='ALL', metavar='TREE',
+        help='Create links for only TREE.')
     parser.add_argument('-r', '--root', action='store', dest='root',
         default=os.path.dirname(os.getenv('SAS_ROOT')),
         help='Override the value of $SAS_ROOT.',metavar='DIR')
@@ -94,6 +97,8 @@ def main():
         cfg.optionxform = str
         cfg.read(cfgfile)
         env = parse_cfg(cfg,options.root)
+        if options.only != 'ALL' and env['default']['name'] != options.only:
+            continue
         # if debug:
         #     print(env)
         if os.path.exists(env['general']['SAS_ROOT']):
