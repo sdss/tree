@@ -90,6 +90,14 @@ def main():
             print("Could not find a data directory!")
             sys.exit(1)
     #
+    # Set up readme file
+    #
+    readme = """<p>This directory contains links to the contents of
+environment variables defined by the tree product, version {0}.
+To examine the <em>types</em> of files contained in each environment variable
+directory, visit <a href="http://{1}.sdss3.org/datamodel/files/">the datamodel.</a></p>
+"""
+    #
     # Read the configuration files
     #
     for cfgfile in glob.glob(os.path.join(datadir,'*.cfg')):
@@ -110,6 +118,17 @@ def main():
                     print("Creating {0}.".format(envdir))
                 if not options.test:
                     os.mkdir(envdir)
+            readmefile = os.path.join(envdir,'README.html')
+            if not os.path.exists(readmefile):
+                if env['general']['SAS_ROOT'].find('/mount/coma1') == 0:
+                    url = 'mirror'
+                else:
+                    url = 'data'
+                if debug:
+                    print("Creating {0}.".format(readmefile))
+                if not options.test:
+                    with open(readmefile,'w') as f:
+                        f.write(readme.format(env['default']['name'],url))
             for section in env:
                 if section == 'default':
                     continue
