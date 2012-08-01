@@ -12,7 +12,7 @@
 #
 # Change TEMPLATE_DIR here!
 #
-INSTALL_DIR = $(TREE_DIR)
+export INSTALL_DIR = $(TREE_DIR)
 #
 # Use this shell to interpret shell commands, & pass its value to sub-make
 #
