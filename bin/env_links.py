@@ -170,11 +170,11 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                         make_link(src,link,options)
                         index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var,spaces,stattime)
             index += footer.format(env['default']['name'])
+            indexfile = os.path.join(envdir,'index.html')
+            if debug:
+                print("Creating {0}.".format(indexfile))
+                print(index)
             if not options.test:
-                indexfile = os.path.join(envdir,'index.html')
-                if debug:
-                    print("Creating {0}.".format(indexfile))
-                    print(index)
                 with open(indexfile,'w') as f:
                     f.write(index)
         else:
