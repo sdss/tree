@@ -147,7 +147,9 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
             for section in env:
                 if section == 'default':
                     continue
-                for var in env[section]:
+                svars = env[section].keys()
+                svars.sort()
+                for var in svars:
                     if var.find('_ROOT') > 0:
                         continue
                     src = env[section][var]
