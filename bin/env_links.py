@@ -153,7 +153,11 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                     src = env[section][var]
                     link = os.path.join(envdir,var)
                     spaces = ' '*(52 - (len(var)+1))
-                    stattime = time.strftime('%d-%b-%Y %H:%M',time.localtime(os.stat(src).st_mtime))
+                    try:
+                        stattime = time.strftime('%d-%b-%Y %H:%M',time.localtime(os.stat(src).st_mtime))
+                    except OSError:
+                        print("{0} does not appear to exist, skipping...".format(src))
+                        continue
                     if section == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
                         #
                         # For this section only, install links only if their
