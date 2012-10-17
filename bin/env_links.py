@@ -144,37 +144,39 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                 if not options.test:
                     os.mkdir(envdir)
             index = header.format(env['default']['name'])
+            svars = list()
             for section in env:
                 if section == 'default':
                     continue
-                svars = env[section].keys()
-                if debug:
-                    print(svars)
-                svars.sort()
-                if debug:
-                    print(svars)
-                for var in svars:
-                    if var.find('_ROOT') > 0:
-                        continue
-                    src = env[section][var]
-                    link = os.path.join(envdir,var)
-                    spaces = ' '*(52 - (len(var)+1))
-                    try:
-                        stattime = time.strftime('%d-%b-%Y %H:%M',time.localtime(os.stat(src).st_mtime))
-                    except OSError:
-                        print("{0} does not appear to exist, skipping...".format(src))
-                        continue
-                    if section == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
-                        #
-                        # For this section only, install links only if their
-                        # targets exist. The --force option overrides this.
-                        #
-                        if options.force or os.path.exists(src):
-                            make_link(src,link,options)
-                            index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var,spaces,stattime)
-                    else:
+                keys = env[section].keys()
+                svars += zip(keys,[section]*len(keys))
+            if debug:
+                print(svars)
+            #svars.sort()
+            #if debug:
+            #    print(svars)
+            for var in svars:
+                if var[0].find('_ROOT') > 0:
+                    continue
+                src = env[var[1]][var[0]]
+                link = os.path.join(envdir,var[0])
+                spaces = ' '*(52 - (len(var[0])+1))
+                try:
+                    stattime = time.strftime('%d-%b-%Y %H:%M',time.localtime(os.stat(src).st_mtime))
+                except OSError:
+                    print("{0} does not appear to exist, skipping...".format(src))
+                    continue
+                if section == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
+                    #
+                    # For this section only, install links only if their
+                    # targets exist. The --force option overrides this.
+                    #
+                    if options.force or os.path.exists(src):
                         make_link(src,link,options)
-                        index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var,spaces,stattime)
+                        index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var[0],spaces,stattime)
+                else:
+                    make_link(src,link,options)
+                    index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var[0],spaces,stattime)
             index += footer.format(env['default']['name'])
             indexfile = os.path.join(envdir,'index.html')
             if debug:
