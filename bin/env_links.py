@@ -22,6 +22,7 @@ import glob
 import os
 import os.path
 import sys
+import time
 #
 # parse_cfg()
 #
@@ -104,12 +105,22 @@ def main():
             print("Could not find a data directory!")
             sys.exit(1)
     #
-    # Set up readme file
+    # Set up index file
     #
-    readme = """<p>This directory contains links to the contents of
+    header = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head><title>Index of /sas/{0}/env/</title></head>
+<body style="background-color:white;">
+<h1>Index of /sas/{0}/env/</h1><hr /><pre><a href="../">../</a>
+"""
+    footer = """</pre><hr />
+<p>This directory contains links to the contents of
 environment variables defined by the tree product, version {0}.
 To examine the <em>types</em> of files contained in each environment variable
-directory, visit <a href="http://{1}.sdss3.org/datamodel/files/">the datamodel.</a></p>
+directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
+</body>
+</html>
 """
     #
     # Read the configuration files
@@ -132,17 +143,7 @@ directory, visit <a href="http://{1}.sdss3.org/datamodel/files/">the datamodel.<
                     print("Creating {0}.".format(envdir))
                 if not options.test:
                     os.mkdir(envdir)
-            readmefile = os.path.join(envdir,'README.html')
-            if not os.path.exists(readmefile):
-                if env['general']['SAS_ROOT'].find('/mount/coma1') == 0:
-                    url = 'mirror'
-                else:
-                    url = 'data'
-                if debug:
-                    print("Creating {0}.".format(readmefile))
-                if not options.test:
-                    with open(readmefile,'w') as f:
-                        f.write(readme.format(env['default']['name'],url))
+            index = header.format(env['default']['name'])
             for section in env:
                 if section == 'default':
                     continue
@@ -151,6 +152,8 @@ directory, visit <a href="http://{1}.sdss3.org/datamodel/files/">the datamodel.<
                         continue
                     src = env[section][var]
                     link = os.path.join(envdir,var)
+                    spaces = ' '*(52 - (len(var)+1))
+                    stattime = time.strftime('%d-%b-%Y %H:%M',time.localtime(os.stat(src).st_mtime))
                     if section == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
                         #
                         # For this section only, install links only if their
@@ -158,8 +161,18 @@ directory, visit <a href="http://{1}.sdss3.org/datamodel/files/">the datamodel.<
                         #
                         if options.force or os.path.exists(src):
                             make_link(src,link,options)
+                            index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var,spaces,stattime)
                     else:
                         make_link(src,link,options)
+                        index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var,spaces,stattime)
+            index += footer.format(env['default']['name'])
+            if not options.test:
+                indexfile = os.path.join(envdir,'index.html')
+                if debug:
+                    print("Creating {0}.".format(indexfile))
+                    print(index)
+                with open(indexfile,'w') as f:
+                    f.write(index)
         else:
             print("{0} doesn't exist, skipping env link creation.".format(env['general']['SAS_ROOT']))
     return
