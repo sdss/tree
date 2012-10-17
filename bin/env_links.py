@@ -152,9 +152,9 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                 svars += zip(keys,[section]*len(keys))
             if debug:
                 print(svars)
-            #svars.sort()
-            #if debug:
-            #    print(svars)
+            svars.sort(key=lambda x: x[0])
+            if debug:
+                print(svars)
             for var in svars:
                 if var[0].find('_ROOT') > 0:
                     continue
