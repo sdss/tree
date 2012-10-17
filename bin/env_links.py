@@ -168,7 +168,7 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                     if os.path.islink(link):
                         os.remove(link)
                     continue
-                if section == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
+                if var[1] == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
                     #
                     # For this section only, install links only if their
                     # targets exist. The --force option overrides this.
