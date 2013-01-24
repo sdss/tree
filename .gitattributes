@@ -1,4 +1,3 @@
 * text=auto !eol
 bin/tree_version -text
 data/dr10.cfg -text
-data/testbed10.cfg -text
