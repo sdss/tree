@@ -58,11 +58,14 @@ for m in $(echo ${MODULEPATH} | tr ':' ' '); do
 done
 if [ -z "${treemodules}" ]; then
     treemodules=$(echo ${MODULEPATH} | cut -d: -f1)
-    print_and_run mkdir -p ${treemodules}/tree
 fi
-for module in *.module; do
-    version=$(echo ${module} | cut -d. -f1)
-    print_and_run "cat ${module} | sed \"s%@INSTALL_DIR@%${installbase}%\" > ${treemodules}/tree/${version}"
-done
-print_and_run cp -f .version ${treemodules}/tree
-
+if [ -w "${treemodules}" ]; then
+    print_and_run mkdir -p ${treemodules}/tree
+    for module in *.module; do
+        version=$(echo ${module} | cut -d. -f1)
+        print_and_run "cat ${module} | sed \"s%@INSTALL_DIR@%${installbase}%\" > ${treemodules}/tree/${version}"
+    done
+    print_and_run cp -f .version ${treemodules}/tree
+else
+    echo "Unable to write to ${treemodules}, skipping."
+fi
