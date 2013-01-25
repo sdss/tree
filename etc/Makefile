@@ -17,7 +17,7 @@
 #
 # Make sure SAS_ROOT is set
 #
-SAS_ROOT = $(shell ../bin/sas_root.sh)
+export SAS_ROOT = $(shell ../bin/sas_root.sh)
 #
 # This should compile all code prior to it being installed
 #
