@@ -22,13 +22,13 @@ SAS_ROOT = $(shell ../bin/sas_root.sh)
 # This should compile all code prior to it being installed
 #
 all :
-	../bin/setup_tree.py
+	../bin/setup_tree.py --root=$(SAS_ROOT)
 #
 #
 #
 install :
 	../bin/install.sh
-	../bin/env_links.py
+	../bin/env_links.py --root=$(SAS_ROOT)
 #
 # GNU make pre-defines $(RM).  The - in front of $(RM) causes make to
 # ignore any errors produced by $(RM).
