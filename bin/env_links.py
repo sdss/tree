@@ -138,7 +138,11 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
             if debug:
                 print("Found {0}.".format(env['general']['SAS_ROOT']))
             envdir = os.path.join(env['general']['SAS_ROOT'],'env')
-            if not os.path.exists(envdir):
+            if os.path.exists(envdir):
+                if not os.access(envdir,os.W_OK):
+                    print("{0} does not appear to be writeable, skipping...".format(envdir))
+                    continue
+            else:
                 if debug:
                     print("Creating {0}.".format(envdir))
                 if not options.test:

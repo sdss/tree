@@ -58,9 +58,6 @@ install :
 	@ echo "I'll give you 5 seconds to think about it"
 	@ sleep 5
 	@ echo ""
-	@ rm -rf $(INSTALL_DIR)
-	@ mkdir $(INSTALL_DIR)
-	@ cp -Rf . $(INSTALL_DIR)
 	@ for f in $(SUBDIRS); do $(MAKE) -C $$f install ; done
 
 #
