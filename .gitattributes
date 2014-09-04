@@ -2,3 +2,4 @@
 bin/tree_version -text
 data/dr10.cfg -text
 data/dr11.cfg -text
+data/dr12.cfg -text
