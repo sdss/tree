@@ -1,9 +1,0 @@
-#
-# tree.table
-#
-# This table file only exists to work with sdss3install.  The
-# 'real' tree.table file will be created in the etc directory.
-#
-# $Id$
-#
-envPrepend(PATH, ${PRODUCT_DIR}/bin)
