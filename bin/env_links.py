@@ -35,7 +35,7 @@ def parse_cfg(cfg,root):
     cfg : ConfigParser.ConfigParser
         A ``ConfigParser`` object.
     root : str
-        The value of ``$SAS_ROOT``.
+        The value of ``$SAS_BASE_DIR``.
 
     Returns
     -------
@@ -92,8 +92,8 @@ def main():
         default='ALL', metavar='TREE',
         help='Create links for only TREE.')
     parser.add_argument('-r', '--root', action='store', dest='root',
-        default=os.path.dirname(os.getenv('SAS_ROOT')),
-        help='Override the value of $SAS_ROOT.',metavar='DIR')
+        default=os.path.dirname(os.getenv('SAS_BASE_DIR')),
+        help='Override the value of $SAS_BASE_DIR.',metavar='DIR')
     options = parser.parse_args()
     debug = options.test or options.verbose
     #
