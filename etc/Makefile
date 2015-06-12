@@ -15,9 +15,9 @@
 #
 .PHONY : clean
 #
-# Make sure SAS_ROOT is set
+# Make sure SAS_BASE_DIR is set
 #
-export SAS_ROOT = $(shell ../bin/sas_root.sh)
+export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
 #
 # This should compile all code prior to it being installed
 #
