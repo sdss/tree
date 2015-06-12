@@ -5,6 +5,7 @@
 #
 """Create environment variable symlinks.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
 #
 # Top-level definitions.
 #
@@ -103,7 +104,7 @@ def main():
         datadir = os.path.join('..','data')
         if not os.path.exists(datadir):
             print("Could not find a data directory!")
-            sys.exit(1)
+            return 1
     #
     # Set up index file
     #
@@ -193,10 +194,9 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                     f.write(index)
         else:
             print("{0} doesn't exist, skipping env link creation.".format(env['general']['SAS_ROOT']))
-    return
+    return 0
 #
 #
 #
 if __name__ == '__main__':
-    main()
-
+    sys.exit(main())

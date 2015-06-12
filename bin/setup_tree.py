@@ -5,6 +5,7 @@
 #
 """Create files that can be used to set environment variables.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
 #
 # Top-level definitions.
 #
@@ -26,7 +27,7 @@ import sys
 # to_file()
 #
 def to_file(env,header='',setenv='setenv {0} {1}'):
-    """Convert config file data to .
+    """Convert config file data to module file.
 
     Parameters
     ----------
@@ -101,7 +102,8 @@ def parse_cfg(cfg,root):
 # Main function
 #
 def main():
-    """Program to run if called as an executable."""
+    """Program to run if called as an executable.
+    """
     #
     # Get options
     #
@@ -139,9 +141,6 @@ else
 fi
 unset vers
 """
-    eupsheader = """# Set up tree/{name} for EUPS.
-envPrepend(PATH,${{PRODUCT_DIR}}/bin)
-"""
     moduleheader = """#%Module1.0
 proc ModulesHelp {{ }} {{
     global product version
@@ -171,10 +170,6 @@ echo {name}
             'ext':'.sh',
             'header':bashheader,
             'setenv':'export {0}={1}'},
-        'eups':{
-            'ext':'.table',
-            'header':eupsheader,
-            'setenv':'envSet({0},{1})'},
         'module':{
             'ext':'.module',
             'header':moduleheader,
@@ -190,7 +185,7 @@ echo {name}
         etcdir = '.'
         if not os.path.exists(datadir):
             print("Could not find a data directory!")
-            sys.exit(1)
+            return 1
     #
     # Read the configuration files
     #
@@ -216,10 +211,9 @@ echo {name}
                     '.version')
                 with open(versionname,'w') as f:
                     f.write(modulesversion.format(**env['default']))
-    return
+    return 0
 #
 #
 #
 if __name__ == '__main__':
-    main()
-
+    sys.exit(main())

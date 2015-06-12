@@ -13,7 +13,7 @@ if test -z "${SAS_ROOT}"; then
     elif test ${HOSTNAME%.nyu.edu} != ${HOSTNAME}; then
         SAS_ROOT=/mount/coma1/bw55/sdss3/mirror
     elif test ${HOSTNAME%.nersc.gov} != ${HOSTNAME}; then
-        SAS_ROOT=/project/projectdirs/boss
+        SAS_ROOT=/global/projecta/projectdirs/sdss/data/sdss
     else
         echo
         echo "Could not set \$SAS_ROOT based on hostname or environment variable."
