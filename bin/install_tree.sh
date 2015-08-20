@@ -26,6 +26,7 @@ fi
 if [ -w "${treemodules}" ]; then
     print_and_run mkdir -p ${treemodules}/tree
     for module in *.module; do
+        version=$(echo ${module} | cut -d. -f1)
         print_and_run cp -pf  ${module} ${treemodules}/tree/${version}
     done
     print_and_run cp -pf .version ${treemodules}/tree
