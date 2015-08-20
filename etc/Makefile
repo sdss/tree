@@ -22,12 +22,11 @@ export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
 # This should compile all code prior to it being installed
 #
 all :
-	../bin/setup_tree.py
-	../bin/install_tree.sh
+	../bin/setup_tree.py -t $(shell pwd)
 #
 #
 #
-links :
+env_links :
 	../bin/env_links.py
 #
 # GNU make pre-defines $(RM).  The - in front of $(RM) causes make to

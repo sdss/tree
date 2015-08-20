@@ -111,10 +111,14 @@ def main():
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
         help='Print extra information.')
     parser.add_argument('-r', '--root', action='store', dest='root',
-        default=os.path.dirname(os.getenv('SAS_BASE_DIR')),
+        default=os.getenv('SAS_BASE_DIR'),
+        help='Override the value of $SAS_BASE_DIR.',metavar='DIR')
+    parser.add_argument('-t', '--treedir', action='store', dest='treedir',
+        default=os.getenv('TREE_DIR'),
         help='Override the value of $SAS_BASE_DIR.',metavar='DIR')
     options = parser.parse_args()
-    treedir = os.getenv('TREE_DIR')
+
+    print("Tree setting up %r" % options.treedir
 
     #
     # Configure output files
@@ -153,7 +157,7 @@ set version {name}
 conflict $product
 module-whatis   "Sets up $product $version in your environment"
 
-set PRODUCT_DIR """ + treedir + """/$product/$version"
+set PRODUCT_DIR """ + options.treedir + """/$product/$version"
 setenv [string toupper $product]_DIR $PRODUCT_DIR
 prepend-path PATH $PRODUCT_DIR/bin
 """
@@ -180,8 +184,8 @@ echo {name}
     #
     # Find the data directory
     #
-    datadir = os.path.join(os.getenv('TREE_DIR'),'data')
-    etcdir = os.path.join(os.getenv('TREE_DIR'),'etc')
+    datadir = os.path.join(options.treedir,'data')
+    etcdir = os.path.join(options.treedir,'etc')
     if not os.path.exists(datadir):
         datadir = os.path.join('..','data')
         etcdir = '.'
