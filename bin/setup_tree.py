@@ -153,10 +153,10 @@ set version {name}
 conflict $product
 module-whatis   "Sets up $product $version in your environment"
 
-set PRODUCT_DIR {0}/$product/$version"
+set PRODUCT_DIR """ + treedir + """/$product/$version"
 setenv [string toupper $product]_DIR $PRODUCT_DIR
 prepend-path PATH $PRODUCT_DIR/bin
-""".format(treedir)
+"""
     modulesversion = """#%Module1.0
 set ModulesVersion {name}
 """
