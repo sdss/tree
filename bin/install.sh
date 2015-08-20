@@ -35,6 +35,7 @@ treemodules=''
 for m in $(echo ${MODULEPATH} | tr ':' ' '); do
     if [ -d ${m}/tree ]; then
         treemodules=${m}
+        break
     fi
 done
 if [ -z "${treemodules}" ]; then
