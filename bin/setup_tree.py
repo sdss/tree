@@ -155,7 +155,7 @@ set version {name}
 conflict $product
 module-whatis   "Sets up $product $version in your environment"
 
-set PRODUCT_DIR """ + join(options.treedir,'$product','$version') + """
+set PRODUCT_DIR """ + os.path.join(options.treedir,'$product','$version') + """
 setenv [string toupper $product]_DIR $PRODUCT_DIR
 prepend-path PATH $PRODUCT_DIR/bin
 """
