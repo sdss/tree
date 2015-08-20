@@ -23,6 +23,7 @@ export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
 #
 all :
 	../bin/setup_tree.py -t $(dir $(CURDIR))
+	../bin/install_tree.sh
 #
 #
 #

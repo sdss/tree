@@ -18,19 +18,8 @@ if [ -z "${TREE_DIR}" ]; then
     exit 0
 fi
 #
-# Install version files
-#
-treebase=$(dirname ${TREE_DIR})
-for table in *.table; do
-    version=$(echo ${table} | cut -d. -f1)
-    print_and_run mkdir -p ${treebase}/${version}/bin
-    print_and_run cp -pf ${version}_version ${treebase}/${version}/bin/tree_version
-    print_and_run chmod +x ${treebase}/${version}/bin/tree_version
-done
-#
 # Install Module files
 #
-treebase=$(dirname ${treebase})
 treemodules=''
 for m in $(echo ${MODULEPATH} | tr ':' ' '); do
     if [ -d ${m}/tree ]; then
@@ -44,8 +33,7 @@ fi
 if [ -w "${treemodules}" ]; then
     print_and_run mkdir -p ${treemodules}/tree
     for module in *.module; do
-        version=$(echo ${module} | cut -d. -f1)
-        print_and_run "cat ${module} | sed \"s%@INSTALL_DIR@%${treebase}%\" > ${treemodules}/tree/${version}"
+        print_and_run cp -pf  ${module} ${treemodules}/tree/${version}
     done
     print_and_run cp -pf .version ${treemodules}/tree
 else
