@@ -48,17 +48,16 @@ def to_file(env,header='',setenv='setenv {0} {1}'):
 # This file sets up tree/{0}.
 #
 """.format(env['default']['name'])
-    else:
-        lines = header.format(**env['default'])
+    else: lines = header.format(**env['default'])
     for section in env:
-        if section == 'default':
-            continue
+        if section == 'default': continue
         lines += """#
 # {0}
 #
 """.format(section)
         setenvs = list()
         for k in env[section]:
+            print("Section %r> k=%r, env[section][k]=%r" % (section,k,env[section][k]))
             setenvs.append(setenv.format(k,env[section][k]))
         lines += "\n".join(setenvs)
         lines += "\n"
@@ -84,9 +83,7 @@ def parse_cfg(cfg,root):
     env = OrderedDict()
     replace = '@FILESYSTEM@'
     env['default'] = cfg.defaults()
-    if env['default']['FILESYSTEM'] == replace:
-        env['default']['FILESYSTEM'] = root
-    # env['default']['install'] = os.path.dirname(os.path.dirname(os.getenv('INSTALL_DIR')))
+    if env['default']['FILESYSTEM'] == replace: env['default']['FILESYSTEM'] = root
     env['default']['current'] = env['default']['current'] == 'True'
     for sec in cfg.sections():
         env[sec] = OrderedDict()
@@ -183,15 +180,11 @@ set ModulesVersion {name}
             print(env)
         for output in outputs:
             filedata = to_file(env,outputs[output]['header'],outputs[output]['setenv'])
-            filename = os.path.join(etcdir,
-                env['default']['name']+outputs[output]['ext'])
-            with open(filename,'w') as f:
-                f.write(filedata)
+            filename = os.path.join(etcdir, env['default']['name']+outputs[output]['ext'])
+            with open(filename,'w') as f: f.write(filedata)
             if output == 'module' and env['default']['current']:
-                versionname = os.path.join(etcdir,
-                    '.version')
-                with open(versionname,'w') as f:
-                    f.write(modulesversion.format(**env['default']))
+                versionname = os.path.join(etcdir, '.version')
+                with open(versionname,'w') as f: f.write(modulesversion.format(**env['default']))
     return 0
 #
 #
