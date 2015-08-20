@@ -11,13 +11,6 @@ function print_and_run {
     eval "$@"
 }
 #
-# Check for INSTALL_DIR
-#
-if [ -z "${TREE_DIR}" ]; then
-    echo "TREE_DIR is not defined, skipping install."
-    exit 0
-fi
-#
 # Install Module files
 #
 treemodules=''
