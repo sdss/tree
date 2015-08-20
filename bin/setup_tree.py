@@ -118,7 +118,7 @@ def main():
         help='Override the value of $SAS_BASE_DIR.',metavar='DIR')
     options = parser.parse_args()
 
-    print("Tree setting up %r" % options.treedir
+    print("Tree setting up %r" % options.treedir)
 
     #
     # Configure output files
