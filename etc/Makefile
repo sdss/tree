@@ -23,11 +23,11 @@ export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
 #
 all :
 	../bin/setup_tree.py
+	../bin/install_tree.sh
 #
 #
 #
-install :
-	../bin/install.sh
+links :
 	../bin/env_links.py
 #
 # GNU make pre-defines $(RM).  The - in front of $(RM) causes make to

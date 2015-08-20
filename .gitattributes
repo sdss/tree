@@ -1,4 +1,5 @@
 * text=auto !eol
+bin/install_tree.sh -text
 bin/tree_version -text
 data/.version -text
 data/dr10.cfg -text
