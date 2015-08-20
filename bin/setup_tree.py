@@ -122,28 +122,12 @@ def main():
     # Configure output files
     #
     tcshheader = """# Set up tree/{name} for (t)csh.
-set vers = {name}
-/bin/chmod +x ${{TREE_DIR}}/etc/${{vers}}_version
-(cd ${{TREE_DIR}}/etc; /bin/ln -s -f ${{vers}}_version tree_version) >& /dev/null
-if (${{status}} == 0) then
-    setenv PATH ${{TREE_DIR}}/etc:${{PATH}}
-else
-    echo "Failed to create tree_version.  Creating an alias instead.  Proceed with caution."
-    alias tree_version "echo ${{vers}}"
-endif
-unset vers
+setenv TREE_DIR """ + options.treedir.rstrip('/') + """
+setenv PATH $TREE_DIR/bin:$PATH
 """
     bashheader = """# Set up tree/{name} for (ba)sh.
-vers={name}
-/bin/chmod +x ${{TREE_DIR}}/etc/${{vers}}_version
-(cd ${{TREE_DIR}}/etc; /bin/ln -s -f ${{vers}}_version tree_version) > /dev/null 2>&1
-if [ $? = 0 ]; then
-    export PATH=${{TREE_DIR}}/etc:${{PATH}}
-else
-    echo "Failed to create tree_version.  Creating an alias instead.  Proceed with caution."
-    function tree_version {{ echo {name} }}; export -f tree_version
-fi
-unset vers
+export TREE_DIR=""" + options.treedir.rstrip('/') + """
+export PATH=$TREE_DIR/bin:$PATH
 """
     moduleheader = """#%Module1.0
 proc ModulesHelp {{ }} {{
