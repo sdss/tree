@@ -15,21 +15,18 @@
 #
 .PHONY : clean
 #
+# Make sure SAS_BASE_DIR is set
+#
+export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
 #
 # This should compile all code prior to it being installed
 #
 all :
-    # Make sure SAS_BASE_DIR is set
-    #
-    export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
 	../bin/setup_tree.py
 #
 #
 #
 install :
-    # Make sure SAS_BASE_DIR is set
-    #
-    export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
 	../bin/install.sh
 	../bin/env_links.py
 #
