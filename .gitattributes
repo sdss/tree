@@ -1,6 +1,5 @@
 * text=auto !eol
 bin/tree_version -text
-data/.version -text
 data/dr10.cfg -text
 data/dr11.cfg -text
 data/dr12.cfg -text
