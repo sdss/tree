@@ -22,7 +22,7 @@ export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
 # This should compile all code prior to it being installed
 #
 all :
-	../bin/setup_tree.py -t $(shell pwd)
+	../bin/setup_tree.py -t $(dir $(CURDIR))
 #
 #
 #

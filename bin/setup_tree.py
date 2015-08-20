@@ -118,8 +118,6 @@ def main():
         help='Override the value of $SAS_BASE_DIR.',metavar='DIR')
     options = parser.parse_args()
 
-    print("Tree setting up %r" % options.treedir)
-
     #
     # Configure output files
     #
@@ -157,7 +155,7 @@ set version {name}
 conflict $product
 module-whatis   "Sets up $product $version in your environment"
 
-set PRODUCT_DIR """ + options.treedir + """/$product/$version"
+set PRODUCT_DIR """ + options.treedir + """/$product/$version
 setenv [string toupper $product]_DIR $PRODUCT_DIR
 prepend-path PATH $PRODUCT_DIR/bin
 """
