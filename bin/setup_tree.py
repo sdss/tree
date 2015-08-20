@@ -146,9 +146,6 @@ prepend-path PATH $PRODUCT_DIR/bin
     modulesversion = """#%Module1.0
 set ModulesVersion {name}
 """
-    tree_version = """#!/bin/sh
-echo {name}
-"""
     outputs = {
         'tcsh':{
             'ext':'.csh',
@@ -190,10 +187,6 @@ echo {name}
                 env['default']['name']+outputs[output]['ext'])
             with open(filename,'w') as f:
                 f.write(filedata)
-            tree_versionname = os.path.join(etcdir,
-                env['default']['name']+'_version')
-            with open(tree_versionname,'w') as f:
-                f.write(tree_version.format(**env['default']))
             if output == 'module' and env['default']['current']:
                 versionname = os.path.join(etcdir,
                     '.version')
