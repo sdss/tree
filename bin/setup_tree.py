@@ -88,9 +88,9 @@ def parse_cfg(cfg,root):
         for opt in cfg.options(sec):
             if opt in env['default']: continue
             val = cfg.get(sec,opt)
+            print("section=%r opt=%r val=%r" % (sec,opt,val))
             if val.find(replace) == 0: val = val.replace(replace,root)
             env[sec][opt] = val
-            print("section=%r opt=%r val=%r" % (sec,opt,val))
     return env
 #
 # Main function
