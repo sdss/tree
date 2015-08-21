@@ -117,10 +117,12 @@ def main():
     #
     tcshheader = """# Set up tree/{name} for (t)csh.
 setenv TREE_DIR """ + options.treedir.rstrip('/') + """
+setenv TREE_VER {name}
 setenv PATH $TREE_DIR/bin:$PATH
 """
     bashheader = """# Set up tree/{name} for (ba)sh.
 export TREE_DIR=""" + options.treedir.rstrip('/') + """
+export TREE_VER={name}
 export PATH=$TREE_DIR/bin:$PATH
 """
     moduleheader = """#%Module1.0
@@ -135,6 +137,7 @@ module-whatis   "Sets up $product $version in your environment"
 
 set PRODUCT_DIR """ + options.treedir.rstrip('/') + """
 setenv [string toupper $product]_DIR $PRODUCT_DIR
+setenv [string toupper $product]_VER $version
 prepend-path PATH $PRODUCT_DIR/bin
 """
     modulesversion = """#%Module1.0
