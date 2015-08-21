@@ -88,10 +88,9 @@ def parse_cfg(cfg,root):
         for opt in cfg.options(sec):
             if opt in env['default']: continue
             val = cfg.get(sec,opt)
-            if val.find(replace) == 0:
-                print("section=%r opt=%r: replace %r with root=%r" % (sec,opt,replace,root))
-                val = val.replace(replace,root)
+            if val.find(replace) == 0: val = val.replace(replace,root)
             env[sec][opt] = val
+            print("section=%r opt=%r val=%r" % (sec,opt,val))
     return env
 #
 # Main function
@@ -107,10 +106,10 @@ def main():
         help='Print extra information.')
     parser.add_argument('-r', '--root', action='store', dest='root',
         default=os.getenv('SAS_BASE_DIR'),
-        help='Override the value of $SAS_BASE_DIR.',metavar='DIR')
+        help='Override the value of $SAS_BASE_DIR.',metavar='SAS_BASE_DIR')
     parser.add_argument('-t', '--treedir', action='store', dest='treedir',
         default=os.getenv('TREE_DIR'),
-        help='Override the value of $SAS_BASE_DIR.',metavar='DIR')
+        help='Override the value of $TREE_DIR.',metavar='TREE_DIR')
     options = parser.parse_args()
 
     #
