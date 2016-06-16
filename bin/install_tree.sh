@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Install files in the etc directory.
 #
