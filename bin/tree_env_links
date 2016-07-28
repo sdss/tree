@@ -110,9 +110,6 @@ def main():
     #
     # Set up index file
     #
-    env['default']['url'] = "https://data.mirror.sdss.org" if options.mirror else "https://data.sdss.org"
-    env['default']['location'] = "SDSS-IV Science Archive Mirror (SAM)" if options.mirror else "SDSS-IV Science Archive Server (SAS)"
-
     header = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -151,6 +148,8 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
             continue
         # if debug:
         #     print(env)
+        env['default']['url'] = "https://data.mirror.sdss.org" if options.mirror else "https://data.sdss.org"
+        env['default']['location'] = "SDSS-IV Science Archive Mirror (SAM)" if options.mirror else "SDSS-IV Science Archive Server (SAS)"
         if os.path.exists(env['general']['SAS_ROOT']):
             if debug:
                 print("Found {0}.".format(env['general']['SAS_ROOT']))
