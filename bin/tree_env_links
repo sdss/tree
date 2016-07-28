@@ -118,14 +118,14 @@ def main():
 </head><body><h1>Index of /sas/%(name)s/env/</h1>
 """
 
-    table_header = """
-<table id="list" cellpadding="0.1em" cellspacing="0">
+    table_header = """<table id="list" cellpadding="0.1em" cellspacing="0">
 <colgroup><col width="55%"/><col width="20%"/><col width="25%"/></colgroup>
-<thead><tr><th><a href="?C=N&O=A">File Name</a>&nbsp;<a href="?C=N&O=D">&nbsp;↓&nbsp;</a></th><th><a href="?C=S&O=A">File Size</a>&nbsp;<a href="?C=S&O=D">&nbsp;↓&nbsp;</a></th><th><a href="?C=M&O=A">Date</a>&nbsp;<a href="?C=M&O=D">&nbsp;↓&nbsp;</a></th></tr></thead>
-<tbody><tr><td><a href="../">Parent directory/</a></td><td>-</td><td>-</td></tr>
+<thead>
+    <tr><th><a href="?C=N&O=A">File Name</a>&nbsp;<a href="?C=N&O=D">&nbsp;&darr;&nbsp;</a></th><th><a href="?C=S&O=A">File Size</a>&nbsp;<a href="?C=S&O=D">&nbsp;&darr;&nbsp;</a></th><th><a href="?C=M&O=A">Date</a>&nbsp;<a href="?C=M&O=D">&nbsp;&darr;&nbsp;</a></th></tr>
+</thead><tbody>
+    <tr><td><a href="../">Parent directory/</a></td><td>-</td><td>-</td></tr>
 """
-    table_footer = """
-</tbody></table>
+    table_footer = """</tbody></table>
 """
     footer = """<h3><a href='https://data.sdss.org/sas/'>SDSS-IV Science Archive Server (SAS)</a></h3>
 </body></html>
@@ -190,13 +190,13 @@ def main():
                     #
                     if options.force or os.path.exists(src):
                         make_link(src,link,options)
-                        index += '<tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
+                        index += '    <tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
                         print("Forcing / Processing %r for %r" % var)
                     else: print("Skipping (without force) %r for %r" % var)
                 else:
                     print("Processing %r for %r" % var)
                     make_link(src,link,options)
-                    index += '<tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
+                    index += '    <tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
             index += table_footer
             index += footer.format(env['default']['name'])
             indexfile = os.path.join(envdir,'index.html')
