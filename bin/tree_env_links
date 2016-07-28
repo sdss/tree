@@ -108,21 +108,29 @@ def main():
     #
     # Set up index file
     #
+
     header = """<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head><title>Index of /sas/{0}/env/</title></head>
-<body style="background-color:white;">
-<h1>Index of /sas/{0}/env/</h1><hr /><pre><a href="../">../</a>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta name="viewport" content="width=device-width"/><meta http-equiv="content-type" content="text/html; charset=utf-8"/><style type="text/css">body,html {background:#fff;font-family:"Bitstream Vera Sans","Lucida Grande","Lucida Sans Unicode",Lucidux,Verdana,Lucida,sans-serif;}tr:nth-child(even) {background:#f4f4f4;}th,td {padding:0.1em 0.5em;}th {text-align:left;font-weight:bold;background:#eee;border-bottom:1px solid #aaa;}#list {border:1px solid #aaa;width:100%;}a {color:#a33;}a:hover {color:#e33;}</style>
+<link rel="stylesheet" href="https://data.sdss.org/css/sas.css" type="text/css"/>
+<title>Index of /sas/{0}/env/</title>
+</head><body><h1>Index of /sas/{0}/env/</h1>
 """
-    footer = """</pre><hr />
-<p>This directory contains links to the contents of
-environment variables defined by the tree product, version {0}.
-To examine the <em>types</em> of files contained in each environment variable
-directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
-</body>
-</html>
+
+    table_header = """
+<table id="list" cellpadding="0.1em" cellspacing="0">
+<colgroup><col width="55%"/><col width="20%"/><col width="25%"/></colgroup>
+<thead><tr><th><a href="?C=N&O=A">File Name</a>&nbsp;<a href="?C=N&O=D">&nbsp;↓&nbsp;</a></th><th><a href="?C=S&O=A">File Size</a>&nbsp;<a href="?C=S&O=D">&nbsp;↓&nbsp;</a></th><th><a href="?C=M&O=A">Date</a>&nbsp;<a href="?C=M&O=D">&nbsp;↓&nbsp;</a></th></tr></thead>
+<tbody><tr><td><a href="../">Parent directory/</a></td><td>-</td><td>-</td></tr>
 """
+    table_footer = """
+</tbody></table>
+"""
+    footer = """<h3><a href='https://data.sdss.org/sas/'>SDSS-IV Science Archive Server (SAS)</a></h3>
+</body></html>
+"""
+
     #
     # Read the configuration files
     #
@@ -149,6 +157,7 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                 if not options.test:
                     os.mkdir(envdir)
             index = header.format(env['default']['name'])
+            index += table_header
             svars = list()
             for section in env:
                 if section == 'default':
@@ -165,7 +174,6 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                     continue
                 src = env[var[1]][var[0]]
                 link = os.path.join(envdir,var[0])
-                spaces = ' '*(52 - (len(var[0])+1))
                 try:
                     stattime = time.strftime('%d-%b-%Y %H:%M',time.localtime(os.stat(src).st_mtime))
                 except OSError:
@@ -173,17 +181,19 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                     if os.path.islink(link):
                         os.remove(link)
                     continue
-                if var[1] == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
+                if var[1] == 'general' and var in ('SAS_BASE_DIR'): pass
+                elif var[1] == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
                     #
                     # For this section only, install links only if their
                     # targets exist. The --force option overrides this.
                     #
                     if options.force or os.path.exists(src):
                         make_link(src,link,options)
-                        index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var[0],spaces,stattime)
+                        index += '<tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
                 else:
                     make_link(src,link,options)
-                    index += '<a href="{0}/">{0}/</a>{1}{2}                   -\n'.format(var[0],spaces,stattime)
+                    index += '<tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
+            index += table_footer
             index += footer.format(env['default']['name'])
             indexfile = os.path.join(envdir,'index.html')
             if debug:
