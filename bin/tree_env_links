@@ -114,8 +114,8 @@ def main():
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><meta name="viewport" content="width=device-width"/><meta http-equiv="content-type" content="text/html; charset=utf-8"/><style type="text/css">body,html {background:#fff;font-family:"Bitstream Vera Sans","Lucida Grande","Lucida Sans Unicode",Lucidux,Verdana,Lucida,sans-serif;}tr:nth-child(even) {background:#f4f4f4;}th,td {padding:0.1em 0.5em;}th {text-align:left;font-weight:bold;background:#eee;border-bottom:1px solid #aaa;}#list {border:1px solid #aaa;width:100%;}a {color:#a33;}a:hover {color:#e33;}</style>
 <link rel="stylesheet" href="https://data.sdss.org/css/sas.css" type="text/css"/>
-<title>Index of /sas/{0}/env/</title>
-</head><body><h1>Index of /sas/{0}/env/</h1>
+<title>Index of /sas/%(name)s/env/</title>
+</head><body><h1>Index of /sas/%(name)s/env/</h1>
 """
 
     table_header = """
@@ -156,7 +156,7 @@ def main():
                     print("Creating {0}.".format(envdir))
                 if not options.test:
                     os.mkdir(envdir)
-            index = header.format(env['default']['name'])
+            index = header % env['default']
             index += table_header
             svars = list()
             for section in env:
