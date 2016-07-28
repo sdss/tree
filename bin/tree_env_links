@@ -181,8 +181,9 @@ def main():
                     if os.path.islink(link):
                         os.remove(link)
                     continue
-                if var[1] == 'general' and var in ('SAS_BASE_DIR'): pass
-                elif var[1] == 'general' and var in ('CAS_LOAD','STAGING_DATA'):
+                if var[1] == 'general' and var[0] in ('SAS_BASE_DIR'):
+                    print("Skipping %r for %r" % var)
+                elif var[1] == 'general' and var[0] in ('CAS_LOAD','STAGING_DATA'):
                     #
                     # For this section only, install links only if their
                     # targets exist. The --force option overrides this.
@@ -190,7 +191,10 @@ def main():
                     if options.force or os.path.exists(src):
                         make_link(src,link,options)
                         index += '<tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
+                        print("Forcing / Processing %r for %r" % var)
+                    else: print("Skipping (without force) %r for %r" % var)
                 else:
+                    print("Processing %r for %r" % var)
                     make_link(src,link,options)
                     index += '<tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
             index += table_footer
