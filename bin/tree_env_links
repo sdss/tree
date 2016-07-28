@@ -88,6 +88,8 @@ def main():
         help='Force the creation of some symlinks.')
     parser.add_argument('-t', '--test', action='store_true', dest='test',
         help='Only show what would be done (implies --verbose).')
+    parser.add_argument('-m', '--mirror', action='store_true', dest='mirror',
+        help='SAM version.')
     parser.add_argument('-o', '--only', action='store', dest='only',
         default='ALL', metavar='TREE',
         help='Create links for only TREE.')
@@ -108,12 +110,14 @@ def main():
     #
     # Set up index file
     #
+    env['default']['url'] = "https://data.mirror.sdss.org" if options.mirror else "https://data.sdss.org"
+    env['default']['location'] = "SDSS-IV Science Archive Mirror (SAM)" if options.mirror else "SDSS-IV Science Archive Server (SAS)"
 
     header = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><meta name="viewport" content="width=device-width"/><meta http-equiv="content-type" content="text/html; charset=utf-8"/><style type="text/css">body,html {background:#fff;font-family:"Bitstream Vera Sans","Lucida Grande","Lucida Sans Unicode",Lucidux,Verdana,Lucida,sans-serif;}tr:nth-child(even) {background:#f4f4f4;}th,td {padding:0.1em 0.5em;}th {text-align:left;font-weight:bold;background:#eee;border-bottom:1px solid #aaa;}#list {border:1px solid #aaa;width:100%%;}a {color:#a33;}a:hover {color:#e33;}</style>
-<link rel="stylesheet" href="https://data.sdss.org/css/sas.css" type="text/css"/>
+<link rel="stylesheet" href="%(url)s/css/sas.css" type="text/css"/>
 <title>Index of /sas/%(name)s/env/</title>
 </head><body><h1>Index of /sas/%(name)s/env/</h1>
 """
@@ -127,7 +131,11 @@ def main():
 """
     table_footer = """</tbody></table>
 """
-    footer = """<h3><a href='https://data.sdss.org/sas/'>SDSS-IV Science Archive Server (SAS)</a></h3>
+    footer = """<h3><a href='%(url)s/sas/'>%(location)s</a></h3>
+<p>This directory contains links to the contents of
+environment variables defined by the tree product, version %(name)s.
+To examine the <em>types</em> of files contained in each environment variable
+directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
 </body></html>
 """
 
@@ -198,7 +206,7 @@ def main():
                     make_link(src,link,options)
                     index += '    <tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
             index += table_footer
-            index += footer.format(env['default']['name'])
+            index += footer % env['default']
             indexfile = os.path.join(envdir,'index.html')
             if debug:
                 print("Creating {0}.".format(indexfile))
