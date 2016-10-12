@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2016-10-11 23:37:16
+# @Last Modified time: 2016-10-11 23:55:08
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -22,7 +22,7 @@ class Tree(object):
         key = kwargs.get('key', None)
         self.setRoots()
         self.loadConfig()
-        self.setSurveyRoots(section=key)
+        self.branchOut(limb=key)
         # add the general directories
         if key is not None:
             self.addPathsToOS(key='general')
@@ -66,8 +66,8 @@ class Tree(object):
         if self.environ['default']['filesystem'] == self._file_replace:
             self.environ['default']['filesystem'] = self.sasbasedir
 
-    def setSurveyRoots(self, section=None):
-        ''' Set the individual section roots
+    def branchOut(self, limb=None):
+        ''' Set the individual section branches
 
         This adds the various sections of the config file into the
         tree environment for access later. Optically can specify a specific
@@ -81,25 +81,25 @@ class Tree(object):
         '''
 
         # Filter on sections
-        if not section:
-            sections = self._cfg.sections()
+        if not limb:
+            limbs = self._cfg.sections()
         else:
             # we must have the general always + secton
-            section = section if type(section) == list else [section]
-            sections = ['general']
-            sections.extend(section)
+            limb = limb if type(limb) == list else [limb]
+            limbs = ['general']
+            limbs.extend(limb)
 
-        # add all sections into the tree environ
-        for sec in sections:
-            self.environ[sec] = OrderedDict()
-            options = self._cfg.options(sec)
+        # add all limbs into the tree environ
+        for leaf in limbs:
+            self.environ[leaf] = OrderedDict()
+            options = self._cfg.options(leaf)
             for opt in options:
                 if opt in self.environ['default']:
                     continue
-                val = self._cfg.get(sec, opt)
+                val = self._cfg.get(leaf, opt)
                 if val.find(self._file_replace) == 0:
                     val = val.replace(self._file_replace, self.sasbasedir)
-                self.environ[sec][opt] = val
+                self.environ[leaf][opt] = val
 
     def getPaths(self, key):
         ''' Retrieve a set of environment paths from the config
