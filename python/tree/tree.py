@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2016-10-11 21:45:24
+# @Last Modified time: 2016-10-11 22:44:34
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -23,7 +23,9 @@ class Tree(object):
         self.setRoots()
         self.loadConfig()
         self.setSurveyRoots(section=key)
-        self.addPathsToOS(key='general')
+        # add the general directories
+        if key is not None:
+            self.addPathsToOS(key='general')
         self.addPathsToOS(key=key)
 
     def __repr__(self):
@@ -53,22 +55,35 @@ class Tree(object):
             os.makedirs(self.sasbasedir)
 
     def loadConfig(self):
-        ''' load the Config file '''
+        ''' load the sdsswork config file '''
         self._cfg = SafeConfigParser()
         self._cfg.read(self.configfile)
+        # create the local tree environment
         self.environ = OrderedDict()
         self.environ['default'] = self._cfg.defaults()
+        # set the filesystem envvar to sas_base_dir
         self._file_replace = '@FILESYSTEM@'
         if self.environ['default']['filesystem'] == self._file_replace:
             self.environ['default']['filesystem'] = self.sasbasedir
 
     def setSurveyRoots(self, section=None):
-        ''' Set the individual survey roots '''
+        ''' Set the individual section roots
 
-        # filter on section
+        This adds the various sections of the config file into the
+        tree environment for access later. Optically can specify a specific
+        section.
+
+        Parameters:
+            section (str):
+                The name of the section of the config to add into the environ
+
+        '''
+
+        # Filter on sections
         if not section:
             sections = self._cfg.sections()
         else:
+            # we must have the general always + secton
             sections = ['general', section]
 
         # add all sections into the tree environ
@@ -84,7 +99,17 @@ class Tree(object):
                 self.environ[sec][opt] = val
 
     def getPaths(self, key):
-        ''' Retrieve a set of environment paths from the config '''
+        ''' Retrieve a set of environment paths from the config
+
+        Parameters:
+            key (str):
+                The section name to grab from the environment
+
+        Returns:
+            self.environ[newkey] (OrderedDict):
+                An ordered dict containing all of the paths from the
+                specified section, as key:val = name:path
+        '''
         newkey = key if key in self.environ else key.upper() if key.upper() \
             in self.environ else None
         if newkey:
@@ -93,7 +118,15 @@ class Tree(object):
             raise KeyError('Key {0} not found in tree environment'.format(key))
 
     def addPathsToOS(self, key=None):
-        ''' add the paths in tree environment into the os environment '''
+        ''' Add the paths in tree environ into the os environ
+
+        This code goes through the tree environ and checks
+        for existence in the os environ, then adds them
+
+        Parameters:
+            key (str):
+                The section name to check against / add
+        '''
 
         if key is not None:
             paths = self.getPaths(key)
@@ -105,7 +138,13 @@ class Tree(object):
                 self.checkPaths(paths)
 
     def checkPaths(self, paths):
-        ''' check if the path is in the os environ, and if not add it '''
+        ''' Check if the path is in the os environ, and if not add it
+
+        Paramters:
+            paths (OrderedDict):
+                An ordered dict containing all of the paths from the
+                a given section, as key:val = name:path
+        '''
         for pathname, path in paths.items():
             if pathname.upper() not in os.environ:
                 os.environ[pathname.upper()] = os.path.normpath(path)
