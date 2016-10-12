@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2016-10-11 21:38:29
+# @Last Modified time: 2016-10-11 21:45:24
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -23,6 +23,7 @@ class Tree(object):
         self.setRoots()
         self.loadConfig()
         self.setSurveyRoots(section=key)
+        self.addPathsToOS(key='general')
         self.addPathsToOS(key=key)
 
     def __repr__(self):
