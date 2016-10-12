@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2016-10-11 22:44:34
+# @Last Modified time: 2016-10-11 23:37:16
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -74,8 +74,9 @@ class Tree(object):
         section.
 
         Parameters:
-            section (str):
+            section (str/list):
                 The name of the section of the config to add into the environ
+                or a list of strings
 
         '''
 
@@ -84,7 +85,9 @@ class Tree(object):
             sections = self._cfg.sections()
         else:
             # we must have the general always + secton
-            sections = ['general', section]
+            section = section if type(section) == list else [section]
+            sections = ['general']
+            sections.extend(section)
 
         # add all sections into the tree environ
         for sec in sections:
@@ -129,13 +132,13 @@ class Tree(object):
         '''
 
         if key is not None:
-            paths = self.getPaths(key)
-            self.checkPaths(paths)
+            allpaths = key if type(key) == list else [key]
         else:
             allpaths = [k for k in self.environ.keys() if 'default' not in k]
-            for key in allpaths:
-                paths = self.getPaths(key)
-                self.checkPaths(paths)
+
+        for key in allpaths:
+            paths = self.getPaths(key)
+            self.checkPaths(paths)
 
     def checkPaths(self, paths):
         ''' Check if the path is in the os environ, and if not add it
