@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2016-10-11 20:52:51
+# @Last Modified time: 2016-10-11 21:06:09
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -107,6 +107,6 @@ class Tree(object):
         ''' check if the path is in the os environ, and if not add it '''
         for pathname, path in paths.items():
             if pathname.upper() not in os.environ:
-                os.environ[pathname.upper()] = path
+                os.environ[pathname.upper()] = os.path.normpath(path)
 
 
