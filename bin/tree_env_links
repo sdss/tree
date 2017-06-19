@@ -169,7 +169,7 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
             for section in env:
                 if section == 'default':
                     continue
-                keys = env[section].keys()
+                keys = list(env[section].keys())
                 svars += zip(keys,[section]*len(keys))
             if debug:
                 print(svars)
