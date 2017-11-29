@@ -6,12 +6,12 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2017-11-29 11:57:46
+# @Last Modified time: 2017-11-29 12:24:32
 
 from __future__ import print_function, division, absolute_import
 import os
 from collections import OrderedDict
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 
 
 class Tree(object):

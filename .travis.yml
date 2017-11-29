@@ -36,10 +36,5 @@ install:
 script:
 - pytest python/tree/tests --cov python/tree --cov-report html
 
-# branches:
-#   except:
-#     - new_datamodel
-#     - mpl6_clean_tools
-
 after_success:
 - coveralls
