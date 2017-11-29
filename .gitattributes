@@ -4,6 +4,7 @@ data/dr10.cfg -text
 data/dr11.cfg -text
 data/dr12.cfg -text
 data/dr13.cfg -text
+data/dr14.cfg -text
 data/sdss_paths.ini -text
 data/sdsswork.cfg -text
 etc/config.ini -text
