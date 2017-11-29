@@ -14,7 +14,7 @@ import os
 import argparse
 import sys
 
-NAME = 'tree'
+NAME = 'sdss-tree'
 VERSION = '0.1.0'
 RELEASE = 'dev' in VERSION
 
