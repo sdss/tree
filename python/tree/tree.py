@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2017-11-29 12:24:32
+# @Last Modified time: 2017-11-29 17:56:19
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -60,7 +60,10 @@ class Tree(object):
         self.treedir = os.environ.get('TREE_DIR', None) if not uproot_with else uproot_with
         if not self.treedir:
             treefilepath = os.path.dirname(os.path.abspath(__file__))
-            self.treedir = treefilepath.rsplit('/', 2)[0]
+            if 'python/' in treefilepath:
+                self.treedir = treefilepath.rsplit('/', 2)[0]
+            else:
+                self.treedir = treefilepath
             os.environ['TREE_DIR'] = self.treedir
 
         # Read the config file
