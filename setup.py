@@ -26,7 +26,7 @@ def add_data_file(directory, data_files):
             data_files.append(os.path.join('..', root.lstrip('python/'), filename))
 
 
-def get_data_files(with_web=True):
+def get_data_files():
 
     data_files = []
 
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     args = parser.parse_known_args()[0]
 
     # Get data files
-    data_files = get_data_files(with_web=not args.noweb)
+    data_files = get_data_files()
 
     # Get the proper requirements file
     install_requires = get_requirements(args)
