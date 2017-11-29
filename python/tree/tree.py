@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2017-11-29 02:08:36
+# @Last Modified time: 2017-11-29 11:57:46
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -15,18 +15,25 @@ from ConfigParser import SafeConfigParser
 
 
 class Tree(object):
-    ''' The Tree Class '''
+    ''' Initialize the sdss tree object
+
+    This class provides Python programmatic access to the SDSS tree envionment structure
+
+    Parameters:
+        key (str|list):
+            A section or list of sections of the tree to add into the local environment
+        uproot_with (str):
+            A new TREE_DIR path used to override an existing TREE_DIR environment variable
+
+    Attributes:
+        treedir (str):
+            The directory of the tree
+        environ (dict):
+            The fully loaded SDSS config file
+
+    '''
 
     def __init__(self, *args, **kwargs):
-        ''' initialize the sdss tree
-
-        Parameters:
-            key (str|list):
-                A section or list of sections of the tree to add into the local environment
-            uproot_with (str):
-                A new TREE_DIR path used to override an existing TREE_DIR environment variable
-
-        '''
         key = kwargs.get('key', None)
         uproot_with = kwargs.get('uproot_with', None)
         self.setRoots(uproot_with=uproot_with)
@@ -70,7 +77,7 @@ class Tree(object):
             os.makedirs(self.sasbasedir)
 
     def loadConfig(self):
-        ''' load the sdsswork config file '''
+        ''' loads the sdsswork config file '''
 
         self._cfg = SafeConfigParser()
         self._cfg.read(self.configfile)

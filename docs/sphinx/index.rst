@@ -3,25 +3,31 @@
 
 .. title:: Welcome to tree's documentation!
 
+:tocdepth: 2
+
 .. rubric:: :header_no_toc:`Welcome to tree's documentation!`
 
 This is the Sphinx documentation for the Python product tree
 
-- :ref:`What's new in tree? <changelog>`
+Introduction
+------------
 
-A description of the package can go here.
+* :ref:`What's new in tree? <changelog>`
+* intro
+
+
+Reference
+---------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   intro
    api
 
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
-.. * :ref:`modindex`
-* :ref:`search`
+* :ref:`modindex`
