@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2016-10-11 23:55:08
+# @Last Modified time: 2017-11-29 02:08:36
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -18,9 +18,18 @@ class Tree(object):
     ''' The Tree Class '''
 
     def __init__(self, *args, **kwargs):
-        ''' initialize the sdss tree '''
+        ''' initialize the sdss tree
+
+        Parameters:
+            key (str|list):
+                A section or list of sections of the tree to add into the local environment
+            uproot_with (str):
+                A new TREE_DIR path used to override an existing TREE_DIR environment variable
+
+        '''
         key = kwargs.get('key', None)
-        self.setRoots()
+        uproot_with = kwargs.get('uproot_with', None)
+        self.setRoots(uproot_with=uproot_with)
         self.loadConfig()
         self.branchOut(limb=key)
         # add the general directories
@@ -31,11 +40,17 @@ class Tree(object):
     def __repr__(self):
         return ('Tree(sas_base_dir={0})'.format(self.sasbasedir))
 
-    def setRoots(self):
-        ''' Set the roots of the tree in the os environment '''
+    def setRoots(self, uproot_with=None):
+        ''' Set the roots of the tree in the os environment
+
+        Parameters:
+            uproot_with (str):
+                A new TREE_DIR path used to override an existing TREE_DIR environment variable
+
+        '''
 
         # Check for TREE_DIR
-        self.treedir = os.environ.get('TREE_DIR', None)
+        self.treedir = os.environ.get('TREE_DIR', None) if not uproot_with else uproot_with
         if not self.treedir:
             treefilepath = os.path.dirname(os.path.abspath(__file__))
             self.treedir = treefilepath.rsplit('/', 2)[0]
@@ -56,6 +71,7 @@ class Tree(object):
 
     def loadConfig(self):
         ''' load the sdsswork config file '''
+
         self._cfg = SafeConfigParser()
         self._cfg.read(self.configfile)
         # create the local tree environment
@@ -71,10 +87,10 @@ class Tree(object):
 
         This adds the various sections of the config file into the
         tree environment for access later. Optically can specify a specific
-        section.
+        branch.
 
         Parameters:
-            section (str/list):
+            branch (str/list):
                 The name of the section of the config to add into the environ
                 or a list of strings
 
@@ -85,14 +101,16 @@ class Tree(object):
             limbs = self._cfg.sections()
         else:
             # we must have the general always + secton
-            limb = limb if type(limb) == list else [limb]
+            limb = limb if isinstance(limb, list) else [limb]
             limbs = ['general']
             limbs.extend(limb)
 
         # add all limbs into the tree environ
         for leaf in limbs:
+            leaf = leaf if leaf in self._cfg.sections() else leaf.upper()
             self.environ[leaf] = OrderedDict()
             options = self._cfg.options(leaf)
+
             for opt in options:
                 if opt in self.environ['default']:
                     continue
@@ -132,7 +150,7 @@ class Tree(object):
         '''
 
         if key is not None:
-            allpaths = key if type(key) == list else [key]
+            allpaths = key if isinstance(key, list) else [key]
         else:
             allpaths = [k for k in self.environ.keys() if 'default' not in k]
 
