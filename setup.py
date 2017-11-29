@@ -19,7 +19,23 @@ VERSION = '0.1.0'
 RELEASE = 'dev' in VERSION
 
 
-def run(packages, install_requires):
+def add_data_file(directory, data_files):
+    extern_path = os.path.join(os.path.dirname(__file__), directory)
+    for root, __, filenames in os.walk(extern_path):
+        for filename in filenames:
+            data_files.append(os.path.join('..', root.lstrip('python/'), filename))
+
+
+def get_data_files(with_web=True):
+
+    data_files = []
+
+    add_data_file('data/', data_files)
+
+    return data_files
+
+
+def run(data_files, packages, install_requires):
 
     setup(name=NAME,
           version=VERSION,
@@ -34,6 +50,7 @@ def run(packages, install_requires):
           packages=packages,
           install_requires=install_requires,
           package_dir={'': 'python'},
+          package_data={'': data_files},
           scripts=[],
           classifiers=[
               'Development Status :: 4 - Beta',
@@ -88,6 +105,9 @@ if __name__ == '__main__':
     # We use parse_known_args because we want to leave the remaining args for distutils
     args = parser.parse_known_args()[0]
 
+    # Get data files
+    data_files = get_data_files(with_web=not args.noweb)
+
     # Get the proper requirements file
     install_requires = get_requirements(args)
 
@@ -98,4 +118,4 @@ if __name__ == '__main__':
     packages = find_packages(where='python')
 
     # Runs distutils
-    run(packages, install_requires)
+    run(data_files, packages, install_requires)
