@@ -12,6 +12,7 @@ import yaml
 # File logging can be started by calling log.start_file_logger(name).
 from .misc import log
 
+from tree.tree import Tree
 
 NAME = 'tree'
 

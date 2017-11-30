@@ -6,6 +6,13 @@ Change Log
 
 This document records the main changes to the tree code.
 
+2.15.1 (unreleased)
+-------------------
+
+Changed
+^^^^^^^
+* Added Tree import in init for easier imports from top level
+
 2.15.0 (2017-11-29)
 ---------------------
 
