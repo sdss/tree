@@ -1,2 +1,3 @@
 recursive-include python/tree/etc *
-recursive-include data *
+recursive-include python/tree/data *
+
