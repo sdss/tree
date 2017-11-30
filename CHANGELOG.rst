@@ -6,7 +6,15 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.1 (unreleased)
+2.15.2 (2017-11-29)
+-------------------
+
+Added
+^^^^^
+* Synced a bunch of new config changes from svn that were forgotten.
+
+
+2.15.1 (2017-11-29)
 -------------------
 
 Changed
