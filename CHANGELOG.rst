@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.0dev (unreleased)
+2.15.0 (2017-11-29)
 ---------------------
 
 Fixed
