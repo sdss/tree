@@ -16,7 +16,7 @@ import sys
 import distutils.dir_util
 
 NAME = 'sdss-tree'
-VERSION = '0.1.1'
+VERSION = '0.1.1dev'
 RELEASE = 'dev' in VERSION
 
 
