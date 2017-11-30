@@ -20,4 +20,4 @@ NAME = 'tree'
 config = yaml.load(open(os.path.dirname(__file__) + '/etc/{0}.cfg'.format(NAME)))
 
 
-__version__ = '2.15.2dev'
+__version__ = '2.15.2'
