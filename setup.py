@@ -16,24 +16,8 @@ import sys
 import distutils.dir_util
 
 NAME = 'sdss-tree'
-VERSION = '0.1.1dev2'
+VERSION = '0.1.1dev'
 RELEASE = 'dev' in VERSION
-
-
-# def add_data_file(directory, data_files):
-#     extern_path = os.path.join(os.path.dirname(__file__), directory)
-#     for root, __, filenames in os.walk(extern_path):
-#         for filename in filenames:
-#             data_files.append(os.path.join('..', root.lstrip('python/'), filename))
-
-
-# def get_data_files():
-
-#     data_files = []
-
-#     add_data_file('data/', data_files)
-
-#     return data_files
 
 
 def run(packages, install_requires):
@@ -51,7 +35,6 @@ def run(packages, install_requires):
           packages=packages,
           install_requires=install_requires,
           package_dir={'': 'python'},
-          #package_data={'': data_files},
           scripts=[],
           classifiers=[
               'Development Status :: 4 - Beta',
@@ -106,8 +89,7 @@ if __name__ == '__main__':
     # We use parse_known_args because we want to leave the remaining args for distutils
     args = parser.parse_known_args()[0]
 
-    # Get data files
-    #data_files = get_data_files()
+    # Copy data files into the python/tree/data directory
     tmp = distutils.dir_util.copy_tree('data', 'python/tree/data')
 
     # Get the proper requirements file
