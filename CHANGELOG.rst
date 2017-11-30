@@ -9,6 +9,16 @@ This document records the main changes to the tree code.
 2.15.3 (unreleased)
 -------------------
 
+Added
+^^^^^
+* method to list_keys
+* ability to load different config files
+* ability to load a new section of the tree in an existing environment
+
+Changed
+^^^^^^^
+* Moved camelCase methods to underscore methods
+
 2.15.2 (2017-11-29)
 -------------------
 

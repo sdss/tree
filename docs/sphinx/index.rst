@@ -13,8 +13,8 @@ Introduction
 ------------
 
 * :ref:`What's new in tree? <changelog>`
-* intro
-
+* :ref:`Installation <install>`
+* :ref:`Introduction to the Tree <intro>`
 
 Reference
 ---------

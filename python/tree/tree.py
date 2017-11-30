@@ -6,10 +6,11 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2017-11-29 17:56:19
+# @Last Modified time: 2017-11-30 12:01:37
 
 from __future__ import print_function, division, absolute_import
 import os
+import six
 from collections import OrderedDict
 from configparser import SafeConfigParser
 
@@ -24,30 +25,41 @@ class Tree(object):
             A section or list of sections of the tree to add into the local environment
         uproot_with (str):
             A new TREE_DIR path used to override an existing TREE_DIR environment variable
+        config (str):
+            Name of manual config file to load.  Default is sdsswork.
+        update (bool):
+            If True, overwrites existing tree environment variables in your
+            local environment.  Default is False.
 
     Attributes:
         treedir (str):
             The directory of the tree
         environ (dict):
-            The fully loaded SDSS config file
+            The fully loaded SDSS config file held internally
 
     '''
 
     def __init__(self, *args, **kwargs):
-        key = kwargs.get('key', None)
+        self.key = kwargs.get('key', None)
         uproot_with = kwargs.get('uproot_with', None)
-        self.setRoots(uproot_with=uproot_with)
-        self.loadConfig()
-        self.branchOut(limb=key)
+        update = kwargs.get('update', False)
+        self.config_name = kwargs.get('config', 'sdsswork')
+        self.set_roots(uproot_with=uproot_with)
+        self.load_config()
+        self.branch_out(limb=self.key)
         # add the general directories
-        if key is not None:
-            self.addPathsToOS(key='general')
-        self.addPathsToOS(key=key)
+        if self.key is not None:
+            self.add_paths_to_os(key='general', update=update)
+        self.add_paths_to_os(key=self.key, update=update)
 
     def __repr__(self):
-        return ('Tree(sas_base_dir={0})'.format(self.sasbasedir))
+        return ('Tree(sas_base_dir={0}, config={1})'.format(self.sasbasedir, self.config_name))
 
-    def setRoots(self, uproot_with=None):
+    def list_keys(self):
+        ''' List the available keys you can load '''
+        return [k for k in self.environ.keys() if k not in ['general', 'default']]
+
+    def set_roots(self, uproot_with=None):
         ''' Set the roots of the tree in the os environment
 
         Parameters:
@@ -66,9 +78,6 @@ class Tree(object):
                 self.treedir = treefilepath
             os.environ['TREE_DIR'] = self.treedir
 
-        # Read the config file
-        self.configfile = os.path.join(self.treedir, 'data', 'sdsswork.cfg')
-
         # Check sas_base_dir
         if 'SAS_BASE_DIR' in os.environ:
             self.sasbasedir = os.environ["SAS_BASE_DIR"]
@@ -79,8 +88,19 @@ class Tree(object):
         if not os.path.isdir(self.sasbasedir):
             os.makedirs(self.sasbasedir)
 
-    def loadConfig(self):
-        ''' loads the sdsswork config file '''
+    def load_config(self, config=None):
+        ''' loads a config file
+
+        Parameters:
+            config (str):
+                Optional name of manual config file to load
+        '''
+
+        # Read the config file
+        cfgname = (config or self.config_name)
+        assert isinstance(cfgname, six.string_types)
+        config_name = cfgname if cfgname.endswith('.cfg') else '{0}.cfg'.format(cfgname)
+        self.configfile = os.path.join(self.treedir, 'data', config_name)
 
         self._cfg = SafeConfigParser()
         self._cfg.read(self.configfile)
@@ -92,15 +112,15 @@ class Tree(object):
         if self.environ['default']['filesystem'] == self._file_replace:
             self.environ['default']['filesystem'] = self.sasbasedir
 
-    def branchOut(self, limb=None):
+    def branch_out(self, limb=None):
         ''' Set the individual section branches
 
         This adds the various sections of the config file into the
         tree environment for access later. Optically can specify a specific
-        branch.
+        branch.  This does not yet load them into the os environment.
 
         Parameters:
-            branch (str/list):
+            limb (str/list):
                 The name of the section of the config to add into the environ
                 or a list of strings
 
@@ -129,7 +149,18 @@ class Tree(object):
                     val = val.replace(self._file_replace, self.sasbasedir)
                 self.environ[leaf][opt] = val
 
-    def getPaths(self, key):
+    def add_limbs(self, key=None):
+        ''' Add a new section from the tree into the existing os environment
+
+        Parameters:
+            key (str):
+                The section name to grab from the environment
+
+        '''
+        self.branch_out(limb=key)
+        self.add_paths_to_os(key=key)
+
+    def get_paths(self, key):
         ''' Retrieve a set of environment paths from the config
 
         Parameters:
@@ -148,7 +179,7 @@ class Tree(object):
         else:
             raise KeyError('Key {0} not found in tree environment'.format(key))
 
-    def addPathsToOS(self, key=None):
+    def add_paths_to_os(self, key=None, update=None):
         ''' Add the paths in tree environ into the os environ
 
         This code goes through the tree environ and checks
@@ -157,6 +188,9 @@ class Tree(object):
         Parameters:
             key (str):
                 The section name to check against / add
+            update (bool):
+                If True, overwrites existing tree environment variables in your
+                local environment.  Default is False.
         '''
 
         if key is not None:
@@ -165,19 +199,33 @@ class Tree(object):
             allpaths = [k for k in self.environ.keys() if 'default' not in k]
 
         for key in allpaths:
-            paths = self.getPaths(key)
-            self.checkPaths(paths)
+            paths = self.get_paths(key)
+            self.check_paths(paths, update=update)
 
-    def checkPaths(self, paths):
+    def check_paths(self, paths, update=None):
         ''' Check if the path is in the os environ, and if not add it
 
         Paramters:
             paths (OrderedDict):
                 An ordered dict containing all of the paths from the
                 a given section, as key:val = name:path
+            update (bool):
+                If True, overwrites existing tree environment variables in your
+                local environment.  Default is False.
         '''
         for pathname, path in paths.items():
-            if pathname.upper() not in os.environ:
+            if update:
+                os.environ[pathname.upper()] = os.path.normpath(path)
+            elif pathname.upper() not in os.environ:
                 os.environ[pathname.upper()] = os.path.normpath(path)
 
+    def replant_tree(self, config=None):
+        ''' Replant the tree with a different config setup
 
+        Parameters:
+            config (str):
+                The config name to reload
+        '''
+
+        # reinitialize a new Tree with a new config
+        self.__init__(key=self.key, config=config, update=True)
