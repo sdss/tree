@@ -14,6 +14,8 @@ Added
 * method to list_keys
 * ability to load different config files
 * ability to load a new section of the tree in an existing environment
+* new documentation
+* new sphinx plugin to auto document the tree config
 
 Changed
 ^^^^^^^
