@@ -4,10 +4,12 @@
 Introduction to tree
 ===============================
 
-The SAS Tree defines the directory structure in which all SDSS data files live.  See the :ref:`installation <install>` instructions.
+The SAS Tree defines the directory structure in which all SDSS data files live.  The SAS tree product helps set up all the
+SDSS environment variables you need to run SDSS products. The list of currrently available environment variables can be found
+:ref:`here <config>`.
 
-This product provides a Python package version of the tree.  To use the tree, and set up its
-environment variables, you may simply import it::
+This product provides a Python package version of the tree.  See the :ref:`installation <install>` instructions.
+To use the tree, and set up its environment variables, you may simply import it::
 
     # import the tree
     from tree import Tree

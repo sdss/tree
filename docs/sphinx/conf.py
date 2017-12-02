@@ -13,6 +13,8 @@
 # serve to show the default.
 
 import sphinx_bootstrap_theme
+import os
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -20,6 +22,9 @@ import sphinx_bootstrap_theme
 
 from tree import __version__
 from pkg_resources import parse_version
+
+# add a local path to the Sphinx search path
+sys.path.insert(0, os.path.abspath('../../python/tree/misc/'))
 
 
 # -- General configuration ------------------------------------------------
@@ -33,7 +38,7 @@ from pkg_resources import parse_version
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.autosummary',
               'sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
-              'sphinx.ext.intersphinx']
+              'sphinx.ext.intersphinx', 'docutree']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

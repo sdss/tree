@@ -15,6 +15,7 @@ Introduction
 * :ref:`What's new in tree? <changelog>`
 * :ref:`Installation <install>`
 * :ref:`Introduction to the Tree <intro>`
+* :ref:`Tree environment configuration <config>`
 
 Reference
 ---------
