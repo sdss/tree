@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.3 (unreleased)
+2.15.3 (2017-12-02)
 -------------------
 
 Added
