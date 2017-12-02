@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2017-12-01 18:51:56
+# @Last Modified time: 2017-12-01 18:59:16
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -102,7 +102,7 @@ class Tree(object):
         config_name = cfgname if cfgname.endswith('.cfg') else '{0}.cfg'.format(cfgname)
         self.configfile = os.path.join(self.treedir, 'data', config_name)
 
-        assert os.path.isfile(self.configfile) is True, 'configfile {0} must exist in the proper directory'
+        assert os.path.isfile(self.configfile) is True, 'configfile {0} must exist in the proper directory'.format(self.configfile)
 
         self._cfg = SafeConfigParser()
         self._cfg.read(self.configfile)
