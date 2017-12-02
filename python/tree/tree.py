@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2017-12-01 18:59:16
+# @Last Modified time: 2017-12-01 19:07:56
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -72,10 +72,11 @@ class Tree(object):
         self.treedir = os.environ.get('TREE_DIR', None) if not uproot_with else uproot_with
         if not self.treedir:
             treefilepath = os.path.dirname(os.path.abspath(__file__))
-            if 'python/' in treefilepath:
-                self.treedir = treefilepath.rsplit('/', 2)[0]
-            else:
-                self.treedir = treefilepath
+            # if 'python/' in treefilepath:
+            #     self.treedir = treefilepath.rsplit('/', 2)[0]
+            # else:
+            #     self.treedir = treefilepath
+            self.treedir = treefilepath
             os.environ['TREE_DIR'] = self.treedir
 
         # Check sas_base_dir
