@@ -19,8 +19,10 @@ To use the tree, and set up its environment variables, you may simply import it:
 
 When you plant a new tree, the first thing it tries to do is set a `TREE_DIR` and `SAS_BASE_DIR` environment variable.
 `Tree` always first checks for already-defined environment variables in the users environment, and uses those if found.
-Otherwise it sets default locations for `TREE_DIR` and `SAS_BASE_DIR`.  By default, it will load all the paths set within
-the ``sdsswork`` configuration and populate your local Python environment, `os.environ`, if they are not currently found.
+Otherwise it sets default locations for `TREE_DIR` and `SAS_BASE_DIR`.  The default location for `TREE_DIR` will be the location
+of the installed package.  The default location for `SAS_BASE_DIR` will be a new `sas` directory in the users home directory.
+By default, it will load all the paths set within the ``sdsswork`` configuration and populate your local Python environment,
+`os.environ`, if they are not currently found.
 
 To only load a subset of environment variables, use the `key` keyword argument.
 
