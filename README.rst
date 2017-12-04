@@ -1,7 +1,7 @@
 tree
 ==============================
 
-The SDSS SAS Tree structure
+The SDSS SAS Tree structure.  See the documentation http://sdss-tree.readthedocs.io/en/latest/
 
 | |Build Status|
 | |Coverage Status|
