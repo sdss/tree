@@ -5,4 +5,4 @@ branch = true
 omit =
     python/tree/etc/*
     python/tree/misc/*
-    python/tree/test/*
+    python/tree/tests/*
