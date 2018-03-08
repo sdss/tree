@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2017-12-01 23:54:51
+# @Last Modified time: 2018-03-08 11:09:22
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -30,6 +30,9 @@ class Tree(object):
         update (bool):
             If True, overwrites existing tree environment variables in your
             local environment.  Default is False.
+        exclude (list):
+            A list of environment variables to exclude
+            from forced updates
 
     Attributes:
         treedir (str):
@@ -43,6 +46,7 @@ class Tree(object):
         self.key = kwargs.get('key', None)
         uproot_with = kwargs.get('uproot_with', None)
         update = kwargs.get('update', False)
+        self.exclude = kwargs.get('exclude', [])
         self.config_name = kwargs.get('config', 'sdsswork')
         self.set_roots(uproot_with=uproot_with)
         self.load_config()
@@ -216,19 +220,28 @@ class Tree(object):
                 If True, overwrites existing tree environment variables in your
                 local environment.  Default is False.
         '''
+
+        # set up the exclusion list
+        exclude = [] if not self.exclude else self.exclude \
+            if isinstance(self.exclude, list) else [self.exclude]
+
+        # check the path names
         for pathname, path in paths.items():
-            if update:
+            if update and pathname.upper() not in exclude:
                 os.environ[pathname.upper()] = os.path.normpath(path)
             elif pathname.upper() not in os.environ:
                 os.environ[pathname.upper()] = os.path.normpath(path)
 
-    def replant_tree(self, config=None):
+    def replant_tree(self, config=None, exclude=None):
         ''' Replant the tree with a different config setup
 
         Parameters:
             config (str):
                 The config name to reload
+            exclude (list):
+                A list of environment variables to exclude
+                from forced updates
         '''
 
         # reinitialize a new Tree with a new config
-        self.__init__(key=self.key, config=config, update=True)
+        self.__init__(key=self.key, config=config, update=True, exclude=exclude)
