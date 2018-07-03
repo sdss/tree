@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2016-10-11 13:24:56
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2018-03-08 11:09:22
+# @Last Modified time: 2018-06-30 14:01:05
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -103,7 +103,8 @@ class Tree(object):
 
         # Read the config file
         cfgname = (config or self.config_name)
-        assert isinstance(cfgname, six.string_types)
+        cfgname = 'sdsswork' if cfgname is None else cfgname
+        assert isinstance(cfgname, six.string_types), 'config name must be a string'
         config_name = cfgname if cfgname.endswith('.cfg') else '{0}.cfg'.format(cfgname)
         self.configfile = os.path.join(self.treedir, 'data', config_name)
 
