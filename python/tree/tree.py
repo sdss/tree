@@ -17,7 +17,8 @@ from collections import OrderedDict
 import six
 
 
-if sys.version_info.major == 3 and sys.version_info.minor > 2:
+if ((sys.version_info.major == 3 and sys.version_info.minor > 2) or
+        (sys.version_info.major == 2 and sys.version_info.minor >= 7)):
     from configparser import ConfigParser as SafeConfigParser
 else:
     from configparser import SafeConfigParser
