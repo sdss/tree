@@ -120,7 +120,12 @@ class Tree(object):
         assert os.path.isfile(self.configfile) is True, 'configfile {0} must exist in the proper directory'.format(self.configfile)
 
         self._cfg = SafeConfigParser()
-        self._cfg.read(self.configfile)
+
+        try:
+            self._cfg.read(self.configfile.decode('utf-8'))
+        except AttributeError:
+            self._cfg.read(self.configfile)
+
         # create the local tree environment
         self.environ = OrderedDict()
         self.environ['default'] = self._cfg.defaults()
