@@ -6,8 +6,20 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.4 (unreleased)
+2.15.5 (unreleased)
 -------------------
+
+2.15.4 (2018-07-09)
+-------------------
+
+Changed
+^^^^^^^
+* Wrapped config file opens in with to ensure proper file closure
+
+Fixed
+^^^^^
+* Bug when config=None is explicitly passed into Tree
+
 
 2.15.3 (2017-12-02)
 -------------------
