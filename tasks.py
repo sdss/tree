@@ -6,7 +6,7 @@
 # @Author: Brian Cherinka
 # @Date:   2017-09-27 11:08:07
 # @Last modified by:   Brian Cherinka
-# @Last Modified time: 2017-11-29 00:08:57
+# @Last Modified time: 2018-07-14 19:09:17
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -57,8 +57,15 @@ def deploy(ctx):
     ctx.run("twine upload dist/*")
 
 
+@task
+def setup_tree(ctx, verbose=None, root=None, tree_dir=None, modules_dir=None):
+    ''' Sets up the SDSS tree enviroment '''
+    print('Setting up the tree')
+    ctx.run('python bin/setup_tree.py -t {0} -r {1} -m {2}'.format(tree_dir, root, modules_dir))
+
+
 # create a collection of tasks
-ns = Collection(clean, deploy)
+ns = Collection(clean, deploy, setup_tree)
 
 # create a sub-collection for the doc tasks
 docs = Collection('docs')

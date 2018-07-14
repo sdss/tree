@@ -1,193 +1,242 @@
-#!/usr/bin/env python2.7
+# !usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
+# Licensed under a 3-clause BSD license.
 #
-"""Create files that can be used to set environment variables.
-"""
-from __future__ import absolute_import, division, print_function, unicode_literals
-#
-# Top-level definitions.
-#
-__author__ = 'Benjamin Weaver <benjamin.weaver@nyu.edu>'
-__version__ = '$Revision$'.split(': ')[1].split()[0]
-__all__ = [ ]
-__docformat__ = 'restructuredtext en'
-#
-# Modules
-#
-import argparse
-from collections import OrderedDict
-import ConfigParser
-import glob
-import os
-import os.path
+# @Author: Brian Cherinka
+# @Date:   2018-07-14 14:31:36
+# @Last modified by:   Brian Cherinka
+# @Last Modified time: 2018-07-14 19:03:32
+
+from __future__ import print_function, division, absolute_import
 import sys
-#
-# to_file()
-#
-def to_file(env,header='',setenv='setenv {0} {1}'):
-    """Convert config file data to module file.
+import os
+import argparse
+import glob
+import shutil
 
-    Parameters
-    ----------
-    env : collections.OrderedDict
-        A mapping containing all the configuration file data.
-    header : str
-        String to add to the header of the file produced.
-    setenv : str
-        The method for setting environment variables in this file type.
 
-    Returns
-    -------
-    lines : str
-        A string representation of the file.
-    """
-    if len(header) == 0:
-        lines = """#
-# This file sets up tree/{0}.
-#
-""".format(env['default']['name'])
-    else: lines = header.format(**env['default'])
-    for section in env:
-        if section == 'default': continue
-        lines += """#
-# {0}
-#
-""".format(section)
-        setenvs = list()
-        for k in env[section]: setenvs.append(setenv.format(k,env[section][k]))
-        lines += "\n".join(setenvs)
-        lines += "\n"
-    return lines
-#
-# parse_cfg()
-#
-def parse_cfg(cfg,root):
-    """Parse a tree configuration file.
+def check_sas_base_dir(root=None):
+    ''' Check for the SAS_BASE_DIR environment variable
 
-    Parameters
-    ----------
-    cfg : ConfigParser.ConfigParser
-        A ``ConfigParser`` object.
-    root : str
-        The value of ``$SAS_BASE_DIR``.
+    Will set the SAS_BASE_DIR in your local environment
+    or prompt you to define one if is undefined
 
-    Returns
-    -------
-    env : collections.OrderedDict
-        A mapping containing all the configuration file data
-    """
-    env = OrderedDict()
-    replace = '@FILESYSTEM@'
-    env['default'] = cfg.defaults()
-    if env['default']['FILESYSTEM'] == replace: env['default']['FILESYSTEM'] = root
-    env['default']['current'] = env['default']['current'] == 'True'
-    for sec in cfg.sections():
-        env[sec] = OrderedDict()
-        for opt in cfg.options(sec):
-            if opt in env['default']: continue
-            val = cfg.get(sec,opt)
-            print("section=%r opt=%r val=%r" % (sec,opt,val))
-            if val.find(replace) == 0: val = val.replace(replace,root)
-            env[sec][opt] = val
-    return env
-#
-# Main function
-#
-def main():
-    """Program to run if called as an executable.
-    """
-    #
-    # Get options
-    #
-    parser = argparse.ArgumentParser(description=__doc__,prog=os.path.basename(sys.argv[0]))
-    parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
-        help='Print extra information.')
-    parser.add_argument('-r', '--root', action='store', dest='root',
-        default=os.getenv('SAS_BASE_DIR'),
-        help='Override the value of $SAS_BASE_DIR.',metavar='SAS_BASE_DIR')
-    parser.add_argument('-t', '--treedir', action='store', dest='treedir',
-        default=os.getenv('TREE_DIR'),
-        help='Override the value of $TREE_DIR.',metavar='TREE_DIR')
-    options = parser.parse_args()
+    Parameters:
+        root (str):
+            Optional override of the SAS_BASE_DIR envvar
 
-    #
-    # Configure output files
-    #
-    tcshheader = """# Set up tree/{name} for (t)csh.
-setenv TREE_DIR """ + options.treedir.rstrip('/') + """
-setenv TREE_VER {name}
-setenv PATH $TREE_DIR/bin:$PATH
-"""
-    bashheader = """# Set up tree/{name} for (ba)sh.
-export TREE_DIR=""" + options.treedir.rstrip('/') + """
-export TREE_VER={name}
-export PATH=$TREE_DIR/bin:$PATH
-"""
-    moduleheader = """#%Module1.0
+    '''
+    sasbasedir = root or os.getenv("SAS_BASE_DIR")
+    if not sasbasedir:
+        sasbasedir = input('Enter a path for SAS_BASE_DIR: ')
+    os.environ['SAS_BASE_DIR'] = sasbasedir
+
+
+def write_header(term='bash', tree_dir=None, name=None):
+    ''' Write proper file header in a given shell format
+
+    Parameters:
+        term (str):
+            The type of shell header to write, can be "bash", "tsch", or "modules"
+        tree_dir (str):
+            The path to this repository
+        name (str):
+            The name of the configuration
+
+    Returns:
+        A string header to insert
+    '''
+
+    assert term in ['bash', 'tsch', 'modules'], 'term must be either bash, tsch, or module'
+
+    product_dir = tree_dir.rstrip('/')
+    base = 'export' if term == 'bash' else 'setenv'
+
+    if term != 'modules':
+        hdr = """# Set up tree/{0} for {1}
+{2} TREE_DIR {3}
+{2} TREE_VER {1}
+{2} PATH $TREE_DIR/bin:$PATH
+{2} PYTHONPATH $TREE_DIR/python:$PYTHONPATH
+                """.format(name, term, base, product_dir)
+    else:
+        hdr = """#%Module1.0
 proc ModulesHelp {{ }} {{
     global product version
-    puts stderr "This module adds $product $version to various paths"
+    puts stderr "This module adds $product/$version to various paths"
 }}
+set name tree
 set product tree
-set version {name}
+set version {1}
 conflict $product
-module-whatis   "Sets up $product $version in your environment"
+module-whatis "Sets up $product/$version in your environment"
 
-set PRODUCT_DIR """ + options.treedir.rstrip('/') + """
+set PRODUCT_DIR {0}
 setenv [string toupper $product]_DIR $PRODUCT_DIR
 setenv [string toupper $product]_VER $version
 prepend-path PATH $PRODUCT_DIR/bin
-"""
-    modulesversion = """#%Module1.0
-set ModulesVersion {name}
-"""
-    outputs = {
-        'tcsh':{
-            'ext':'.csh',
-            'header':tcshheader,
-            'setenv':'setenv {0} {1}'},
-        'bash':{
-            'ext':'.sh',
-            'header':bashheader,
-            'setenv':'export {0}={1}'},
-        'module':{
-            'ext':'.module',
-            'header':moduleheader,
-            'setenv':'setenv {0} {1}'},
-        }
-    #
-    # Find the data directory
-    #
-    datadir = os.path.join(options.treedir,'data')
-    etcdir = os.path.join(options.treedir,'etc')
-    if not os.path.exists(datadir):
-        datadir = os.path.join('..','data')
-        etcdir = '.'
-        if not os.path.exists(datadir):
-            print("Could not find a data directory!")
-            return 1
-    #
-    # Read the configuration files
-    #
-    for cfgfile in glob.glob(os.path.join(datadir,'*.cfg')):
-        cfg = ConfigParser.SafeConfigParser()
-        cfg.optionxform = str
-        cfg.read(cfgfile)
-        env = parse_cfg(cfg,options.root)
-        if options.verbose:
-            print(env)
-        for output in outputs:
-            filedata = to_file(env,outputs[output]['header'],outputs[output]['setenv'])
-            filename = os.path.join(etcdir, env['default']['name']+outputs[output]['ext'])
-            with open(filename,'w') as f: f.write(filedata)
-            if output == 'module' and env['default']['current']:
-                versionname = os.path.join(etcdir, '.version')
-                with open(versionname,'w') as f: f.write(modulesversion.format(**env['default']))
-    return 0
-#
-#
-#
+prepend-path PYTHONPATH $PRODUCT_DIR/python
+
+                """.format(product_dir, name)
+
+    return hdr.strip()
+
+
+def write_version(name):
+    ''' Make the default modules version string '''
+    modules_version = "#%Module1.0\nset ModulesVersion {0}".format(name)
+    return modules_version
+
+
+def write_file(environ, term='bash', out_dir=None, tree_dir=None):
+    ''' Write a tree environment file
+
+    Loops over the tree environ and writes them out to a bash, tsch, or
+    modules file
+
+    Parameters:
+        environ (dict):
+            The tree dictionary environment
+        term (str):
+            The type of shell header to write, can be "bash", "tsch", or "modules"
+        tree_dir (str):
+            The path to this repository
+        out_dir (str):
+            The output path to write the files (default is etc/)
+
+    '''
+
+    # get the proper name, header and file extension
+    name = environ['default']['name']
+    header = write_header(term=term, name=name, tree_dir=tree_dir)
+    exts = {'bash': '.sh', 'tsch': '.csh', 'modules': '.module'}
+    ext = exts[term]
+
+    # shell command
+    if term == 'bash':
+        cmd = 'export {0}={1}\n'
+    else:
+        cmd = 'setenv {0} {1}\n'
+
+    # write the environment config files
+    filename = os.path.join(out_dir, name + ext)
+    with open(filename, 'w') as f:
+        f.write(header + '\n')
+        for key, values in environ.items():
+            if key != 'default':
+                # write separator
+                f.write('#\n# {0}\n#\n'.format(key))
+                # write tree names and paths
+                for tree_name, tree_path in values.items():
+                    f.write(cmd.format(tree_name.upper(), tree_path))
+
+    # write default .version file for modules
+    modules_version = write_version(name)
+    if term == 'modules' and environ['default']['current']:
+        version_name = os.path.join(out_dir, '.version')
+        with open(version_name, 'w') as f:
+            f.write(modules_version)
+
+
+def get_tree(config=None):
+    ''' Get the tree for a given config
+
+    Parameters:
+        config (str):
+            The name of the tree config to load
+
+    Returns:
+        a Python Tree instance
+    '''
+    path = os.path.dirname(os.path.abspath(__file__))
+    pypath = os.path.realpath(os.path.join(path, '..', 'python'))
+    if pypath not in sys.path:
+        sys.path.append(pypath)
+    os.chdir(pypath)
+    from tree.tree import Tree
+    tree = Tree(config=config)
+    return tree
+
+
+def copy_modules(filespath=None, modules_path=None, verbose=None):
+    ''' Copy over the tree module files into your path '''
+
+    # find or define a modules path
+    if not modules_path:
+        modulepath = os.getenv("MODULEPATH")
+        if not modulepath:
+            modules_path = input('Enter the root path for your module files:')
+        else:
+            split_mods = modulepath.split(':')
+            if len(split_mods) > 1:
+                if verbose:
+                    print('Multiple module paths found.  Using top one: {0}'.format(split_mods[0]))
+            modules_path = split_mods[0]
+
+    # check for the tree module directory
+    tree_mod = os.path.join(modules_path, 'tree')
+    if not os.path.isdir(tree_mod):
+        os.makedirs(tree_mod)
+
+    # copy the modules into the tree
+    if verbose:
+        print('Copying modules from etc/ into {0}'.format(tree_mod))
+    module_files = glob.glob(os.path.join(filespath, '*.module'))
+    for mfile in module_files:
+        base = os.path.splitext(os.path.basename(mfile))[0]
+        tree_out = os.path.join(tree_mod, base)
+        shutil.copy2(mfile, tree_out)
+
+    # copy the default version into the tree
+    version = os.path.join(filespath, '.version')
+    if os.path.isfile(version):
+        shutil.copy2(version, tree_mod)
+
+
+def parse_args():
+    ''' Parse the arguments '''
+
+    parser = argparse.ArgumentParser(prog='setup_tree_modules', usage='%(prog)s [opts]')
+    parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
+                        help='Print extra information.', default=False)
+    parser.add_argument('-r', '--root', action='store', dest='root', default=os.getenv('SAS_BASE_DIR'),
+                        help='Override the value of $SAS_BASE_DIR.', metavar='SAS_BASE_DIR')
+    parser.add_argument('-t', '--treedir', action='store', dest='treedir', default=os.getenv('TREE_DIR'),
+                        help='Override the value of $TREE_DIR.', metavar='TREE_DIR')
+    parser.add_argument('-m', '--modulesdir', action='store', dest='modulesdir', default=os.getenv('MODULES_DIR'),
+                        help='Your modules directory', metavar='MODULES_DIR')
+
+    opts = parser.parse_args()
+
+    return opts
+
+
+def main(args):
+
+    # parse arguments
+    opts = parse_args()
+
+    # get directories
+    datadir = os.path.join(opts.treedir, 'data')
+    etcdir = os.path.join(opts.treedir, 'etc')
+
+    # config files
+    configs = glob.glob(os.path.join(datadir, '*.cfg'))
+
+    # check for the SAS_BASE_DIR
+    check_sas_base_dir(root=opts.root)
+
+    # Read and write the configuration files
+    for cfgfile in configs:
+        tree = get_tree(config=cfgfile)
+        write_file(tree.environ, term='modules', out_dir=etcdir, tree_dir=opts.treedir)
+        write_file(tree.environ, term='bash', out_dir=etcdir, tree_dir=opts.treedir)
+        write_file(tree.environ, term='tsch', out_dir=etcdir, tree_dir=opts.treedir)
+
+    # Setup the modules
+    copy_modules(filespath=etcdir, verbose=opts.verbose)
+
+
 if __name__ == '__main__':
-    sys.exit(main())
+    main(sys.argv[1:])

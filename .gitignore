@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# tree files in etc/
+etc/*.module
+etc/*.sh
+etc/*.csh
+etc/.version
+
 # C extensions
 *.so
 
