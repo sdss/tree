@@ -13,6 +13,7 @@ Changed
 ^^^^^^^
 * Refactored bin/setup_tree to install module files
 
+
 2.15.4 (2018-07-09)
 -------------------
 
