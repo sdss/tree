@@ -9,6 +9,10 @@ This document records the main changes to the tree code.
 2.15.5 (unreleased)
 -------------------
 
+Changed
+^^^^^^^
+* Refactored bin/setup_tree to install module files
+
 2.15.4 (2018-07-09)
 -------------------
 
