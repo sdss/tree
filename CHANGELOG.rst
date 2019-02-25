@@ -6,7 +6,14 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.5 (unreleased)
+2.15.6 (unreleased)
+-------------------
+
+Added
+^^^^^
+- new temporary path for manga images for releases MPL-8 and up
+
+2.15.5 (2018-09-06)
 -------------------
 
 Changed
