@@ -13,6 +13,10 @@ Added
 ^^^^^
 - new temporary path for manga images for releases MPL-8 and up
 
+Fixed
+^^^^^
+- Broken syntax on apogee in paths.ini file
+
 2.15.5 (2018-09-06)
 -------------------
 
