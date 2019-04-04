@@ -13,9 +13,14 @@ Added
 ^^^^^
 - new temporary path for manga images for releases MPL-8 and up
 
+Changed
+^^^^^^^
+- replaced non-existent %designdir special function with %definitiondir 
+
 Fixed
 ^^^^^
 - Broken syntax on apogee in paths.ini file
+- Broken syntax in some platelist definitions
 
 2.15.5 (2018-09-06)
 -------------------
