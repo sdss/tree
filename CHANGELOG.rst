@@ -17,6 +17,7 @@ Changed
 ^^^^^^^
 - replaced non-existent %designdir special function with %definitiondir 
 - changed yaml loaded to use yaml.FullLoader in compliance with pyyaml 5.1
+- added wave keyword to mangacube/rss paths to handle LOG/LIN switch
 
 Fixed
 ^^^^^
