@@ -403,6 +403,11 @@ def main(args):
     # parse arguments
     opts = parse_args()
 
+    # check for a treedir; if none found, set path to the parent directory
+    if not opts.treedir:
+        opts.treedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+        os.environ['TREE_DIR'] = opts.treedir
+
     # get directories
     datadir = os.path.join(opts.treedir, 'data')
     etcdir = os.path.join(opts.treedir, 'etc')

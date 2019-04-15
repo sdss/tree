@@ -13,9 +13,10 @@ Introduction
 ------------
 
 * :ref:`What's new in tree? <changelog>`
-* :ref:`Installation <install>`
+* :ref:`Installation of python package <install>`
 * :ref:`Introduction to the Tree <intro>`
 * :ref:`Tree environment configuration <config>`
+* :ref:`Setting up the Tree in your local enviroment <setup>`
 
 Reference
 ---------
