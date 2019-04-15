@@ -7,7 +7,7 @@
 # Created: Saturday, 13th April 2019 6:11:21 pm
 # License: BSD 3-clause "New" or "Revised" License
 # Copyright (c) 2019 Brian Cherinka
-# Last Modified: Monday, 15th April 2019 4:06:00 pm
+# Last Modified: Monday, 15th April 2019 6:03:21 pm
 # Modified By: Brian Cherinka
 
 
@@ -41,7 +41,7 @@ def tree(monkeypatch, tmp_path):
     treedir = p / 'treedir'
     treedir.mkdir(parents=True)
     # copy data over
-    olddatadir = os.path.join(os.getenv('TREE_DIR'), 'data')
+    olddatadir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../data'))
     shutil.copytree(olddatadir, str(treedir / 'data'))
     (treedir / 'etc').mkdir()
     monkeypatch.setenv('TREE_DIR', str(treedir))
