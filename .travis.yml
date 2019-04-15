@@ -21,8 +21,8 @@ notifications:
   email: false
 
 # repo branches to test
-branches:
-- master
+#branches:
+#- master
 
 install:
 - pip install -U pip wheel --quiet
