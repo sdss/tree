@@ -18,7 +18,7 @@ __docformat__ = 'restructuredtext en'
 #
 import argparse
 from collections import OrderedDict
-import ConfigParser
+from configparser import ConfigParser as SafeConfigParser
 import glob
 import os
 import os.path
@@ -139,8 +139,12 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
     #
     # Read the configuration files
     #
+
+    # loops over all config files
     for cfgfile in glob.glob(os.path.join(datadir,'*.cfg')):
-        cfg = ConfigParser.SafeConfigParser()
+
+        # parses the config file and extract tree environment
+        cfg = SafeConfigParser()
         cfg.optionxform = str
         cfg.read(cfgfile)
         env = parse_cfg(cfg,options.root)
@@ -148,11 +152,15 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
             continue
         # if debug:
         #     print(env)
+
+        # adds some additional symlink environment info
         env['default']['url'] = "https://data.mirror.sdss.org" if options.mirror else "https://data.sdss.org"
         env['default']['location'] = "SDSS-IV Science Archive Mirror (SAM)" if options.mirror else "SDSS-IV Science Archive Server (SAS)"
         if os.path.exists(env['general']['SAS_ROOT']):
             if debug:
                 print("Found {0}.".format(env['general']['SAS_ROOT']))
+
+            # sets and creates envdir
             envdir = os.path.join(env['general']['SAS_ROOT'],'env')
             if os.path.exists(envdir):
                 if not os.access(envdir,os.W_OK):
@@ -163,8 +171,12 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                     print("Creating {0}.".format(envdir))
                 if not options.test:
                     os.mkdir(envdir)
+
+            # builds index.html page
             index = header % env['default']
             index += table_header
+
+            # adds all sections in can find into the html table
             svars = list()
             for section in env:
                 if section == 'default':
@@ -176,6 +188,8 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
             svars.sort(key=lambda x: x[0])
             if debug:
                 print(svars)
+
+            # loop over all values in a section and create symlinks to all paths
             for var in svars:
                 if var[0].find('_ROOT') > 0:
                     continue
@@ -204,8 +218,12 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
                     print("Processing %r for %r" % var)
                     make_link(src,link,options)
                     index += '    <tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(var[0],stattime)
+
+            # adds table footer and index page footer
             index += table_footer
             index += footer % env['default']
+
+            # creates filepath to index.html and writes it out
             indexfile = os.path.join(envdir,'index.html')
             if debug:
                 print("Creating {0}.".format(indexfile))
