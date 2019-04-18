@@ -9,15 +9,24 @@ This document records the main changes to the tree code.
 2.15.6 (unreleased)
 -------------------
 
+Refactored
+^^^^^^^^^^
+- Modified data/cfg structure to handle versioning of envvar and path definitions
+    - data cfg files now inherit from one another
+    - deprecated sdss_paths.ini file and moved into new PATHS section in individual cfg files
+
 Added
 ^^^^^
 - new temporary path for manga images for releases MPL-8 and up
+- new method show_forest to display the environment for configs not currently loaded
+- new method list_configs to show all available configs for loading
 
 Changed
 ^^^^^^^
 - replaced non-existent %designdir special function with %definitiondir 
 - changed yaml loaded to use yaml.FullLoader in compliance with pyyaml 5.1
 - added wave keyword to mangacube/rss paths to handle LOG/LIN switch
+- updated Tree python code to handle new cfg inheritance and versioning
 
 Fixed
 ^^^^^
