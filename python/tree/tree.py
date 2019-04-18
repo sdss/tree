@@ -12,10 +12,11 @@ from __future__ import absolute_import, division, print_function
 
 import os
 import sys
-from collections import OrderedDict
-
+import glob
 import six
-
+import re
+from collections import OrderedDict
+from tree.misc import log
 
 if ((sys.version_info.major == 3 and sys.version_info.minor > 2) or
         (sys.version_info.major == 2 and sys.version_info.minor >= 7)):
@@ -51,19 +52,27 @@ class Tree(object):
 
     '''
 
-    def __init__(self, *args, **kwargs):
-        self.key = kwargs.get('key', None)
-        uproot_with = kwargs.get('uproot_with', None)
-        update = kwargs.get('update', False)
-        self.exclude = kwargs.get('exclude', [])
-        self.config_name = kwargs.get('config', 'sdsswork')
+    def __init__(self, config=None, key=None, uproot_with=None, update=None, exclude=None):
+        self.config_name = config or 'sdsswork'
+        self.exclude = exclude or []
+        uproot_with = uproot_with
+        update = update or False
+        self._keys = key
+        self._file_replace = '@FILESYSTEM@'
+
+        # set the roots
         self.set_roots(uproot_with=uproot_with)
+
+        # load the configuraiton file
         self.load_config()
-        self.branch_out(limb=self.key)
-        # add the general directories
-        if self.key is not None:
+
+        # create the environment
+        self.branch_out(limb=key)
+
+        # add the paths to the os.environ
+        if key is not None:
             self.add_paths_to_os(key='general', update=update)
-        self.add_paths_to_os(key=self.key, update=update)
+        self.add_paths_to_os(key=key, update=update)
 
     def __repr__(self):
         return ('Tree(sas_base_dir={0}, config={1})'.format(self.sasbasedir, self.config_name))
@@ -102,49 +111,196 @@ class Tree(object):
         if not os.path.isdir(self.sasbasedir):
             os.makedirs(self.sasbasedir)
 
+    def _read_config(self, config=None, bases=None):
+        ''' Read a config file
+
+        Uses ConfigParser to read in a cfg file.  If a base
+        is identified, then recursively reads in all cfg files and builds
+        a master config dictionary object
+
+        Parameters:
+            config (str):
+                Optional name of config file to load
+            bases (list):
+                A list of parent config files
+        
+        Returns:
+            A configParser dictionary object
+        '''
+
+        # format name and file
+        config_name = config if config.endswith('.cfg') else '{0}.cfg'.format(config)
+        config_file = os.path.join(self.treedir, 'data', config_name)
+        assert os.path.isfile(
+            config_file) is True, 'config file {0} must exist in the data directory'.format(config_file)
+
+        # read initial config file
+        cfg = SafeConfigParser()
+        cfg.optionxform = lambda option: option
+        cfg.read(config_file)
+
+        # check for any bases
+        bases = bases if bases else []
+        bases.insert(0, os.path.join(self.treedir, 'data', config_name))
+        hasbase = 'base' in cfg.defaults()
+
+        # read base config file
+        if hasbase:
+            return self._read_config(cfg.defaults()['base'], bases=bases)
+        else:
+            # read in the full list of config files
+            cfg = SafeConfigParser()
+            cfg.optionxform = lambda option: option
+            cfg.read(bases)
+            # if both eboss and boss, then remove boss
+            if 'EBOSS' in cfg.sections() and 'BOSS' in cfg.sections():
+                cfg.remove_section('BOSS')
+        return cfg
+
+    def _check_config(self, config=None):
+        ''' check the config
+
+        checks the config for syntax and existence.  Defaults to sdsswork
+        or a DR if it doesn't exist.
+
+        Parameters:
+            config (str):
+                The name of the config to check
+        
+        Returns:
+            The (updated) name of the config
+        '''
+
+        # check initial argument
+        cfgname = (config or self.config_name)
+        cfgname = 'sdsswork' if cfgname is None else cfgname
+        assert isinstance(cfgname, six.string_types), 'config name must be a string'
+        cfgname = cfgname.lower()
+
+        config_name = cfgname if cfgname.endswith('.cfg') else '{0}.cfg'.format(cfgname)
+
+        # default to another config if not available
+        file_base = [os.path.basename(f) for f in self._cfg_files]
+        if config_name not in file_base:
+            if 'dr' in config_name:
+                drint = max(map(int, [re.findall(r'\d{1,2}', f)[0] for f in file_base if 'dr' in f]))
+                log.warning('{0} not found. Defaulting to dr{1}.cfg'.format(config_name, drint))
+                self.config_name = 'dr{0}'.format(drint)
+            else:
+                log.warning('{0} not found. Defaulting to sdsswork'.format(config_name))
+                self.config_name = 'sdsswork'
+            config_name = self.config_name + '.cfg'
+        return config_name
+
     def load_config(self, config=None):
-        ''' loads a config file
+        ''' Load a config file
 
         Parameters:
             config (str):
                 Optional name of manual config file to load
         '''
 
-        # Read the config file
-        cfgname = (config or self.config_name)
-        cfgname = 'sdsswork' if cfgname is None else cfgname
-        assert isinstance(cfgname, six.string_types), 'config name must be a string'
-        config_name = cfgname if cfgname.endswith('.cfg') else '{0}.cfg'.format(cfgname)
-        self.configfile = os.path.join(self.treedir, 'data', config_name)
+        # get a list of all config files
+        self._cfg_files = glob.glob(os.path.join(self.treedir, 'data', '*.cfg'))
+        self._cfg_files.sort()
 
-        assert os.path.isfile(self.configfile) is True, 'configfile {0} must exist in the proper directory'.format(self.configfile)
+        # check the config file
+        config_name = self._check_config(config)
 
-        self._cfg = SafeConfigParser()
+        # set the confifile
+        configfile = os.path.join(self.treedir, 'data', config_name)
+        assert os.path.isfile(configfile) is True, ('configfile {0} must exist in the '
+                                                    'data directory'.format(configfile))
+        self.config_file = configfile
 
-        try:
-            self._cfg.read(self.configfile.decode('utf-8'))
-        except AttributeError:
-            self._cfg.read(self.configfile)
+        # read the config
+        self._cfg = self._read_config(config=self.config_name)
+
+    def _create_environment(self, cfg=None, sections=None):
+        ''' create the environment from the config
+
+        Creates a dictionary with environment definitions
+        expanded out
+
+        Parameters:
+            config (str):
+                Optional name of manual config file to load
+            sections (list):
+                A list of config sections to load
+
+        Returns:
+            An ordered dictionary of envvar definitions
+        '''
+        
+        # pass in a cfg dict or use the one attached
+        cfg = cfg or self._cfg
 
         # create the local tree environment
-        self.environ = OrderedDict()
-        self.environ['default'] = self._cfg.defaults()
+        environ = OrderedDict()
+        environ['default'] = cfg.defaults()
+
         # set the filesystem envvar to sas_base_dir
-        self._file_replace = '@FILESYSTEM@'
-        if self.environ['default']['filesystem'] == self._file_replace:
-            self.environ['default']['filesystem'] = self.sasbasedir
+        if environ['default']['FILESYSTEM'] == self._file_replace:
+            environ['default']['FILESYSTEM'] = self.sasbasedir
+
+        # add all sections into the tree environ
+        sections = sections if sections else cfg.sections()
+        for section in sections:
+            # skip if PATHS
+            if section == 'PATHS':
+                continue
+
+            section = section if section in cfg.sections() else section.upper()
+            environ[section] = OrderedDict()
+            options = cfg.options(section)
+
+            for opt in options:
+                if opt in environ['default']:
+                    continue
+                val = cfg.get(section, opt)
+                if val.find(self._file_replace) == 0:
+                    val = val.replace(self._file_replace, self.sasbasedir)
+                environ[section][opt] = val
+
+        return environ
+
+    def _create_paths(self, cfg=None):
+        ''' create a dictionary of path definitions
+
+        Extracts the PATHS section from a ConfigParser object
+        and builds a dictionary of paths for sdss_access
+
+        Parameters:
+            cfg (object):
+                A configParser object
+        Returns:
+            An ordered dictionary of sdss_access path definitions
+        '''
+
+        # pass in a cfg dict or use the one attached
+        cfg = cfg or self._cfg
+
+        # return if no PATHS found
+        if not cfg.has_section('PATHS'):
+            return None
+
+        paths = OrderedDict()
+        for opt in cfg.options('PATHS'):
+            if opt in cfg.defaults():
+                continue
+            paths[opt] = cfg.get('PATHS', opt)
+        return paths
 
     def branch_out(self, limb=None):
         ''' Set the individual section branches
 
         This adds the various sections of the config file into the
-        tree environment for access later. Optically can specify a specific
+        tree environment for access later. Optionally can specify a specific
         branch.  This does not yet load them into the os environment.
 
         Parameters:
-            limb (str/list):
-                The name of the section of the config to add into the environ
-                or a list of strings
+            limb (str|list):
+                A section or lists of sections of the config to add into the environ
 
         '''
 
@@ -158,18 +314,10 @@ class Tree(object):
             limbs.extend(limb)
 
         # add all limbs into the tree environ
-        for leaf in limbs:
-            leaf = leaf if leaf in self._cfg.sections() else leaf.upper()
-            self.environ[leaf] = OrderedDict()
-            options = self._cfg.options(leaf)
+        self.environ = self._create_environment(sections=limbs)
 
-            for opt in options:
-                if opt in self.environ['default']:
-                    continue
-                val = self._cfg.get(leaf, opt)
-                if val.find(self._file_replace) == 0:
-                    val = val.replace(self._file_replace, self.sasbasedir)
-                self.environ[leaf][opt] = val
+        # add all paths into the tree paths dictionary
+        self.paths = self._create_paths()
 
     def add_limbs(self, key=None):
         ''' Add a new section from the tree into the existing os environment
@@ -222,9 +370,9 @@ class Tree(object):
 
         for key in allpaths:
             paths = self.get_paths(key)
-            self.check_paths(paths, update=update)
+            self._check_paths(paths, update=update)
 
-    def check_paths(self, paths, update=None):
+    def _check_paths(self, paths, update=None):
         ''' Check if the path is in the os environ, and if not add it
 
         Paramters:
@@ -259,4 +407,37 @@ class Tree(object):
         '''
 
         # reinitialize a new Tree with a new config
-        self.__init__(key=self.key, config=config, update=True, exclude=exclude)
+        config = 'sdsswork' if not config else config
+        self.__init__(key=self._keys, config=config, update=True, exclude=exclude)
+
+    def list_configs(self):
+        ''' List available configs to load '''
+
+        files = [os.path.basename(f) for f in self._cfg_files if 'basework.cfg' not in f]
+        return files
+
+    def show_forest(self, config=None):
+        ''' Show the environment for a specified config
+
+        Creates a dictionary environment for each config in the list of
+        available configurations. 
+
+        Parameters:
+            config (str):
+                The config to show
+        
+        Returns:
+            A dictionary of config environment(s)
+        '''
+
+        configs = [config] if config else self.list_configs()
+        cfgs = {}
+        for cfg in configs:
+            cfg_name = cfg.split('.cfg')[0]
+            cfg = self._read_config(cfg_name)
+            cfgs[cfg_name] = self._create_environment(cfg)
+
+        if len(configs) == 1:
+            return cfgs[cfg_name]
+        return cfgs
+

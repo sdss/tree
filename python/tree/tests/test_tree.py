@@ -48,25 +48,25 @@ class TestTree(object):
         assert dr == t.environ['default']['name']
 
     def _assert_paths(self, tree, dr=None):
-        assert 'manga_spectro_redux' in tree.environ['MANGA']
-        assert 'manga_spectro_analysis' in tree.environ['MANGA']
+        assert 'MANGA_SPECTRO_REDUX' in tree.environ['MANGA']
+        assert 'MANGA_SPECTRO_ANALYSIS' in tree.environ['MANGA']
         if dr:
             assert dr in tree.environ['default']['name']
-            assert dr in tree.environ['MANGA']['manga_root']
-            assert dr in tree.environ['MANGA']['manga_spectro_redux']
-            assert dr in tree.environ['MANGA']['manga_spectro_analysis']
+            assert dr in tree.environ['MANGA']['MANGA_ROOT']
+            assert dr in tree.environ['MANGA']['MANGA_SPECTRO_REDUX']
+            assert dr in tree.environ['MANGA']['MANGA_SPECTRO_ANALYSIS']
 
     @pytest.mark.parametrize('dr', [('dr15')])
     def test_load_with_update(self, tree, dr):
         assert 'sdsswork' in tree.environ['default']['name']
-        assert 'mangawork' in tree.environ['MANGA']['manga_root']
+        assert 'mangawork' in tree.environ['MANGA']['MANGA_ROOT']
         tree = Tree(config=dr, update=True)
         self._assert_paths(tree, dr=dr)
 
     @pytest.mark.parametrize('dr', [('dr15')])
     def test_replant_tree(self, tree, dr):
         assert 'sdsswork' in tree.environ['default']['name']
-        assert 'mangawork' in tree.environ['MANGA']['manga_root']
+        assert 'mangawork' in tree.environ['MANGA']['MANGA_ROOT']
         tree.replant_tree(dr)
         self._assert_paths(tree, dr=dr)
 
@@ -78,7 +78,7 @@ class TestTree(object):
         assert os.environ[name] == path
         tree = Tree()
         assert os.environ[name] == path
-        assert path != tree.environ['MANGA'][name.lower()]
+        assert path != tree.environ['MANGA'][name]
 
     def test_custom_paths_donotupdate(self, monkeypatch, tree):
         name = 'MANGA_QUICK'
@@ -87,7 +87,7 @@ class TestTree(object):
         assert os.environ[name] == path
         tree.replant_tree('sdsswork')
         assert os.environ[name] != path
-        assert os.environ[name] == tree.environ['MANGA'][name.lower()]
+        assert os.environ[name] == tree.environ['MANGA'][name]
 
     def test_custom_paths_update_with_exclude(self, monkeypatch, tree):
         name = 'MANGA_QUICK'
@@ -96,7 +96,7 @@ class TestTree(object):
         assert os.environ[name] == path
         tree.replant_tree('sdsswork', exclude=['MANGA_QUICK'])
         assert os.environ[name] == path
-        assert path != tree.environ['MANGA'][name.lower()]
+        assert path != tree.environ['MANGA'][name]
 
 
 
