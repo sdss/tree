@@ -18,7 +18,10 @@ NAME = 'tree'
 
 # Loads config
 with open(os.path.dirname(__file__) + '/etc/{0}.cfg'.format(NAME)) as ff:
-    config = yaml.load(ff, Loader=yaml.FullLoader)
+    try:
+        config = yaml.load(ff, Loader=yaml.FullLoader)
 
+    except AttributeError:
+        config = yaml.load(fp)
 
 __version__ = '2.15.6dev'
