@@ -20,6 +20,8 @@ Added
 - new temporary path for manga images for releases MPL-8 and up
 - new method show_forest to display the environment for configs not currently loaded
 - new method list_configs to show all available configs for loading
+- new tests for setting up the tree; creating and copying module/bash files and env symlinks
+- added the option for env symlink creation into the setup_tree.py bin file
 
 Changed
 ^^^^^^^

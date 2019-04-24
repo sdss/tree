@@ -14,6 +14,186 @@ import os
 import argparse
 import glob
 import shutil
+import time
+
+
+def _remove_link(link):
+    ''' Remove a symlink if it exists
+
+    Parameters:
+        link (str):
+            The symlink filepath
+    '''
+    if os.path.islink(link):
+        os.remove(link)
+
+
+def make_symlink(src, link):
+    '''create a symlink
+
+    Parameters:
+        src (str):
+            The fullpath source of the symlink
+        link (str):
+            The symlink file path
+    '''
+    _remove_link(link)
+    os.symlink(src, link)
+
+
+def create_index_table(environ, envdir):
+    ''' create an html table
+    
+    Parameters:
+        environ (dict):
+            A tree environment dictionary
+        envdir (str):
+            The filepath for the env directory
+    Returns:
+        An html table definition string
+    '''
+
+    table_header = """<table id="list" cellpadding="0.1em" cellspacing="0">
+<colgroup><col width="55%"/><col width="20%"/><col width="25%"/></colgroup>
+<thead>
+    <tr><th><a href="?C=N&O=A">File Name</a>&nbsp;<a href="?C=N&O=D">&nbsp;&darr;&nbsp;</a></th><th><a href="?C=S&O=A">File Size</a>&nbsp;<a href="?C=S&O=D">&nbsp;&darr;&nbsp;</a></th><th><a href="?C=M&O=A">Date</a>&nbsp;<a href="?C=M&O=D">&nbsp;&darr;&nbsp;</a></th></tr>
+</thead><tbody>
+    <tr><td><a href="../">Parent directory/</a></td><td>-</td><td>-</td></tr>"""
+    table_footer = """</tbody></table>"""
+
+    # create table
+    table = table_header
+
+    # loop over the environment
+    for section, values in environ.items():
+        if section == 'default':
+            continue
+
+        for tree_name, tree_path in values.items():
+            skipmsg = 'Skipping {0} for {1}'.format(tree_name, section)
+            if '_root' in tree_name:
+                continue
+
+            # create the src and target links
+            src = tree_path
+            link = os.path.join(envdir, tree_name.upper())
+
+            # get the local time of the symlink
+            try:
+                stattime = time.strftime('%d-%b-%Y %H:%M', time.localtime(os.stat(src).st_mtime))
+            except OSError:
+                print("{0} does not appear to exist, skipping...".format(src))
+                _remove_link(link)
+                continue
+
+            # skip the sas_base_dir
+            if section == 'general' and 'sas_base_dir' in tree_name:
+                print(skipmsg)
+                continue
+
+            # only create symlinks
+            if section == 'general' and tree_name in ['cas_load', 'staging_data']:
+                # only create links here if the target exist
+                if os.path.exists(src):
+                    make_symlink(src, link)
+                else:
+                    print(skipmsg)
+            else:
+                print('Processing {0} for {1}'.format(tree_name, section))
+                make_symlink(src, link)
+            
+            # create the table entry
+            if os.path.exists(link):
+                table += '    <tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(tree_name.upper(), stattime)
+
+    table += table_footer
+    return table
+
+
+def create_index_page(environ, defaults, envdir):
+    ''' create the env index html page
+    
+    Builds the index.html page containing a table of symlinks
+    to datamodel directories
+
+    Parameters:
+        environ (dict):
+            A tree environment dictionary
+        defaults (dict):
+            The defaults dictionary from environ['default']
+        envdir (str):
+            The filepath for the env directory
+    Returns:
+        A string defintion of an html page
+    '''
+
+    # header of index file
+    header = """<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta name="viewport" content="width=device-width"/><meta http-equiv="content-type" content="text/html; charset=utf-8"/><style type="text/css">body,html {{background:#fff;font-family:"Bitstream Vera Sans","Lucida Grande","Lucida Sans Unicode",Lucidux,Verdana,Lucida,sans-serif;}}tr:nth-child(even) {{background:#f4f4f4;}}th,td {{padding:0.1em 0.5em;}}th {{text-align:left;font-weight:bold;background:#eee;border-bottom:1px solid #aaa;}}#list {{border:1px solid #aaa;width:100%%;}}a {{color:#a33;}}a:hover {{color:#e33;}}</style>
+<link rel="stylesheet" href="{url}/css/sas.css" type="text/css"/>
+<title>Index of /sas/{name}/env/</title>
+</head><body><h1>Index of /sas/{name}/env/</h1>
+"""
+
+    # footer of index file
+    footer = """<h3><a href='{url}/sas/'>{location}</a></h3>
+<p>This directory contains links to the contents of
+environment variables defined by the tree product, version {name}.
+To examine the <em>types</em> of files contained in each environment variable
+directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
+</body></html>
+"""
+    # create index html file
+    index = header.format(**defaults)
+    index += create_index_table(environ, envdir)
+    index += footer.format(**defaults)
+
+    return index
+
+
+def create_env(environ, mirror=None, verbose=None):
+    ''' create the env symlink directory structure
+    
+    Creates the env folder filled with symlinks to datamodel directories
+    for a given tree config file.  
+
+    Parameters:
+        environ (dict):
+            A tree environment dictionary
+        mirror (bool):
+            If True, use the SAM url location
+        verbose (bool):
+            If True, print more information
+    '''
+
+    defaults = environ['default'].copy()
+    defaults['url'] = "https://data.mirror.sdss.org" if mirror else "https://data.sdss.org"
+    defaults['location'] = "SDSS-IV Science Archive Mirror (SAM)" if mirror else "SDSS-IV Science Archive Server (SAS)"
+
+    if not os.path.exists(environ['general']['sas_root']):
+        if verbose:
+            print("{0} doesn't exist, skipping env link creation.".format(environ['general']['sas_root']))
+        return
+
+    if verbose:
+        print("Found {0}.".format(environ['general']['sas_root']))
+
+    # sets and creates envdir
+    envdir = os.path.join(environ['general']['sas_root'], 'env')
+    if not os.path.exists(envdir):
+        os.makedirs(envdir)
+    if not os.access(envdir, os.W_OK):
+        return
+
+    # create index html
+    index = create_index_page(environ, defaults, envdir)
+
+    # write the index file
+    indexfile = os.path.join(envdir, 'index.html')
+    with open(indexfile, 'w') as f:
+        f.write(index)
 
 
 def check_sas_base_dir(root=None):
@@ -206,6 +386,12 @@ def parse_args():
                         help='Override the value of $TREE_DIR.', metavar='TREE_DIR')
     parser.add_argument('-m', '--modulesdir', action='store', dest='modulesdir', default=os.getenv('MODULES_DIR'),
                         help='Your modules directory', metavar='MODULES_DIR')
+    parser.add_argument('-e', '--env', action='store_true', dest='env',
+                        help='Create tree environment symlinks.', default=False)
+    parser.add_argument('-i', '--mirror', action='store_true', dest='mirror',
+                        help='Use the mirror site (SAM) instead.')
+    parser.add_argument('-o', '--only', action='store', dest='only', metavar='[xxx].cfg',
+                        default=None, help='create links for only the specified tree config.')
 
     opts = parser.parse_args()
 
@@ -216,6 +402,11 @@ def main(args):
 
     # parse arguments
     opts = parse_args()
+
+    # check for a treedir; if none found, set path to the parent directory
+    if not opts.treedir:
+        opts.treedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+        os.environ['TREE_DIR'] = opts.treedir
 
     # get directories
     datadir = os.path.join(opts.treedir, 'data')
@@ -230,12 +421,19 @@ def main(args):
     # Read and write the configuration files
     for cfgfile in configs:
         tree = get_tree(config=cfgfile)
-        write_file(tree.environ, term='modules', out_dir=etcdir, tree_dir=opts.treedir)
-        write_file(tree.environ, term='bash', out_dir=etcdir, tree_dir=opts.treedir)
-        write_file(tree.environ, term='tsch', out_dir=etcdir, tree_dir=opts.treedir)
+        # create env symlinks or write out tree module/bash files
+        if opts.env:
+            # skip creating the environ if a specific config if specified
+            if opts.only and opts.only not in cfgfile:
+                continue
+            create_env(tree.environ, mirror=opts.mirror)
+        else:
+            write_file(tree.environ, term='modules', out_dir=etcdir, tree_dir=opts.treedir)
+            write_file(tree.environ, term='bash', out_dir=etcdir, tree_dir=opts.treedir)
+            write_file(tree.environ, term='tsch', out_dir=etcdir, tree_dir=opts.treedir)
 
-    # Setup the modules
-    copy_modules(filespath=etcdir, verbose=opts.verbose)
+            # Setup the modules
+            copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
 
 
 if __name__ == '__main__':
