@@ -139,6 +139,7 @@ set PRODUCT_DIR """ + options.treedir.rstrip('/') + """
 setenv [string toupper $product]_DIR $PRODUCT_DIR
 setenv [string toupper $product]_VER $version
 prepend-path PATH $PRODUCT_DIR/bin
+prepend-path PYTHONPATH $PRODUCT_DIR/python
 """
     modulesversion = """#%Module1.0
 set ModulesVersion {name}
