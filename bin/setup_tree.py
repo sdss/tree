@@ -110,6 +110,8 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None):
     # get the proper name, header and file extension
     name = environ['default']['name']
     header = write_header(term=term, name=name, tree_dir=tree_dir)
+    print('header: %r' % header)
+    input('pause')
     exts = {'bash': '.sh', 'tsch': '.csh', 'modules': '.module'}
     ext = exts[term]
 
