@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+import distutils.version
 import os
 
 import yaml
@@ -17,8 +18,12 @@ from .misc import log
 NAME = 'tree'
 
 # Loads config
+yaml_version = distutils.version.StrictVersion(yaml.__version__)
 with open(os.path.dirname(__file__) + '/etc/{0}.cfg'.format(NAME)) as ff:
-    config = yaml.load(ff, Loader=yaml.FullLoader)
+    if yaml_version >= distutils.version.StrictVersion('5.1'):
+        config = yaml.load(ff, Loader=yaml.FullLoader)
+    else:
+        config = yaml.load(ff)
 
 
 __version__ = '2.15.6dev'
