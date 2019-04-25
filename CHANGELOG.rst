@@ -24,6 +24,7 @@ Fixed
 ^^^^^
 - Broken syntax on apogee in paths.ini file
 - Broken syntax in some platelist definitions
+- Broken etc/Makefile after implementation of new setup_tree.py
 
 2.15.5 (2018-09-06)
 -------------------

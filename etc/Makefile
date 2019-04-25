@@ -15,20 +15,15 @@
 #
 .PHONY : clean
 #
-# Make sure SAS_BASE_DIR is set
-#
-export SAS_BASE_DIR = $(shell ../bin/sas_base.sh)
-#
 # This should compile all code prior to it being installed
 #
 all :
-	../bin/install_tree.py -t $(dir $(CURDIR))
-	../bin/install_tree.sh
+	python ../bin/setup_tree.py -t $(dir $(CURDIR))
 #
 #
 #
 env_links :
-	../bin/env_links.py
+	python ../bin/setup_tree.py -e -t $(dir $(CURDIR))
 #
 # GNU make pre-defines $(RM).  The - in front of $(RM) causes make to
 # ignore any errors produced by $(RM).
