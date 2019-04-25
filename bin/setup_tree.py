@@ -351,8 +351,14 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
             split_mods = modulepath.split(':')
             if len(split_mods) > 1:
                 if verbose:
-                    print('Multiple module paths found.  Using top one: {0}'.format(split_mods[0]))
-            modules_path = split_mods[0]
+                    print('Multiple module paths found.  Finding all that contain a tree directory.')
+                for mfile in split_mods:
+                    if os.path.exists(os.path.join(mfile, 'tree')):
+                        copy_modules(filespath=filespath, modules_path=mfile, verbose=verbose)
+                    else:
+                        return
+            else:
+                modules_path = split_mods[0]
 
     # check for the tree module directory
     tree_mod = os.path.join(modules_path, 'tree')
@@ -432,8 +438,8 @@ def main(args):
             write_file(tree.environ, term='bash', out_dir=etcdir, tree_dir=opts.treedir)
             write_file(tree.environ, term='tsch', out_dir=etcdir, tree_dir=opts.treedir)
 
-            # Setup the modules
-            copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
+    # Setup the modules
+    copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
 
 
 if __name__ == '__main__':
