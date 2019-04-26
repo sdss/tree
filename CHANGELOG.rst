@@ -19,6 +19,7 @@ Changed
 ^^^^^^^
 - replaced non-existent %designdir special function with %definitiondir 
 - changed yaml loaded to use yaml.FullLoader in compliance with pyyaml 5.1
+- switching disutils.StrictVersion to more standard parse_version
 
 Fixed
 ^^^^^
