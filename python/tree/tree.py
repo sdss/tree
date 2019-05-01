@@ -240,8 +240,10 @@ class Tree(object):
         environ['default'] = cfg.defaults()
 
         # set the filesystem envvar to sas_base_dir
-        if environ['default']['FILESYSTEM'] == self._file_replace:
-            environ['default']['FILESYSTEM'] = self.sasbasedir
+        filesystem = 'FILESYSTEM' if 'FILESYSTEM' in environ[
+            'default'] else 'filesystem' if 'filesystem' in environ['default'] else None
+        if environ['default'][filesystem] == self._file_replace:
+            environ['default'][filesystem] = self.sasbasedir
 
         # add all sections into the tree environ
         sections = sections if sections else cfg.sections()
