@@ -291,6 +291,9 @@ class Tree(object):
             if opt in cfg.defaults():
                 continue
             paths[opt] = cfg.get('PATHS', opt)
+
+        # sort the paths by name
+        paths = OrderedDict({k: paths[k] for k in sorted(paths.keys())})
         return paths
 
     def branch_out(self, limb=None):
