@@ -354,9 +354,13 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
                     print('Multiple module paths found.  Finding all that contain a tree directory.')
                 for mfile in split_mods:
                     if os.path.exists(os.path.join(mfile, 'tree')):
+                        # run rest of method
                         copy_modules(filespath=filespath, modules_path=mfile, verbose=verbose)
                     else:
-                        return
+                        # do nothing, skip to next loop iteration
+                        continue
+                # exit the function after loop is over
+                return
             else:
                 modules_path = split_mods[0]
 
