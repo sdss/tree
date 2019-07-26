@@ -9,6 +9,11 @@ This document records the main changes to the tree code.
 2.15.7 (unreleased)
 -------------------
 
+Added
+^^^^^
+- new path definitions for MaNGA VAC Visual Morphology
+
+
 2.15.6 (2019-07-26)
 -------------------
 
