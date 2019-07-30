@@ -14,6 +14,7 @@ Added
 - new path definitions for MaNGA VAC Visual Morphology
 - new path definition for MaNGA VAC Galaxy Zoo
 - new path definitions for MaNGA VAC Firefly
+- new path definitions for MaNGA VAC GEMA 
 
 2.15.6 (2019-07-26)
 -------------------
