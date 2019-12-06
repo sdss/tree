@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.7 (unreleased)
+2.15.7 (2019-12-06)
 -------------------
 
 Added
@@ -17,6 +17,10 @@ Added
 - new path definitions for MaNGA VAC GEMA
 - new documentation for adding new paths into sdss_paths.ini
 - config file for DR16
+
+Fixed
+^^^^^
+- Issue :issue:`10` - bug fix in setup_tree.py
 
 2.15.6 (2019-07-26)
 -------------------
