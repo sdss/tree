@@ -269,7 +269,7 @@ def write_version(name):
     return modules_version
 
 
-def write_file(environ, term='bash', out_dir=None, tree_dir=None):
+def write_file(environ, term='bash', out_dir=None, tree_dir=None, default=None):
     ''' Write a tree environment file
 
     Loops over the tree environ and writes them out to a bash, tsch, or
@@ -284,6 +284,8 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None):
             The path to this repository
         out_dir (str):
             The output path to write the files (default is etc/)
+        default (str):
+            The default config to write into the .version file
 
     '''
 
@@ -312,8 +314,9 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None):
                     f.write(cmd.format(tree_name.upper(), tree_path))
 
     # write default .version file for modules
-    modules_version = write_version(name)
-    if term == 'modules' and environ['default']['current']:
+    default = default if default else name
+    modules_version = write_version(default)
+    if term == 'modules' and environ['default']['current'] == 'True':
         version_name = os.path.join(out_dir, '.version')
         with open(version_name, 'w') as f:
             f.write(modules_version)
@@ -351,8 +354,18 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
             split_mods = modulepath.split(':')
             if len(split_mods) > 1:
                 if verbose:
-                    print('Multiple module paths found.  Using top one: {0}'.format(split_mods[0]))
-            modules_path = split_mods[0]
+                    print('Multiple module paths found.  Finding all that contain a tree directory.')
+                for mfile in split_mods:
+                    if os.path.exists(os.path.join(mfile, 'tree')):
+                        # run rest of method
+                        copy_modules(filespath=filespath, modules_path=mfile, verbose=verbose)
+                    else:
+                        # do nothing, skip to next loop iteration
+                        continue
+                # exit the function after loop is over
+                return
+            else:
+                modules_path = split_mods[0]
 
     # check for the tree module directory
     tree_mod = os.path.join(modules_path, 'tree')
@@ -392,7 +405,8 @@ def parse_args():
                         help='Use the mirror site (SAM) instead.')
     parser.add_argument('-o', '--only', action='store', dest='only', metavar='[xxx].cfg',
                         default=None, help='create links for only the specified tree config.')
-
+    parser.add_argument('-d', '--default', action='store', dest='default', default='sdsswork',
+                        help='Default config version to write into the .version file')
     opts = parser.parse_args()
 
     return opts
@@ -428,12 +442,12 @@ def main(args):
                 continue
             create_env(tree.environ, mirror=opts.mirror)
         else:
-            write_file(tree.environ, term='modules', out_dir=etcdir, tree_dir=opts.treedir)
+            write_file(tree.environ, term='modules', out_dir=etcdir, tree_dir=opts.treedir, default=opts.default)
             write_file(tree.environ, term='bash', out_dir=etcdir, tree_dir=opts.treedir)
             write_file(tree.environ, term='tsch', out_dir=etcdir, tree_dir=opts.treedir)
 
-            # Setup the modules
-            copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
+    # Setup the modules
+    copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
 
 
 if __name__ == '__main__':

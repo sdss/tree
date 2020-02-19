@@ -12,11 +12,12 @@ This is the Sphinx documentation for the Python product tree
 Introduction
 ------------
 
-* :ref:`What's new in tree? <changelog>`
-* :ref:`Installation of python package <install>`
-* :ref:`Introduction to the Tree <intro>`
-* :ref:`Tree environment configuration <config>`
-* :ref:`Setting up the Tree in your local enviroment <setup>`
+* :doc:`What's new in tree? <CHANGELOG>`
+* :doc:`Installation of python package <installation>`
+* :doc:`Introduction to the Tree <intro>`
+* :doc:`Tree environment configuration <config>`
+* :doc:`Setting up the Tree in your local enviroment <tree_setup>`
+* :doc:`Adding a new path into the Tree <paths>`
 
 Reference
 ---------

@@ -7,7 +7,7 @@
 # Created: Saturday, 13th April 2019 6:11:21 pm
 # License: BSD 3-clause "New" or "Revised" License
 # Copyright (c) 2019 Brian Cherinka
-# Last Modified: Monday, 15th April 2019 6:03:21 pm
+# Last Modified: Thursday, 11th July 2019 4:03:38 pm
 # Modified By: Brian Cherinka
 
 
@@ -142,3 +142,40 @@ def test_create_files(tree, config):
     files = glob.glob(os.path.join(moduledir, '*'))
     assert len(files) > 0
     assert os.path.exists(os.path.join(moduledir, config))
+
+
+@pytest.fixture()
+def resetmod(monkeypatch):
+    mdir = os.environ.get('MODULES_DIR')
+    base = os.path.dirname(mdir)
+    monkeypatch.setenv("MODULES_DIR", '')
+    os.makedirs(os.path.join(base, 'crap'))
+    newpath = os.path.join(base, 'crap') + ':' + mdir
+    monkeypatch.setenv('MODULEPATH', newpath)
+    os.makedirs(os.path.join(mdir, 'tree'))
+
+
+@pytest.mark.parametrize('config', [('dr15'), ('sdsswork')])
+def test_emptymodulepath(tree, resetmod, config):
+
+    modulepath = os.environ.get('MODULEPATH')
+    split_mods = modulepath.split(':')
+    for mpath in split_mods:
+        if 'crap' in mpath:
+            assert not os.path.exists(os.path.join(mpath, 'tree'))
+        else:
+            assert os.path.exists(os.path.join(mpath, 'tree'))
+
+    stdout = run_cmd(args=[])
+
+    # ensure modules were copied
+    for mpath in split_mods:
+        path = os.path.join(mpath, 'tree')
+        files = glob.glob(os.path.join(path, '*'))
+        if 'crap' in path:
+            assert not os.path.exists(path)
+            assert len(files) == 0
+        else:
+            assert os.path.exists(path)
+            assert len(files) > 0
+            assert os.path.exists(os.path.join(path, config))

@@ -6,7 +6,31 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.6 (unreleased)
+2.15.8 (unreleased)
+-------------------
+
+Changed
+^^^^^^^
+- added wave keyword to mangacube/rss paths to handle LOG/LIN switch
+- updated Tree python code to handle new cfg inheritance and versioning
+
+2.15.7 (2019-12-06)
+-------------------
+
+Added
+^^^^^
+- new path definitions for MaNGA VAC Visual Morphology
+- new path definition for MaNGA VAC Galaxy Zoo
+- new path definitions for MaNGA VAC Firefly
+- new path definitions for MaNGA VAC GEMA
+- new documentation for adding new paths into sdss_paths.ini
+- config file for DR16
+
+Fixed
+^^^^^
+- Issue :issue:`10` - bug fix in setup_tree.py
+
+2.15.6 (2019-07-26)
 -------------------
 
 Refactored
@@ -22,18 +46,20 @@ Added
 - new method list_configs to show all available configs for loading
 - new tests for setting up the tree; creating and copying module/bash files and env symlinks
 - added the option for env symlink creation into the setup_tree.py bin file
+- added option to specify default config to write into .version file
 
 Changed
 ^^^^^^^
 - replaced non-existent %designdir special function with %definitiondir 
 - changed yaml loaded to use yaml.FullLoader in compliance with pyyaml 5.1
-- added wave keyword to mangacube/rss paths to handle LOG/LIN switch
-- updated Tree python code to handle new cfg inheritance and versioning
+- switching disutils.StrictVersion to more standard parse_version
 
 Fixed
 ^^^^^
 - Broken syntax on apogee in paths.ini file
 - Broken syntax in some platelist definitions
+- Broken etc/Makefile after implementation of new setup_tree.py
+- Bugfix on setup_tree.py when empty tree directory first entry in MODULEPATH
 
 2.15.5 (2018-09-06)
 -------------------
