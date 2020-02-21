@@ -14,6 +14,10 @@ Changed
 - added wave keyword to mangacube/rss paths to handle LOG/LIN switch
 - updated Tree python code to handle new cfg inheritance and versioning
 
+Fixed
+^^^^^
+- Issue :issue:`11` - silence and no input when multiple module paths found
+
 2.15.7 (2019-12-06)
 -------------------
 
