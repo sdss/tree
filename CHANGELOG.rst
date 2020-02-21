@@ -9,6 +9,10 @@ This document records the main changes to the tree code.
 2.15.8 (unreleased)
 -------------------
 
+Fixed
+^^^^^
+- Issue :issue:`11` - silence and no input when multiple module paths found
+
 2.15.7 (2019-12-06)
 -------------------
 

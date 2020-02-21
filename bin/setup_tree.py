@@ -353,24 +353,38 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
         else:
             split_mods = modulepath.split(':')
             if len(split_mods) > 1:
-                if verbose:
-                    print('Multiple module paths found.  Finding all that contain a tree directory.')
-                for mfile in split_mods:
-                    if os.path.exists(os.path.join(mfile, 'tree')):
-                        # run rest of method
-                        copy_modules(filespath=filespath, modules_path=mfile, verbose=verbose)
-                    else:
-                        # do nothing, skip to next loop iteration
-                        continue
+                # select which module paths to use
+                items = ['Multiple module paths found. Choose which module paths to use '
+                         '(e.g. "1,2") or hit enter for "all": ']    
+                items += ['{0}. {1}'.format(i + 1, t) for i, t in enumerate(split_mods)] + ['\n']
+                msg = '\n'.join(items)
+                selected = input(msg) or 'all'
+                choices = range(len(split_mods)) if selected == 'all' else [
+                    int(i) - 1 for i in selected.split(',')]
+
+                # loop over selected module paths to install tree
+                for choice in choices:
+                    mfile = split_mods[choice]
+                    # run rest of method
+                    copy_modules(filespath=filespath, modules_path=mfile, verbose=verbose)
+
                 # exit the function after loop is over
                 return
             else:
                 modules_path = split_mods[0]
+                if verbose:
+                    print('Installing tree modules into {0}'.format(modules_path))
 
     # check for the tree module directory
     tree_mod = os.path.join(modules_path, 'tree')
     if not os.path.isdir(tree_mod):
+        if verbose:
+            print('Creating module tree directory: {0}'.format(tree_mod))
         os.makedirs(tree_mod)
+    else:
+        doit = input('{0} already exists! Overwrite? (y/n) \n'.format(tree_mod)) or 'n'
+        if doit == 'n':
+            return
 
     # copy the modules into the tree
     if verbose:
