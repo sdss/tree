@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.9 (unreleased)
+2.15.9 (2020-03-16)
 -------------------
 
 Fixed
