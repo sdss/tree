@@ -73,7 +73,11 @@ files that end with ``work`` get combined into a single ``work`` release.
 
     my_tree = Tree()
     my_tree.get_available_releases()
-    ['work', 'DR7', 'DR8', 'DR9', 'DR10', 'DR11', 'DR12', 'DR13', 'DR14', 'DR15', 'DR16']
+    ['WORK', 'DR7', 'DR8', 'DR9', 'DR10', 'DR11', 'DR12', 'DR13', 'DR14', 'DR15', 'DR16']
+
+    # return only the public data releases
+    my_tree.get_available_releases(public=True)
+    ['DR7', 'DR8', 'DR9', 'DR10', 'DR11', 'DR12', 'DR13', 'DR14', 'DR15', 'DR16']
 
 .. _tree-api:
 

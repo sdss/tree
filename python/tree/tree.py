@@ -278,8 +278,13 @@ class Tree(object):
         sorted_cfgs = sum(rest, [])
         return sorted_cfgs
 
-    def get_available_releases(self):
-        ''' Get the available releases '''
+    def get_available_releases(self, public=None):
+        ''' Get the available releases
+        
+        Parameters:
+            public (bool):
+                If True, only return public data releases
+        '''
 
         # get the configs
         cfgs = self.list_available_configs()
@@ -287,11 +292,14 @@ class Tree(object):
         # parse the data releases
         releases = []
         for i in cfgs:
+            if public and not i.startswith('dr'):
+                continue
+
             b = i.split('.cfg', 1)[0]
             if 'dr' in b or 'mpl' in b:
                 # uppercase any DR or MPLs
                 releases.append(b.upper())
-            elif 'work' in b and 'work' not in releases:
-                # reduce alll xxxxwork cfgs to a single "work" release 
-                releases.append('work')
+            elif 'work' in b and 'WORK' not in releases:
+                # reduce alll xxxxwork cfgs to a single "work" release
+                releases.append('WORK')
         return releases
