@@ -9,6 +9,11 @@ This document records the main changes to the tree code.
 2.15.8 (unreleased)
 -------------------
 
+Added
+^^^^^
+- new method ``list_available_configs`` that lists the available config files to load with Tree
+- new method ``get_available_releases`` that builds a list of data releases from the config files 
+
 Fixed
 ^^^^^
 - Issue :issue:`11` - silence and no input when multiple module paths found

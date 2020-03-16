@@ -58,7 +58,22 @@ can use ``replant_tree``::
     # switch to the dr15 tree
     my_tree.replant_tree(config='dr15')
 
+To see what configs are available to load with `Tree`, use the ``list_available_configs`` method.
+::
 
+    my_tree = Tree()
+    my_tree.list_available_configs()
+    ['bosswork.cfg', 'dr7.cfg', 'dr8.cfg', 'dr9.cfg', 'dr10.cfg', 'dr11.cfg', 'dr12.cfg', 
+    'dr13.cfg', 'dr14.cfg', 'dr15.cfg', 'dr16.cfg', 'mpl9.cfg', 'sdss5.cfg', 'sdsswork.cfg']
+
+To see the available data releases, use the ``get_available_releases`` method.  This will return a list of
+all public Data Release (DR) versions along with any additional survey versions, e.g. MaNGA's MPLs.  Any config
+files that end with ``work`` get combined into a single ``work`` release.  
+::
+
+    my_tree = Tree()
+    my_tree.get_available_releases()
+    ['work', 'DR7', 'DR8', 'DR9', 'DR10', 'DR11', 'DR12', 'DR13', 'DR14', 'DR15', 'DR16']
 
 .. _tree-api:
 

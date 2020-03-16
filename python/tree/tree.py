@@ -12,6 +12,7 @@ from __future__ import absolute_import, division, print_function
 
 import os
 import sys
+import re
 from collections import OrderedDict
 
 import six
@@ -260,3 +261,37 @@ class Tree(object):
 
         # reinitialize a new Tree with a new config
         self.__init__(key=self.key, config=config, update=True, exclude=exclude)
+
+    def list_available_configs(self):
+        ''' List the available config files able to be loaded '''
+
+        # look up the config files from the data directory
+        data_path = os.path.join(self.treedir, 'data')
+        cfgs = [i for i in os.listdir(data_path) if i.endswith('.cfg')]
+        cfgs.sort()
+
+        # sort the DR subset of config files
+        drsort = sorted([i for i in cfgs if 'dr' in i],
+                        key=lambda t: int(re.findall('dr(.*?).cfg', t)[0]))
+        rest = [[i] for i in cfgs if 'dr' not in i]
+        rest.insert(1, drsort)
+        sorted_cfgs = sum(rest, [])
+        return sorted_cfgs
+
+    def get_available_releases(self):
+        ''' Get the available releases '''
+
+        # get the configs
+        cfgs = self.list_available_configs()
+
+        # parse the data releases
+        releases = []
+        for i in cfgs:
+            b = i.split('.cfg', 1)[0]
+            if 'dr' in b or 'mpl' in b:
+                # uppercase any DR or MPLs
+                releases.append(b.upper())
+            elif 'work' in b and 'work' not in releases:
+                # reduce alll xxxxwork cfgs to a single "work" release 
+                releases.append('work')
+        return releases

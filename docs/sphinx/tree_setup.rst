@@ -46,7 +46,9 @@ environment variable. To specify a custom ``MODULES_DIR``, use the ``modulesdir`
     python setup_tree.py -m '/my/custom/path/modules/'
 
 It will copy all module files found in ``tree/etc`` and place them inside ``$MODULES_DIR/tree/``.  For example
-the ``etc/dr14.module`` file would get copied to ``/my/custom/path/modules/tree/dr14``. 
+the ``etc/dr14.module`` file would get copied to ``/my/custom/path/modules/tree/dr14``.  When multiple module paths
+are found, it prompts the user to choose which paths to copy the new modules files into.  If an existing `tree` module
+directory is found, it also prompts if the user wishes to overwrite existing files. 
 
 Example Files
 ^^^^^^^^^^^^^
