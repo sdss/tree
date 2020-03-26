@@ -12,7 +12,13 @@ from __future__ import absolute_import, division, print_function
 
 import os
 import sys
+<<<<<<< HEAD
 import glob
+=======
+import re
+from collections import OrderedDict
+
+>>>>>>> master
 import six
 import re
 from collections import OrderedDict
@@ -446,3 +452,46 @@ class Tree(object):
             return cfgs[cfg_name]
         return cfgs
 
+        self.__init__(key=self.key, config=config, update=True, exclude=exclude)
+
+    def list_available_configs(self):
+        ''' List the available config files able to be loaded '''
+
+        # look up the config files from the data directory
+        data_path = os.path.join(self.treedir, 'data')
+        cfgs = [i for i in os.listdir(data_path) if i.endswith('.cfg')]
+        cfgs.sort()
+
+        # sort the DR subset of config files
+        drsort = sorted([i for i in cfgs if 'dr' in i],
+                        key=lambda t: int(re.findall('dr(.*?).cfg', t)[0]))
+        rest = [[i] for i in cfgs if 'dr' not in i]
+        rest.insert(1, drsort)
+        sorted_cfgs = sum(rest, [])
+        return sorted_cfgs
+
+    def get_available_releases(self, public=None):
+        ''' Get the available releases
+        
+        Parameters:
+            public (bool):
+                If True, only return public data releases
+        '''
+
+        # get the configs
+        cfgs = self.list_available_configs()
+
+        # parse the data releases
+        releases = []
+        for i in cfgs:
+            if public and not i.startswith('dr'):
+                continue
+
+            b = i.split('.cfg', 1)[0]
+            if 'dr' in b or 'mpl' in b:
+                # uppercase any DR or MPLs
+                releases.append(b.upper())
+            elif 'work' in b and 'WORK' not in releases:
+                # reduce alll xxxxwork cfgs to a single "work" release
+                releases.append('WORK')
+        return releases

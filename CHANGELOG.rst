@@ -6,13 +6,33 @@ Change Log
 
 This document records the main changes to the tree code.
 
-2.15.8 (unreleased)
--------------------
+2.15.10 (unreleased)
+--------------------
+
+Added
+^^^^^
+- new function ``compute_changelog`` to print difference between two tree environments
+- new sphinx documentation on all DR tree environments and environment changes between DRs
 
 Changed
 ^^^^^^^
 - added wave keyword to mangacube/rss paths to handle LOG/LIN switch
 - updated Tree python code to handle new cfg inheritance and versioning
+
+2.15.9 (2020-03-16)
+-------------------
+
+Fixed
+^^^^^
+- standardized case output for ``get_available_releases`` method.  Added ``public`` only option.
+
+2.15.8 (2020-03-15)
+-------------------
+
+Added
+^^^^^
+- new method ``list_available_configs`` that lists the available config files to load with Tree
+- new method ``get_available_releases`` that builds a list of data releases from the config files 
 
 Fixed
 ^^^^^
