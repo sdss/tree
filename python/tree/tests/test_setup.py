@@ -7,7 +7,7 @@
 # Created: Saturday, 13th April 2019 6:11:21 pm
 # License: BSD 3-clause "New" or "Revised" License
 # Copyright (c) 2019 Brian Cherinka
-# Last Modified: Friday, 21st February 2020 1:02:57 pm
+# Last Modified: Monday, 6th April 2020 3:26:16 pm
 # Modified By: Brian Cherinka
 
 
@@ -56,7 +56,7 @@ def tree(monkeypatch, tmp_path):
 
 
 def test_intemp(tree):
-    assert 'treetmp' in tree.environ['general']['sas_base_dir']
+    assert 'treetmp' in tree.environ['general']['SAS_BASE_DIR']
     treedir = os.getenv('TREE_DIR')
     assert 'treetmp' in treedir
     assert 'treetmp' in os.getenv('MODULES_DIR')
@@ -86,10 +86,10 @@ def assert_stuff(envdir, name):
     assert name.upper() in page
 
 
-@pytest.mark.parametrize('name', [('manga_hi'), ('manga_spectro_redux')], ids=['mangahi', 'redux'])
+@pytest.mark.parametrize('name', [('MANGA_HI'), ('MANGA_SPECTRO_REDUX')], ids=['mangahi', 'redux'])
 def test_envlinks(tree, name):
     assert os.path.isfile(setuppath)
-    envdir = os.path.join(tree.environ['general']['sas_base_dir'], 'dr15/env')
+    envdir = os.path.join(tree.environ['general']['SAS_BASE_DIR'], 'dr15/env')
     stdout = run_cmd(args=['-e'])
     assert os.path.exists(envdir) is True
     assert 'Processing {0}'.format(name) in str(stdout)
@@ -99,14 +99,14 @@ def test_envlinks(tree, name):
     assert_stuff(envdir, name)
 
 
-@pytest.mark.parametrize('name', [('manga_hi'), ('manga_spectro_redux')], ids=['mangahi', 'redux'])
+@pytest.mark.parametrize('name', [('MANGA_HI'), ('MANGA_SPECTRO_REDUX')], ids=['mangahi', 'redux'])
 def test_env_only(tree, name):
-    dr15envdir = os.path.join(tree.environ['general']['sas_base_dir'], 'dr15/env')
-    dr14envdir = os.path.join(tree.environ['general']['sas_base_dir'], 'dr14/env')
+    dr15envdir = os.path.join(tree.environ['general']['SAS_BASE_DIR'], 'dr15/env')
+    dr14envdir = os.path.join(tree.environ['general']['SAS_BASE_DIR'], 'dr14/env')
     stdout = run_cmd(args=['-e', '-o', 'dr14'])
     assert os.path.exists(dr14envdir) is True
     assert os.path.exists(dr15envdir) is False
-    if 'hi' in name:
+    if 'HI' in name:
         assert 'Processing {0}'.format(name) not in str(stdout)
     else:
         assert 'Processing {0}'.format(name) in str(stdout)
@@ -116,7 +116,7 @@ def test_env_only(tree, name):
 @pytest.mark.parametrize('mirror, exp', [(False, 'SDSS-IV Science Archive Server (SAS)'),
                                          (True, 'SDSS-IV Science Archive Mirror (SAM)')])
 def test_env_mirror(tree, mirror, exp):
-    envdir = os.path.join(tree.environ['general']['sas_base_dir'], 'dr15/env')
+    envdir = os.path.join(tree.environ['general']['SAS_BASE_DIR'], 'dr15/env')
     args = ['-e', '-i'] if mirror else ['-e']
     stdout = run_cmd(args=args)
     index = os.path.join(envdir, 'index.html')

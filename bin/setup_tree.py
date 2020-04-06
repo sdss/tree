@@ -15,6 +15,7 @@ import argparse
 import glob
 import shutil
 import time
+import re
 
 
 def _remove_link(link):
@@ -71,7 +72,7 @@ def create_index_table(environ, envdir):
 
         for tree_name, tree_path in values.items():
             skipmsg = 'Skipping {0} for {1}'.format(tree_name, section)
-            if '_root' in tree_name:
+            if '_ROOT' in tree_name:
                 continue
 
             # create the src and target links
@@ -87,12 +88,12 @@ def create_index_table(environ, envdir):
                 continue
 
             # skip the sas_base_dir
-            if section == 'general' and 'sas_base_dir' in tree_name:
+            if section == 'general' and 'SAS_BASE_DIR' in tree_name:
                 print(skipmsg)
                 continue
 
             # only create symlinks
-            if section == 'general' and tree_name in ['cas_load', 'staging_data']:
+            if section == 'general' and tree_name in ['CAS_LOAD', 'STAGING_DATA']:
                 # only create links here if the target exist
                 if os.path.exists(src):
                     make_symlink(src, link)
@@ -172,16 +173,16 @@ def create_env(environ, mirror=None, verbose=None):
     defaults['url'] = "https://data.mirror.sdss.org" if mirror else "https://data.sdss.org"
     defaults['location'] = "SDSS-IV Science Archive Mirror (SAM)" if mirror else "SDSS-IV Science Archive Server (SAS)"
 
-    if not os.path.exists(environ['general']['sas_root']):
+    if not os.path.exists(environ['general']['SAS_ROOT']):
         if verbose:
-            print("{0} doesn't exist, skipping env link creation.".format(environ['general']['sas_root']))
+            print("{0} doesn't exist, skipping env link creation.".format(environ['general']['SAS_ROOT']))
         return
 
     if verbose:
-        print("Found {0}.".format(environ['general']['sas_root']))
+        print("Found {0}.".format(environ['general']['SAS_ROOT']))
 
     # sets and creates envdir
-    envdir = os.path.join(environ['general']['sas_root'], 'env')
+    envdir = os.path.join(environ['general']['SAS_ROOT'], 'env')
     if not os.path.exists(envdir):
         os.makedirs(envdir)
     if not os.access(envdir, os.W_OK):
@@ -337,6 +338,10 @@ def get_tree(config=None):
     if pypath not in sys.path:
         sys.path.append(pypath)
     os.chdir(pypath)
+    # extract the config format from either XXXX.cfg or full filepath
+    has_cfg = re.search(r'(\w+)\.cfg', config)
+    if has_cfg:
+        config = has_cfg.group()
     from tree.tree import Tree
     tree = Tree(config=config)
     return tree
