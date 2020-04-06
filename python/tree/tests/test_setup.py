@@ -7,7 +7,7 @@
 # Created: Saturday, 13th April 2019 6:11:21 pm
 # License: BSD 3-clause "New" or "Revised" License
 # Copyright (c) 2019 Brian Cherinka
-# Last Modified: Monday, 6th April 2020 3:26:16 pm
+# Last Modified: Monday, 6th April 2020 5:55:59 pm
 # Modified By: Brian Cherinka
 
 
@@ -66,11 +66,16 @@ def test_intemp(tree):
     assert len(files) > 1
 
 
+# def run_cmd(args=[], user_input=''):
+#     process = subprocess.Popen(['python', setuppath] + args, universal_newlines=True,
+#                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#     stdout, __ = process.communicate(input=user_input)
+#     return stdout
+
 def run_cmd(args=[], user_input=''):
-    process = subprocess.Popen(['python', setuppath] + args, universal_newlines=True,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, __ = process.communicate(input=user_input)
-    return stdout
+    process = subprocess.run(['python', setuppath] + args, universal_newlines=True,
+                             input=user_input, capture_output=True)
+    return process.stdout
 
 
 def read_index(path):
@@ -155,9 +160,24 @@ def resetmod(monkeypatch):
     os.makedirs(os.path.join(mdir, 'tree'))
 
 
-@pytest.mark.skip('skipping until figure out test input and subprocess')
-@pytest.mark.parametrize('config', [('dr15'), ('sdsswork')])
-def test_emptymodulepath(tree, resetmod, config):
+def assert_paths(path, config):
+    files = glob.glob(os.path.join(path, '*'))
+    assert os.path.exists(path)
+    assert len(files) >= 0
+    assert os.path.exists(os.path.join(path, config))
+
+
+def assert_no_paths(path, config, haspath=False):
+    files = glob.glob(os.path.join(path, '*'))
+    assert os.path.exists(path) if haspath else not os.path.exists(path)
+    assert len(files) == 0
+
+
+@pytest.mark.parametrize('config, inputs',
+                         [('dr15', '1'),
+                          ('sdsswork', '2\ny\n'),
+                          ('sdsswork', 'all\ny\n')], ids=['copy1', 'copy2', 'copyall'])
+def test_emptymodulepath(tree, resetmod, config, inputs):
 
     modulepath = os.environ.get('MODULEPATH')
     split_mods = modulepath.split(':')
@@ -167,16 +187,29 @@ def test_emptymodulepath(tree, resetmod, config):
         else:
             assert os.path.exists(os.path.join(mpath, 'tree'))
 
-    stdout = run_cmd(args=[])
+    stdout = run_cmd(args=[], user_input=inputs)
 
-    # ensure modules were copied
-    for mpath in split_mods:
-        path = os.path.join(mpath, 'tree')
-        files = glob.glob(os.path.join(path, '*'))
-        if 'crap' in path:
-            assert not os.path.exists(path)
-            assert len(files) == 0
-        else:
-            assert os.path.exists(path)
-            assert len(files) > 0
-            assert os.path.exists(os.path.join(path, config))
+    if inputs == '1':
+        # assert only first module path gets copied
+        # crap path
+        path = os.path.join(split_mods[0], 'tree')
+        assert_paths(path, config)
+
+        # module path
+        path = os.path.join(split_mods[1], 'tree')
+        assert_no_paths(path, config, haspath=True)
+
+    elif inputs.startswith('2'):
+        # assert only second module path gets copied
+        # crap path
+        path = os.path.join(split_mods[0], 'tree')
+        assert_no_paths(path, config)
+
+        # module path
+        path = os.path.join(split_mods[1], 'tree')
+        assert_paths(path, config)
+    elif inputs.startswith('all'):
+        # assert both module paths get copied
+        for mpath in split_mods:
+            path = os.path.join(mpath, 'tree')
+            assert_paths(path, config)
