@@ -7,7 +7,7 @@
 # Created: Saturday, 13th April 2019 6:11:21 pm
 # License: BSD 3-clause "New" or "Revised" License
 # Copyright (c) 2019 Brian Cherinka
-# Last Modified: Monday, 6th April 2020 5:55:59 pm
+# Last Modified: Monday, 6th April 2020 6:42:02 pm
 # Modified By: Brian Cherinka
 
 
@@ -17,6 +17,7 @@ import subprocess
 import pytest
 import shutil
 import glob
+import sys
 from tree import Tree
 
 setuppath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../bin/setup_tree.py'))
@@ -73,9 +74,14 @@ def test_intemp(tree):
 #     return stdout
 
 def run_cmd(args=[], user_input=''):
-    process = subprocess.run(['python', setuppath] + args, universal_newlines=True,
-                             input=user_input, capture_output=True)
-    return process.stdout
+    if sys.version_info.major == 2 or (sys.version_info.major == 3 and sys.version_info.minor < 6):
+        out = subprocess.check_output(['python', setuppath] + args,
+                                      universal_newlines=True, input=user_input)
+    else:
+        process = subprocess.run(['python', setuppath] + args, universal_newlines=True,
+                                 input=user_input, capture_output=True)
+        out = process.stdout
+    return out
 
 
 def read_index(path):
