@@ -7,7 +7,7 @@
 # Created: Saturday, 13th April 2019 6:11:21 pm
 # License: BSD 3-clause "New" or "Revised" License
 # Copyright (c) 2019 Brian Cherinka
-# Last Modified: Monday, 6th April 2020 6:42:02 pm
+# Last Modified: Monday, 6th April 2020 6:46:44 pm
 # Modified By: Brian Cherinka
 
 
@@ -74,7 +74,7 @@ def test_intemp(tree):
 #     return stdout
 
 def run_cmd(args=[], user_input=''):
-    if sys.version_info.major == 2 or (sys.version_info.major == 3 and sys.version_info.minor < 6):
+    if sys.version_info.major == 2 or (sys.version_info.major == 3 and sys.version_info.minor < 7):
         out = subprocess.check_output(['python', setuppath] + args,
                                       universal_newlines=True, input=user_input)
     else:
