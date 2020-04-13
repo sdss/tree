@@ -159,7 +159,7 @@ class TreeDirective(rst.Directive):
 
         # Summarize
         result = statemachine.ViewList()
-        base = config['default']['filesystem'] if remove_sasbase else None
+        base = config['default']['FILESYSTEM'] if remove_sasbase else None
         lines = _format_command(cfg_section, config[cfg_section], base=base)
         for line in lines:
             result.append(line, source_name)
