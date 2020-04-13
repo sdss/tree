@@ -26,4 +26,4 @@ with open(os.path.dirname(__file__) + '/etc/{0}.cfg'.format(NAME)) as ff:
         config = yaml.load(ff)
 
 
-__version__ = '2.15.11dev'
+__version__ = '3.0.0dev'
