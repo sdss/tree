@@ -6,6 +6,13 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.0 (unreleased)
+------------------
+
+- Major changes to environment configuration files
+- Implements versioning of DR config files and `sdss_access` paths
+- Incompatible with 2.x versions
+
 2.15.11 (unreleased)
 --------------------
 
