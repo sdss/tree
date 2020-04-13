@@ -40,7 +40,7 @@ ModuleFiles
 If you are using the ``modules`` environment manager, this script attempts to copy the module files 
 located in ``tree/etc`` into your local ``$MODULES_DIR``.  If no modules path is specified, the script 
 attempts to identify your modules directory by taking the first path directory found in the ``$MODULEPATH`` 
-environment variable. To specify a custom ``MODULES_DIR``, use the ``modulesdir`` keyword argument.
+environment variable. To specify a custom or specific ``MODULES_DIR``, use the ``modulesdir`` keyword argument.
 ::
 
     python setup_tree.py -m '/my/custom/path/modules/'
@@ -48,7 +48,25 @@ environment variable. To specify a custom ``MODULES_DIR``, use the ``modulesdir`
 It will copy all module files found in ``tree/etc`` and place them inside ``$MODULES_DIR/tree/``.  For example
 the ``etc/dr14.module`` file would get copied to ``/my/custom/path/modules/tree/dr14``.  When multiple module paths
 are found, it prompts the user to choose which paths to copy the new modules files into.  If an existing `tree` module
-directory is found, it also prompts if the user wishes to overwrite existing files. 
+directory is found, it also prompts if the user wishes to overwrite existing files.  For example,
+::
+
+    >>> python setup_tree.py -v
+    Multiple module paths found. Choose which module paths to use (e.g. "1,2") or hit enter for "all":
+    1. /Users/Brian/Work/github_projects/modulefiles
+    2. /Users/Brian/Work/sdss/repo/modulefiles
+    3. /Users/Brian/Work/sdss/data/modulefiles
+    4. /Users/Brian/Work/sdss/sdss_install/github/modulefiles
+    5. /Users/Brian/Work/sdss/sdss_install/svn/modulefiles
+    6. /usr/local/Modules/modulefiles
+
+    # select "1" to copy the files to only the 1st module path found 
+    1
+    /Users/Brian/Work/github_projects/modulefiles/tree already exists! Overwrite? (y/n)
+    
+    # select "y" to overwrite any existing files 
+    y
+    Copying modules from etc/ into /Users/Brian/Work/github_projects/modulefiles/tree
 
 Example Files
 ^^^^^^^^^^^^^
