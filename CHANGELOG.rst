@@ -10,8 +10,16 @@ This document records the main changes to the tree code.
 ------------------
 
 - Major changes to environment configuration files
-- Implements versioning of DR config files and `sdss_access` paths
 - Incompatible with 2.x versions
+- Implements versioning of DR config files and `sdss_access` paths
+- Each config file now inherits from another config file using `base` keyword.
+- Each DR config now only contains new or modified definitions for that DR.
+- New configs for internal releases can now be created, e.g. mpl9.cfg.
+- Explicit case is recognized for environment names and tree ini sections
+- Deprecated and Removed sdss_paths.ini file
+- New PATHS ini section in environment config files defines `sdss_access` paths
+- Symbol for "special function" path definition has changed from `%` to `@`
+
 
 2.15.11 (unreleased)
 --------------------
@@ -42,7 +50,7 @@ Fixed
 Added
 ^^^^^
 - new method ``list_available_configs`` that lists the available config files to load with Tree
-- new method ``get_available_releases`` that builds a list of data releases from the config files 
+- new method ``get_available_releases`` that builds a list of data releases from the config files
 
 Fixed
 ^^^^^
@@ -84,7 +92,7 @@ Added
 
 Changed
 ^^^^^^^
-- replaced non-existent %designdir special function with %definitiondir 
+- replaced non-existent %designdir special function with %definitiondir
 - changed yaml loaded to use yaml.FullLoader in compliance with pyyaml 5.1
 - switching disutils.StrictVersion to more standard parse_version
 
