@@ -17,7 +17,8 @@ import six
 from tree import Tree
 
 
-def compute_changelog(new, old, pprint=None, to_list=None, remove_sas=True, include_paths=True):
+def compute_changelog(new, old, pprint=None, to_list=None, remove_sas=True, include_paths=True,
+                      paths_only=None):
     ''' Compute the difference between two Tree environments
 
     Finds and prints the difference between two tree environment
@@ -42,6 +43,8 @@ def compute_changelog(new, old, pprint=None, to_list=None, remove_sas=True, incl
             If True, removes the SAS_BASE_DIR from environment values.  Default is True.
         include_paths (bool):
             If True, includes changes to the sdss_access PATHS section.  Default is True.
+        paths_only (bool):
+            If True, returns only changes in sdss_access PATHS section.  Default is False.
 
     Returns:
         A dictionary of relevant changes between the two releases
@@ -56,9 +59,17 @@ def compute_changelog(new, old, pprint=None, to_list=None, remove_sas=True, incl
     cl_dict = compute_environment_changes(new, old, remove_sas=remove_sas)
 
     # compute and add the paths changelog dictionary
-    if include_paths:
-        path_dict = compute_path_changes(new, old)
+    if include_paths or paths_only:
+        path_dict = compute_path_changes(new, old, prepend_header=paths_only)
         cl_dict.update(path_dict)
+
+    # return PATHS section only
+    if paths_only:
+        cl_dict = cl_dict.copy()
+        cl_dict.pop('environment')
+        if pprint or to_list:
+            return print_paths(cl_dict, to_string=not to_list, prepend_header=paths_only)
+        return cl_dict
 
     if pprint or to_list:
         return print_environment(cl_dict, to_string=not to_list)
