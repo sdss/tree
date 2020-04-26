@@ -91,15 +91,7 @@ class Tree(object):
         '''
 
         # Check for TREE_DIR
-        self.treedir = os.environ.get('TREE_DIR', None) if not uproot_with else uproot_with
-        if not self.treedir:
-            treefilepath = os.path.dirname(os.path.abspath(__file__))
-            if 'python/' in treefilepath:
-                self.treedir = treefilepath.rsplit('/', 2)[0]
-            else:
-                self.treedir = treefilepath
-            self.treedir = treefilepath
-            os.environ['TREE_DIR'] = self.treedir
+        self.treedir = get_tree_dir(uproot_with=uproot_with)
 
         # Check sas_base_dir
         if 'SAS_BASE_DIR' in os.environ:
@@ -123,7 +115,7 @@ class Tree(object):
                 Optional name of config file to load
             bases (list):
                 A list of parent config files
-        
+
         Returns:
             A configParser dictionary object
         '''
@@ -166,7 +158,7 @@ class Tree(object):
         Parameters:
             config (str):
                 The name of the config to check
-        
+
         Returns:
             The (updated) name of the config
         '''
@@ -231,7 +223,7 @@ class Tree(object):
         Returns:
             An ordered dictionary of envvar definitions
         '''
-        
+
         # pass in a cfg dict or use the one attached
         cfg = cfg or self._cfg
 
@@ -425,12 +417,12 @@ class Tree(object):
         ''' Show the environment for a specified config
 
         Creates a dictionary environment for each config in the list of
-        available configurations. 
+        available configurations.
 
         Parameters:
             config (str):
                 The config to show
-        
+
         Returns:
             A dictionary of config environment(s)
         '''
@@ -446,13 +438,15 @@ class Tree(object):
             return cfgs[cfg_name]
         return cfgs
 
-        self.__init__(key=self.key, config=config, update=True, exclude=exclude)
-
-    def list_available_configs(self):
+    @staticmethod
+    def list_available_configs():
         ''' List the available config files able to be loaded '''
 
+        # get tree dir
+        treedir = get_tree_dir()
+
         # look up the config files from the data directory
-        data_path = os.path.join(self.treedir, 'data')
+        data_path = os.path.join(treedir, 'data')
         cfgs = [i for i in os.listdir(data_path) if i.endswith('.cfg')]
         cfgs.sort()
 
@@ -464,16 +458,17 @@ class Tree(object):
         sorted_cfgs = sum(rest, [])
         return sorted_cfgs
 
-    def get_available_releases(self, public=None):
+    @classmethod
+    def get_available_releases(cls, public=None):
         ''' Get the available releases
-        
+
         Parameters:
             public (bool):
                 If True, only return public data releases
         '''
 
         # get the configs
-        cfgs = self.list_available_configs()
+        cfgs = cls.list_available_configs()
 
         # parse the data releases
         releases = []
@@ -489,3 +484,25 @@ class Tree(object):
                 # reduce alll xxxxwork cfgs to a single "work" release
                 releases.append('WORK')
         return releases
+
+
+def get_tree_dir(uproot_with=None):
+    ''' Return the path to the tree product directory
+
+    Parameters:
+        uproot_with (str):
+            A new TREE_DIR path used to override an existing TREE_DIR environment variable
+
+    Returns:
+        The path to the tree python product directory
+    '''
+    treedir = os.environ.get('TREE_DIR', None) if not uproot_with else uproot_with
+    if not treedir:
+        treefilepath = os.path.dirname(os.path.abspath(__file__))
+        if 'python/' in treefilepath:
+            treedir = treefilepath.rsplit('/', 2)[0]
+        else:
+            treedir = treefilepath
+        treedir = treefilepath
+        os.environ['TREE_DIR'] = treedir
+    return treedir
