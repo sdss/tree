@@ -13,10 +13,10 @@ Tree
 
 .. _api-utils:
 
-Utilities
----------
+Changelog Utilities
+-------------------
 
-.. automodule:: tree.utils
+.. automodule:: tree.changelog
    :members:
    :undoc-members:
    :show-inheritance:

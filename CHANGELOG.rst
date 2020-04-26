@@ -19,6 +19,9 @@ This document records the main changes to the tree code.
 - Deprecated and Removed sdss_paths.ini file
 - New PATHS ini section in environment config files defines `sdss_access` paths
 - Symbol for "special function" path definition has changed from `%` to `@`
+- Refactored ``compute_changelog`` function to return dictionary and compute PATHS differences
+- Added changelog compute functions ``compute_environment_changes``, and ``compute_path_changes``.
+- Added changelog print functions ``print_environment``, and ``print_paths``.
 
 
 2.15.11 (unreleased)
