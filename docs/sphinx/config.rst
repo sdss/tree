@@ -4,7 +4,7 @@
 Tree configurations
 -------------------
 
-The SDSS tree provides multiple environment path configurations.  The current available 
+The SDSS tree provides multiple environment path configurations.  The current available
 configurations are the following:
 
 * :ref:`sdsswork <sdsswork>` - the latest working configuration
@@ -22,42 +22,42 @@ configurations are the following:
 How has the Tree evolved over Data Releases
 -------------------------------------------
 
-.. changelog:: tree.utils:compute_changelog
+.. changelog:: tree.changelog:compute_changelog
    :prog: changes
    :drs: dr16, dr15
    :remove-sasbase:
 
-.. changelog:: tree.utils:compute_changelog
+.. changelog:: tree.changelog:compute_changelog
    :prog: changes
    :drs: dr15, dr14
    :remove-sasbase:
 
-.. changelog:: tree.utils:compute_changelog
+.. changelog:: tree.changelog:compute_changelog
    :prog: changes
    :drs: dr14, dr13
    :remove-sasbase:
 
-.. changelog:: tree.utils:compute_changelog
+.. changelog:: tree.changelog:compute_changelog
    :prog: changes
    :drs: dr13, dr12
    :remove-sasbase:
 
-.. changelog:: tree.utils:compute_changelog
+.. changelog:: tree.changelog:compute_changelog
    :prog: changes
    :drs: dr12, dr11
    :remove-sasbase:
 
-.. changelog:: tree.utils:compute_changelog
+.. changelog:: tree.changelog:compute_changelog
    :prog: changes
    :drs: dr11, dr10
    :remove-sasbase:
 
-.. changelog:: tree.utils:compute_changelog
+.. changelog:: tree.changelog:compute_changelog
    :prog: changes
    :drs: dr10, dr9
    :remove-sasbase:
 
-.. changelog:: tree.utils:compute_changelog
+.. changelog:: tree.changelog:compute_changelog
    :prog: changes
    :drs: dr9, dr8
    :remove-sasbase:
