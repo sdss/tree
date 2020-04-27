@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function
 from sdsstools import get_config, get_logger, get_package_version
 
 
-NAME = 'tree'
+NAME = 'sdss_tree'
 
 
 # init the logger
@@ -13,7 +13,7 @@ log = get_logger(NAME)
 
 
 # Loads config
-config = get_config(NAME)
+config = get_config('tree')
 
 
 __version__ = get_package_version(path=__file__, package_name=NAME)

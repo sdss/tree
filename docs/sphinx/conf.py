@@ -25,7 +25,7 @@ try:
     from tree import __version__
 except ModuleNotFoundError:
     from sdsstools import get_package_version
-    __version__ = get_package_version(__file__, 'tree') or 'dev'
+    __version__ = get_package_version(__file__, 'sdss_tree') or 'dev'
 
 
 # add a local path to the Sphinx search path
