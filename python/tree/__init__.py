@@ -2,28 +2,21 @@
 # encoding: utf-8
 
 from __future__ import absolute_import, division, print_function
+from sdsstools import get_config, get_logger, get_package_version
 
-from pkg_resources import parse_version
-import os
-
-import yaml
 
 from tree.tree import Tree
-
-# Inits the logging system. Only shell logging, and exception and warning catching.
-# File logging can be started by calling log.start_file_logger(name).
-from .misc import log
 
 
 NAME = 'tree'
 
+
+# init the logger
+log = get_logger(NAME)
+
+
 # Loads config
-yaml_version = parse_version(yaml.__version__)
-with open(os.path.dirname(__file__) + '/etc/{0}.cfg'.format(NAME)) as ff:
-    if yaml_version >= parse_version('5.1'):
-        config = yaml.load(ff, Loader=yaml.FullLoader)
-    else:
-        config = yaml.load(ff)
+config = get_config(NAME)
 
 
-__version__ = '3.0.0dev'
+__version__ = get_package_version(path=__file__, package_name=NAME)
