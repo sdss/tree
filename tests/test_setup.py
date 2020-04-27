@@ -1,6 +1,6 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
-# 
+#
 # Filename: test_setup.py
 # Project: tests
 # Author: Brian Cherinka
@@ -20,7 +20,7 @@ import glob
 import sys
 from tree import Tree
 
-setuppath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../bin/setup_tree.py'))
+setuppath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../bin/setup_tree.py'))
 
 
 def make_dirs(path):
@@ -42,7 +42,7 @@ def tree(monkeypatch, tmp_path):
     treedir = p / 'treedir'
     treedir.mkdir(parents=True)
     # copy data over
-    olddatadir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../data'))
+    olddatadir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data'))
     shutil.copytree(olddatadir, str(treedir / 'data'))
     (treedir / 'etc').mkdir()
     monkeypatch.setenv('TREE_DIR', str(treedir))
