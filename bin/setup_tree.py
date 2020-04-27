@@ -44,7 +44,7 @@ def make_symlink(src, link):
 
 def create_index_table(environ, envdir):
     ''' create an html table
-    
+
     Parameters:
         environ (dict):
             A tree environment dictionary
@@ -102,7 +102,7 @@ def create_index_table(environ, envdir):
             else:
                 print('Processing {0} for {1}'.format(tree_name, section))
                 make_symlink(src, link)
-            
+
             # create the table entry
             if os.path.exists(link):
                 table += '    <tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(tree_name.upper(), stattime)
@@ -113,7 +113,7 @@ def create_index_table(environ, envdir):
 
 def create_index_page(environ, defaults, envdir):
     ''' create the env index html page
-    
+
     Builds the index.html page containing a table of symlinks
     to datamodel directories
 
@@ -156,9 +156,9 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
 
 def create_env(environ, mirror=None, verbose=None):
     ''' create the env symlink directory structure
-    
+
     Creates the env folder filled with symlinks to datamodel directories
-    for a given tree config file.  
+    for a given tree config file.
 
     Parameters:
         environ (dict):
@@ -360,7 +360,7 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
             if len(split_mods) > 1:
                 # select which module paths to use
                 items = ['Multiple module paths found. Choose which module paths to use '
-                         '(e.g. "1,2") or hit enter for "all": ']    
+                         '(e.g. "1,2") or hit enter for "all": ']
                 items += ['{0}. {1}'.format(i + 1, t) for i, t in enumerate(split_mods)] + ['\n']
                 msg = '\n'.join(items)
                 selected = input(msg) or 'all'
