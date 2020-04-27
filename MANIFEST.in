@@ -1,5 +1,3 @@
-include README.md
 recursive-include python/tree/etc *
 recursive-include python/tree/data *
-recursive-include data *
 
