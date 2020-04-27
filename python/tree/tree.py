@@ -16,7 +16,7 @@ import glob
 import re
 from collections import OrderedDict
 import six
-from tree.misc import log
+from tree import log
 
 if ((sys.version_info.major == 3 and sys.version_info.minor > 2) or
         (sys.version_info.major == 2 and sys.version_info.minor >= 7)):
