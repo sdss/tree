@@ -1,4 +1,4 @@
-# !usr/bin/env python
+#!usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Licensed under a 3-clause BSD license.
