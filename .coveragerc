@@ -1,8 +1,0 @@
-[run]
-branch = true
-
-[report]
-omit =
-    python/tree/etc/*
-    python/tree/misc/*
-    python/tree/tests/*
