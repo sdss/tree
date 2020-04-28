@@ -22,6 +22,9 @@ This document records the main changes to the tree code.
 - Refactored ``compute_changelog`` function to return dictionary and compute PATHS differences
 - Added changelog compute functions ``compute_environment_changes``, and ``compute_path_changes``.
 - Added changelog print functions ``print_environment``, and ``print_paths``.
+- Moved tests out of ``tree`` python package to top level.
+- Deprecated included logger and config in favor of ``sdsstools`` logger and config.
+- Simplified python package setup.cfg and consolidated requirements files
 
 
 2.15.11 (unreleased)
@@ -165,6 +168,7 @@ Fixed
 * Updated versioning to sync with svn tags
 
 .. _changelog-0.1.0:
+
 0.1.0 (2017-11-29)
 ------------------
 

@@ -42,7 +42,7 @@ except ModuleNotFoundError:
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.autosummary',
               'sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
-              'sphinx.ext.intersphinx', 'tree.misc.docutree']
+              'sphinx.ext.intersphinx', 'tree.misc.docutree', 'recommonmark']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -51,11 +51,6 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 source_suffix = ['.rst', '.md']
-# source_suffix = '.rst'
-
-source_parsers = {
-    '.md': 'recommonmark.parser.CommonMarkParser',
-}
 
 # The master toctree document.
 master_doc = 'index'
