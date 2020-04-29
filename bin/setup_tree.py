@@ -416,7 +416,7 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
 
     # copy the modules into the tree
     if verbose:
-        print('Copying modules from etc/ into {0}'.format(tree_mod))
+        print('Copying modules from {1} into {0}'.format(tree_mod, filespath))
     module_files = glob.glob(os.path.join(filespath, '*.module'))
     for mfile in module_files:
         base = os.path.splitext(os.path.basename(mfile))[0]
@@ -529,8 +529,11 @@ def main(args):
     module_files = glob.glob(os.path.join(etcdir, '*.module'))
     if not any(module_files):
         print('No module files created in {0}'.format(etcdir))
+    else:
+        print('Environment files created in: {0}'.format(etcdir))
 
     # Setup the modules
+    print('Copying module files...')
     copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
 
 
