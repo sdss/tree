@@ -16,6 +16,7 @@ import glob
 import shutil
 import time
 import re
+import importlib
 
 
 def _remove_link(link):
@@ -237,7 +238,7 @@ def write_header(term='bash', tree_dir=None, name=None):
     if term != 'modules':
         hdr = """# Set up tree/{0} for {1}
 {2} TREE_DIR {3}
-{2} TREE_VER {1}
+{2} TREE_VER {0}
 {2} PATH $TREE_DIR/bin:$PATH
 {2} PYTHONPATH $TREE_DIR/python:$PYTHONPATH
                 """.format(name, term, base, product_dir)
@@ -323,6 +324,20 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None, default=None):
             f.write(modules_version)
 
 
+def get_python_path():
+    ''' Finds and switches to the tree python package directory '''
+    # get the TREE directory
+    tree_dir = os.getenv('TREE_DIR', None)
+    if not tree_dir:
+        path = os.path.dirname(os.path.abspath(__file__))
+        tree_dir = os.path.realpath(os.path.join(path, '..'))
+    pypath = os.path.join(tree_dir, 'python')
+
+    if pypath not in sys.path:
+        sys.path.append(pypath)
+    os.chdir(pypath)
+
+
 def get_tree(config=None):
     ''' Get the tree for a given config
 
@@ -333,11 +348,12 @@ def get_tree(config=None):
     Returns:
         a Python Tree instance
     '''
-    path = os.path.dirname(os.path.abspath(__file__))
-    pypath = os.path.realpath(os.path.join(path, '..', 'python'))
-    if pypath not in sys.path:
-        sys.path.append(pypath)
-    os.chdir(pypath)
+
+    # ensure the tree package is importable
+    mod = importlib.util.find_spec('tree')
+    if not (mod and mod.origin):
+        get_python_path()
+
     # extract the config format from either XXXX.cfg or full filepath
     has_cfg = re.search(r'(\w+)\.cfg', config)
     if has_cfg:
@@ -360,10 +376,17 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
             if len(split_mods) > 1:
                 # select which module paths to use
                 items = ['Multiple module paths found. Choose which module paths to use '
-                         '(e.g. "1,2") or hit enter for "all": ']
+                         '(e.g. "1,2") or hit enter for "all". Or "q" to quit: ']
                 items += ['{0}. {1}'.format(i + 1, t) for i, t in enumerate(split_mods)] + ['\n']
                 msg = '\n'.join(items)
                 selected = input(msg) or 'all'
+                # check to quit
+                if selected == 'q':
+                    if verbose:
+                        print('Quitting module copy.')
+                    return
+
+                # select choices
                 choices = range(len(split_mods)) if selected == 'all' else [
                     int(i) - 1 for i in selected.split(',')]
 
@@ -406,6 +429,20 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
         shutil.copy2(version, tree_mod)
 
 
+def check_output_dir(output_dir):
+    ''' Check the output directory '''
+
+    # check if output directory is within a pip package directory
+    if 'site-packages' in output_dir:
+        output_dir = os.path.expanduser('~/.tree/environments')
+
+    # create directory if it does not exist
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    return output_dir
+
+
 def parse_args():
     ''' Parse the arguments '''
 
@@ -426,6 +463,8 @@ def parse_args():
                         default=None, help='create links for only the specified tree config.')
     parser.add_argument('-d', '--default', action='store', dest='default', default='sdsswork',
                         help='Default config version to write into the .version file')
+    parser.add_argument('-p', '--path', action='store', dest='path', default=None,
+                        help='Custom output path to copy environment files')
     opts = parser.parse_args()
 
     return opts
@@ -438,21 +477,40 @@ def main(args):
 
     # check for a treedir; if none found, set path to the parent directory
     if not opts.treedir:
-        opts.treedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+        # look for installed python module
+        mod = importlib.util.find_spec('tree')
+        if mod and mod.origin:
+            opts.treedir = os.path.dirname(mod.origin)
+        else:
+            opts.treedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
         os.environ['TREE_DIR'] = opts.treedir
 
     # get directories
     datadir = os.path.join(opts.treedir, 'data')
-    etcdir = os.path.join(opts.treedir, 'etc')
+    etcdir = opts.path if opts.path else os.path.join(opts.treedir, 'etc')
+    etcdir = check_output_dir(etcdir)
+
+    if opts.verbose:
+        print('TREE_DIR: ', opts.treedir)
+        print("Data Directory : ", datadir)
+        print('Output Directory: ', etcdir)
 
     # config files
     configs = glob.glob(os.path.join(datadir, '*.cfg'))
+    if not configs:
+        print('No config files found in {0}.  Cannot proceed with tree setup. '
+              'Check for correct TREE_DIR.'.format(datadir))
+        return
 
     # check for the SAS_BASE_DIR
     check_sas_base_dir(root=opts.root)
 
     # Read and write the configuration files
     for cfgfile in configs:
+        # skip basework config
+        if 'basework' in cfgfile:
+            continue
+
         tree = get_tree(config=cfgfile)
         # create env symlinks or write out tree module/bash files
         if opts.env:
@@ -464,6 +522,11 @@ def main(args):
             write_file(tree.environ, term='modules', out_dir=etcdir, tree_dir=opts.treedir, default=opts.default)
             write_file(tree.environ, term='bash', out_dir=etcdir, tree_dir=opts.treedir)
             write_file(tree.environ, term='tsch', out_dir=etcdir, tree_dir=opts.treedir)
+
+    # check for files
+    module_files = glob.glob(os.path.join(etcdir, '*.module'))
+    if not any(module_files):
+        print('No module files created in {0}'.format(etcdir))
 
     # Setup the modules
     copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
