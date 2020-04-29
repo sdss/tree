@@ -22,7 +22,7 @@ First checkout the product from github.  Navigate to the ``bin`` directory
     git clone https://github.com/sdss/tree tree
     cd bin/
 
-The main script to create environment files is ``setup_tree.py``.  See setup_tree ref:`usage <usage>` for full
+The main script to create environment files is ``setup_tree.py``.  See setup_tree :ref:`usage <usage>` for full
 documentation of the command-line tool and its parameters.  To create corresponding
 ``module``, ``bash``, and ``tcsh`` configuration files, run
 
