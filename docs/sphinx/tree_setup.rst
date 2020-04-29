@@ -2,7 +2,7 @@
 .. _setup:
 
 Environment Setup of the Tree
------------------------------
+=============================
 
 This page describes the creation of the SDSS config environment files necessary for most SDSS software and filesystem
 navigation on the Science Archive Server (SAS).  Running this script will setup the SDSS tree system
@@ -14,13 +14,35 @@ or straight with ``bash`` or ``tsch``.
     If you are only interested in using the Tree Python package and having dynamic environments, you do not
     need to perform this step, and can safely ignore this page.
 
-Checkout the ``tree`` product
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-First checkout the product from github.  Navigate to the ``bin`` directory
+Checkout or Install the ``tree`` product
+----------------------------------------
+
+To setup the tree, you first must install or checkout the product.  You can either install it with ``pip`` or check out
+the product from Github.
+
+Pip Install
+^^^^^^^^^^^
+To install it with pip, run
+::
+
+    pip install -U sdss-tree
+
+Installing `tree` this way will provide a shell script that you can run from anywhere as ``setup_tree.py``.
+
+Git Clone
+^^^^^^^^^
+
+First clone the product from github.  Navigate to the ``bin`` directory
 ::
 
     git clone https://github.com/sdss/tree tree
-    cd bin/
+    cd tree/bin/
+
+Installing `tree` this way means you must run the script as ``python setup_tree.py``.
+
+
+Run Setup
+^^^^^^^^^
 
 The main script to create environment files is ``setup_tree.py``.  See setup_tree :ref:`usage <usage>` for full
 documentation of the command-line tool and its parameters.  To create corresponding
@@ -28,19 +50,20 @@ documentation of the command-line tool and its parameters.  To create correspond
 
 ::
 
-    python setup_tree.py
+    python setup_tree.py -v
 
-This will take all config files located in ``tree/data`` and create environment files inside ``tree/etc``, which
-can then be sourced into your corresponding shell environment.  The script uses the environment variables
-``$SAS_BASE_DIR`` and ``$TREE_DIR`` when identifying and creating environment files.  If it cannot find an existing
-``TREE_DIR`` it will create one corresponding to the top level directory of the git repo.  If it cannot find an
-existing ``SAS_BASE_DIR`` it will prompt you to create one.
+This will take all config files located in ``tree/data`` and create environment files inside a specified output
+directory (see :ref:`custom-output`) which can then be sourced into your corresponding shell environment.  The
+script uses the environment variables ``$SAS_BASE_DIR`` and ``$TREE_DIR`` when identifying and creating
+environment files.  If it cannot find an existing ``TREE_DIR`` it will create one corresponding to the top
+level directory of the git repo or python package.  If it cannot find an existing ``SAS_BASE_DIR`` it will
+prompt you to create one.
 
 ModuleFiles
-^^^^^^^^^^^
+-----------
 
 If you are using the ``modules`` environment manager, this script attempts to copy the module files
-located in ``tree/etc`` into your local ``$MODULES_DIR``.  If no modules path is specified, the script
+located in the output directory into your local ``$MODULES_DIR``.  If no modules path is specified, the script
 attempts to identify your modules directory by taking the first path directory found in the ``$MODULEPATH``
 environment variable. To specify a custom or specific ``MODULES_DIR``, use the ``modulesdir`` keyword argument.
 ::
@@ -71,7 +94,7 @@ directory is found, it also prompts if the user wishes to overwrite existing fil
     Copying modules from etc/ into /Users/Brian/Work/github_projects/modulefiles/tree
 
 Example Files
-^^^^^^^^^^^^^
+-------------
 
 Example config files with created environment files.  The ``setup_tree`` command will create ``.sh``, ``.csh`` environment
 files for ``bash``, ``tsch`` shells, and ``.module`` files for use with the ``modules`` environment manager.
@@ -99,7 +122,7 @@ If you are using ``bash`` or ``tsch`` simply copy the relevant files to a locati
 file you wish to load in your ``.bashrc`` or ``.cshrc`` file.
 
 Using with modules
-^^^^^^^^^^^^^^^^^^
+------------------
 
 If you are using ``modules`` as an environment varibale, you can easily switch between different environment configurations.
 Before you can utilize the new module files, you must make sure the directory where the new module files were copied can
@@ -126,8 +149,10 @@ You can load a module with the ``module load`` or ``module switch`` command.
     # to load the DR16 SDSS environment
     module load tree/dr16
 
+.. _custom-output:
+
 Custom Output Path
-^^^^^^^^^^^^^^^^^^
+------------------
 
 The default ouput directory for the environment files depends on whether the ``tree`` product was
 `git cloned` or `pip-installed.`
@@ -158,7 +183,7 @@ To control where `setup_tree` creates the environment files, specify the ``--pat
 
 
 Creating Environment Symlinks
------------------------------
+=============================
 
 To create the environment index pages, with symlinks to the Tree environment paths for the SAS, run
 
