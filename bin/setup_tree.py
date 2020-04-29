@@ -449,8 +449,7 @@ def get_parser():
     description = ('Create bash, tsch, and module environment configuration files '
                    'defining relevant variables for accessing data products on '
                    'the SDSS Science Archive Server (SAS)')
-    parser = argparse.ArgumentParser(prog='setup_tree.py', usage='%(prog)s [opts]',
-                                     description=description)
+    parser = argparse.ArgumentParser(prog='setup_tree.py', description=description)
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
                         help='Print extra information.', default=False)
     parser.add_argument('-r', '--root', action='store', dest='root', default=os.getenv('SAS_BASE_DIR'),
