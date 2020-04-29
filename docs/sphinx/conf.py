@@ -24,7 +24,7 @@ try:
     from tree import __version__
 except ModuleNotFoundError:
     from sdsstools import get_package_version
-    __version__ = get_package_version(__file__, 'sdss_tree') or 'dev'
+    __version__ = get_package_version(__file__, 'sdss-tree') or 'dev'
 
 
 # add a local path to the Sphinx search path
@@ -41,7 +41,7 @@ except ModuleNotFoundError:
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.autosummary',
               'sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
-              'sphinx.ext.intersphinx', 'tree.misc.docutree', 'recommonmark']
+              'sphinx.ext.intersphinx', 'tree.misc.docutree', 'recommonmark', 'sphinxarg.ext']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

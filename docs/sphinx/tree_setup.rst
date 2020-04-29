@@ -22,7 +22,8 @@ First checkout the product from github.  Navigate to the ``bin`` directory
     git clone https://github.com/sdss/tree tree
     cd bin/
 
-The main script to create environment files is ``setup_tree.py``.  To create corresponding
+The main script to create environment files is ``setup_tree.py``.  See setup_tree ref:`usage <usage>` for full
+documentation of the command-line tool and its parameters.  To create corresponding
 ``module``, ``bash``, and ``tcsh`` configuration files, run
 
 ::
@@ -81,8 +82,8 @@ files for ``bash``, ``tsch`` shells, and ``.module`` files for use with the ``mo
         <thead>
         <tr>
             <th style="width: 20%">SDSS Config</th>
-            <th style="width: 20%">Data Dir</th>
-            <th style="width: 25%">Etc Dir</th>
+            <th style="width: 20%">Data Directory</th>
+            <th style="width: 25%">Output Directory</th>
         </tr>
         </thead>
         <tbody>
@@ -124,6 +125,36 @@ You can load a module with the ``module load`` or ``module switch`` command.
 
     # to load the DR16 SDSS environment
     module load tree/dr16
+
+Custom Output Path
+^^^^^^^^^^^^^^^^^^
+
+The default ouput directory for the environment files depends on whether the ``tree`` product was
+`git cloned` or `pip-installed.`
+
+.. raw:: html
+
+    <table class="table striped" style="width: 80%">
+        <thead>
+        <tr>
+            <th style="width: 20%">Install Method</th>
+            <th style="width: 25%">Ouput Directory</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='active'>
+            <td>git clone</td><td>$TREE_DIR/etc</td>
+        </tr>
+        <tr class='active'>
+            <td>pip</td><td>~/.tree/environments</td>
+        </tr>
+    </table>
+
+To control where `setup_tree` creates the environment files, specify the ``--path`` keyword argument.
+::
+
+    # specify a custom output path
+    setup_tree.py -v -p /my_output/environment/configs/
 
 
 Creating Environment Symlinks

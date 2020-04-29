@@ -443,18 +443,22 @@ def check_output_dir(output_dir):
     return output_dir
 
 
-def parse_args():
+def get_parser():
     ''' Parse the arguments '''
 
-    parser = argparse.ArgumentParser(prog='setup_tree_modules', usage='%(prog)s [opts]')
+    description = ('Create bash, tsch, and module environment configuration files '
+                   'defining relevant variables for accessing data products on '
+                   'the SDSS Science Archive Server (SAS)')
+    parser = argparse.ArgumentParser(prog='setup_tree.py', usage='%(prog)s [opts]',
+                                     description=description)
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
                         help='Print extra information.', default=False)
     parser.add_argument('-r', '--root', action='store', dest='root', default=os.getenv('SAS_BASE_DIR'),
-                        help='Override the value of $SAS_BASE_DIR.', metavar='SAS_BASE_DIR')
+                        help='Override the environment variable $SAS_BASE_DIR.', metavar='SAS_BASE_DIR')
     parser.add_argument('-t', '--treedir', action='store', dest='treedir', default=os.getenv('TREE_DIR'),
-                        help='Override the value of $TREE_DIR.', metavar='TREE_DIR')
+                        help='Override the environment variable $TREE_DIR.', metavar='TREE_DIR')
     parser.add_argument('-m', '--modulesdir', action='store', dest='modulesdir', default=os.getenv('MODULES_DIR'),
-                        help='Your modules directory', metavar='MODULES_DIR')
+                        help='Your modules directory.  Defaults to $MODULES_DIR', metavar='MODULES_DIR')
     parser.add_argument('-e', '--env', action='store_true', dest='env',
                         help='Create tree environment symlinks.', default=False)
     parser.add_argument('-i', '--mirror', action='store_true', dest='mirror',
@@ -462,18 +466,17 @@ def parse_args():
     parser.add_argument('-o', '--only', action='store', dest='only', metavar='[xxx].cfg',
                         default=None, help='create links for only the specified tree config.')
     parser.add_argument('-d', '--default', action='store', dest='default', default='sdsswork',
-                        help='Default config version to write into the .version file')
+                        help='Default config version to write into the .version file. Defaults to "sdsswork"')
     parser.add_argument('-p', '--path', action='store', dest='path', default=None,
                         help='Custom output path to copy environment files')
-    opts = parser.parse_args()
 
-    return opts
+    return parser
 
 
 def main(args):
 
     # parse arguments
-    opts = parse_args()
+    opts = get_parser().parse_args()
 
     # check for a treedir; if none found, set path to the parent directory
     if not opts.treedir:
