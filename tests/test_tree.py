@@ -18,6 +18,7 @@ import os
 @pytest.fixture()
 def tree():
     t = Tree()
+    t.replant_tree()
     yield t
     t = None
 
@@ -98,5 +99,53 @@ class TestTree(object):
         assert os.environ[name] == path
         assert path != tree.environ['MANGA'][name]
 
+    def test_paths(self, tree):
+        assert 'PATHS' not in tree.environ
+        assert tree.paths is not None
+        assert isinstance(tree.paths, dict)
 
+    def test_get_orig_os(self, tree):
+        orig_os = tree.get_orig_os_environ()
+        assert 'mangawork' in orig_os.get("MANGA_ROOT")
+        assert 'mangawork' in os.getenv("MANGA_ROOT")
+        tree.replant_tree('dr15')
+        assert 'dr15' not in orig_os.get("MANGA_ROOT")
+        assert 'dr15' in os.getenv("MANGA_ROOT")
 
+    def test_reset_orig_os(self, tree):
+        assert 'mangawork' in os.getenv("MANGA_ROOT")
+        tree.replant_tree('dr15')
+        assert 'dr15' in os.getenv("MANGA_ROOT")
+        tree.reset_os_environ()
+        assert 'mangawork' in os.getenv("MANGA_ROOT")
+
+    def test_list_configs(self, tree):
+        cfgs = tree.list_available_configs()
+        assert 'dr15.cfg' in cfgs
+
+    @pytest.mark.parametrize('public', [(True), (False)])
+    def test_get_releases(self, tree, public):
+        rels = tree.get_available_releases(public=public)
+        assert 'DR15' in rels
+        if public:
+            assert 'WORK' not in rels
+        else:
+            assert 'WORK' in rels
+
+    @pytest.mark.parametrize('collapse', [(True), (False)])
+    def test_to_dict(self, tree, collapse):
+        envdict = tree.to_dict(collapse=collapse)
+        if collapse:
+            assert 'MANGA' not in envdict
+            assert 'MANGA_ROOT' in envdict
+        else:
+            assert 'MANGA' in envdict
+            assert 'MANGA_ROOT' not in envdict
+            assert 'MANGA_ROOT' in envdict['MANGA']
+
+    def test_set_product_root(self, tmp_path, tree):
+        temp_prod = tmp_path / 'software'
+        temp_prod.mkdir()
+        tree.set_product_root(root=str(temp_prod))
+        assert tree.productroot_dir == str(temp_prod)
+        assert os.getenv("PRODUCT_ROOT") == str(temp_prod)
