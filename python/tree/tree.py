@@ -16,6 +16,7 @@ import glob
 import re
 from collections import OrderedDict
 import six
+import json
 from tree import log
 
 if ((sys.version_info.major == 3 and sys.version_info.minor > 2) or
@@ -23,6 +24,8 @@ if ((sys.version_info.major == 3 and sys.version_info.minor > 2) or
     from configparser import ConfigParser as SafeConfigParser
 else:
     from configparser import SafeConfigParser
+
+orig_environ = os.environ.copy()
 
 
 class Tree(object):
@@ -43,6 +46,11 @@ class Tree(object):
         exclude (list):
             A list of environment variables to exclude
             from forced updates
+        root (str):
+            An absolute directory path to override as the software product root
+        git (bool):
+            If True, looks for SDSS_GIT_ROOT environment variable as product root instead
+            of SDSS_SVN_ROOT
 
     Attributes:
         treedir (str):
@@ -51,8 +59,12 @@ class Tree(object):
             The fully loaded SDSS config file held internally
 
     '''
+    # possible software product roots
+    _product_roots = ['SDSS_GIT_ROOT', 'SDSS_SVN_ROOT', 'SDSS_INSTALL_PRODUCT_ROOT',
+                      'SDSS_PRODUCT_ROOT', 'SDSS4_PRODUCT_ROOT']
 
-    def __init__(self, config=None, key=None, uproot_with=None, update=None, exclude=None):
+    def __init__(self, config=None, key=None, uproot_with=None, update=None, exclude=None,
+                 product_root=None, git=None):
         self.config_name = config or 'sdsswork'
         self.exclude = exclude or []
         uproot_with = uproot_with
@@ -73,6 +85,10 @@ class Tree(object):
         if key is not None:
             self.add_paths_to_os(key='general', update=update)
         self.add_paths_to_os(key=key, update=update)
+
+        # set the software product root, $PRODUCT_ROOT envvar
+        self.productroot_dir = None
+        self.set_product_root(root=product_root, git=git)
 
     def __repr__(self):
         return ('Tree(sas_base_dir={0}, config={1})'.format(self.sasbasedir, self.config_name))
@@ -484,6 +500,96 @@ class Tree(object):
                 # reduce alll xxxxwork cfgs to a single "work" release
                 releases.append('WORK')
         return releases
+
+    @staticmethod
+    def reset_os_environ():
+        ''' Resets os.environ with the orignal cache before tree mods '''
+        os.environ = orig_environ
+
+    @staticmethod
+    def get_orig_os_environ():
+        ''' Returns the original os.environ '''
+        return orig_environ
+
+    def to_dict(self, collapse=True):
+        ''' Convert tree environment to standard dicts
+
+        Converts the nested ``tree.environ`` into a series of
+        ordinary dicts.
+
+        Parameters:
+            collapse (bool):
+                If True, collapses nested dicts into a single dict.  Default is True.
+        '''
+        if collapse is False:
+            dd = json.loads(json.dumps(self.environ))
+            dd.pop('default')
+            return dd
+
+        dd = {}
+        for k, v in self.environ.items():
+            if k == 'default':
+                continue
+            for kk, vv in v.items():
+                dd[kk] = vv
+        return dd
+
+    @staticmethod
+    def get_product_root(root=None, git=None):
+        ''' Get the sdss product root used for svn/git products
+
+        Attempts to extract the root directory for SDSS-installed git/svn products.
+        Uses the following environment variables in order of precendence:
+        SDSS_SVN_ROOT, SDSS_INSTALL_PRODUCT_ROOT, SDSS_PRODUCT_ROOT, SDSS4_PRODUCT_ROOT.
+        If no root is found uses one directory up from SAS_BASE_DIR.
+
+        Parameters:
+            root (str):
+                An absolute directory path to override as the product root
+            git (bool):
+                If True, looks for SDSS_GIT_ROOT environment variable as product root.
+
+        Returns:
+            The directory path to sdss-installed svn/git products
+        '''
+
+        # override with an input root directory
+        if root:
+            return root
+
+        # use an existing $PRODUCT_ROOT envvar
+        product_root = os.getenv("PRODUCT_ROOT", None)
+        if product_root:
+            return product_root
+
+        # attempt to extract a product root from a variety of environment variables
+        repo_root = 'SDSS_GIT_ROOT' if git else 'SDSS_SVN_ROOT'
+        product_root = os.getenv(repo_root, os.getenv(
+            "SDSS_INSTALL_PRODUCT_ROOT", os.getenv("SDSS4_PRODUCT_ROOT", None)))
+        if not product_root:
+            product_root = os.getenv("SAS_BASE_DIR").rsplit('/', 1)[0]
+
+        return product_root
+
+    def set_product_root(self, root=None, git=None):
+        ''' Sets the sdss product root used for svn/git products
+
+        Sets the root directory for SDSS-installed git/svn products as
+        the $PRODUCT_ROOT environment variable.  Attempts to find a viable $PRODUCT_ROOT
+        using ``get_product_method``.  Viable product roots in order of precendence:
+        SDSS_SVN_ROOT, SDSS_INSTALL_PRODUCT_ROOT, SDSS_PRODUCT_ROOT, SDSS4_PRODUCT_ROOT.
+        If no root is found uses one directory up from SAS_BASE_DIR.
+
+        Parameters:
+            root (str):
+                An absolute directory path to override as the product root
+            git (bool):
+                If True, looks for SDSS_GIT_ROOT environment variable as product root.
+
+        '''
+        product_root = self.get_product_root(root=root, git=git)
+        os.environ['PRODUCT_ROOT'] = product_root
+        self.productroot_dir = product_root
 
 
 def get_tree_dir(uproot_with=None):
