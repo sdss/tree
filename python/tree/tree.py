@@ -60,7 +60,7 @@ class Tree(object):
 
     '''
     # possible software product roots
-    _product_roots = ['SDSS_GIT_ROOT', 'SDSS_SVN_ROOT', 'SDSS_INSTALL_PRODUCT_ROOT',
+    _product_roots = ['PRODUCT_ROOT', 'SDSS_GIT_ROOT', 'SDSS_SVN_ROOT', 'SDSS_INSTALL_PRODUCT_ROOT',
                       'SDSS_PRODUCT_ROOT', 'SDSS4_PRODUCT_ROOT']
 
     def __init__(self, config=None, key=None, uproot_with=None, update=None, exclude=None,
@@ -540,8 +540,8 @@ class Tree(object):
 
         Attempts to extract the root directory for SDSS-installed git/svn products.
         Uses the following environment variables in order of precendence:
-        SDSS_SVN_ROOT, SDSS_INSTALL_PRODUCT_ROOT, SDSS_PRODUCT_ROOT, SDSS4_PRODUCT_ROOT.
-        If no root is found uses one directory up from SAS_BASE_DIR.
+        PRODUCT_ROOT, SDSS_SVN_ROOT, SDSS_INSTALL_PRODUCT_ROOT, SDSS_PRODUCT_ROOT,
+        SDSS4_PRODUCT_ROOT. If no root is found uses one directory up from SAS_BASE_DIR.
 
         Parameters:
             root (str):
