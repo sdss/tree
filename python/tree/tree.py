@@ -67,7 +67,6 @@ class Tree(object):
                  product_root=None, git=None):
         self.config_name = config or 'sdsswork'
         self.exclude = exclude or []
-        uproot_with = uproot_with
         update = update or False
         self._keys = key
         self._file_replace = '@FILESYSTEM@'

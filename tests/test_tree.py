@@ -105,19 +105,33 @@ class TestTree(object):
         assert isinstance(tree.paths, dict)
 
     def test_get_orig_os(self, tree):
+        # need to check if on system with no sdsswork modules running (i.e. Travis)
         orig_os = tree.get_orig_os_environ()
-        assert 'mangawork' in orig_os.get("MANGA_ROOT")
+        hassas = orig_os.get("SAS_ROOT", None)
+        if hassas:
+            assert 'mangawork' in orig_os.get("MANGA_ROOT")
+        else:
+            assert 'MANGA_ROOT' not in orig_os
+
         assert 'mangawork' in os.getenv("MANGA_ROOT")
         tree.replant_tree('dr15')
-        assert 'dr15' not in orig_os.get("MANGA_ROOT")
+        if hassas:
+            assert 'dr15' not in orig_os.get("MANGA_ROOT")
+        else:
+            assert 'MANGA_ROOT' not in orig_os
         assert 'dr15' in os.getenv("MANGA_ROOT")
 
     def test_reset_orig_os(self, tree):
-        assert 'mangawork' in os.getenv("MANGA_ROOT")
+        # need to check if on system with no sdsswork modules running (i.e. Travis)
+        orig_os = tree.get_orig_os_environ()
+        hassas = orig_os.get("SAS_ROOT", None)
         tree.replant_tree('dr15')
         assert 'dr15' in os.getenv("MANGA_ROOT")
         tree.reset_os_environ()
-        assert 'mangawork' in os.getenv("MANGA_ROOT")
+        if hassas:
+            assert 'mangawork' in os.getenv("MANGA_ROOT")
+        else:
+            assert "MANGA_ROOT" not in os.environ
 
     def test_list_configs(self, tree):
         cfgs = tree.list_available_configs()
