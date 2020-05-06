@@ -80,14 +80,14 @@ class Tree(object):
         # create the environment
         self.branch_out(limb=key)
 
-        # set the software product root, $PRODUCT_ROOT envvar
-        self.productroot_dir = None
-        self.set_product_root(root=product_root, git=git)
-
         # add the paths to the os.environ
         if key is not None:
             self.add_paths_to_os(key='general', update=update)
         self.add_paths_to_os(key=key, update=update)
+
+        # set the software product root, $PRODUCT_ROOT envvar
+        self.productroot_dir = None
+        self.set_product_root(root=product_root, git=git)
 
     def __repr__(self):
         return ('Tree(sas_base_dir={0}, config={1})'.format(self.sasbasedir, self.config_name))
