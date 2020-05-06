@@ -234,14 +234,15 @@ def write_header(term='bash', tree_dir=None, name=None):
 
     product_dir = tree_dir.rstrip('/')
     base = 'export' if term == 'bash' else 'setenv'
+    sep = '=' if term == 'bash' else ' '
 
     if term != 'modules':
         hdr = """# Set up tree/{0} for {1}
-{2} TREE_DIR {3}
-{2} TREE_VER {0}
-{2} PATH $TREE_DIR/bin:$PATH
-{2} PYTHONPATH $TREE_DIR/python:$PYTHONPATH
-                """.format(name, term, base, product_dir)
+{2} TREE_DIR{4}{3}
+{2} TREE_VER{4}{0}
+{2} PATH{4}$TREE_DIR/bin:$PATH
+{2} PYTHONPATH{4}$TREE_DIR/python:$PYTHONPATH
+                """.format(name, term, base, product_dir, sep)
     else:
         hdr = """#%Module1.0
 proc ModulesHelp {{ }} {{
@@ -313,7 +314,8 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None, default=None):
                 f.write('#\n# {0}\n#\n'.format(key))
                 # write tree names and paths
                 for tree_name, tree_path in values.items():
-                    f.write(cmd.format(tree_name.upper(), tree_path))
+                    if tree_path.startswith(os.getenv("SAS_BASE_DIR")):
+                        f.write(cmd.format(tree_name.upper(), tree_path))
 
     # write default .version file for modules
     default = default if default else name
@@ -433,7 +435,7 @@ def check_output_dir(output_dir):
     ''' Check the output directory '''
 
     # check if output directory is within a pip package directory
-    if 'site-packages' in output_dir:
+    if 'site-packages' in output_dir or output_dir.endswith('python/tree/etc'):
         output_dir = os.path.expanduser('~/.tree/environments')
 
     # create directory if it does not exist
@@ -496,7 +498,7 @@ def main(args):
         print('TREE_DIR: ', opts.treedir)
         print("Data Directory : ", datadir)
         print('Output Directory: ', etcdir)
-
+    breakpoint()
     # config files
     configs = glob.glob(os.path.join(datadir, '*.cfg'))
     if not configs:
