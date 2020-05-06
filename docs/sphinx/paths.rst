@@ -224,6 +224,9 @@ The path is now available in ``sdss_access``, with the proper versioning in plac
     path.full('mangapreimg', designid=8405, designgrp='D0084XX', mangaid='1-42007')
     '/Users/Brian/Work/sdss/data/manga/mangapreim/v2_5/data/D0084XX/8405/preimage-1-42007_irg.jpg'
 
+    path.url('mangapreimg', designid=8405, designgrp='D0084XX', mangaid='1-42007')
+    'https://svn.sdss.org/public/data/manga/mangapreim/tags/v2_5/data/D0084XX/8405/preimage-1-42007_irg.jpg'
+
 For additional information on how to handle SVN paths with ``sdss_access``, for example, how to deal with locally checked out products
 managed with ``Modules`` environment manager, see `Accessing SVN Paths <https://sdss-access.rtfd.io/en/latest/intro.html#accessing-paths-to-data-files-in-svn>`_.
 
