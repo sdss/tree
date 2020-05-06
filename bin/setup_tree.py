@@ -498,7 +498,7 @@ def main(args):
         print('TREE_DIR: ', opts.treedir)
         print("Data Directory : ", datadir)
         print('Output Directory: ', etcdir)
-    breakpoint()
+
     # config files
     configs = glob.glob(os.path.join(datadir, '*.cfg'))
     if not configs:
