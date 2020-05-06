@@ -157,6 +157,76 @@ The path to your file has been properly versioned between DR15 and DR16.  Rememb
     >>> path.full('myfits', version='v2', name='A')
     '/files/sdsswork/vacs/path/v2/subdir/data_product_A.fits'
 
+.. _path-svn:
+
+Defining Paths to Data Files in SVN
+-----------------------------------
+
+If you want to define a path to a data file that is a part of a SVN software product, e.g. `plPlugMapP` plugging file, or a MaNGA preimaging file,
+you must define two things: an environment variable and a path template.  The environment variable must have the following syntax
+::
+
+    [PRODUCT_NAME]_DIR = $PRODUCT_ROOT/path/to/top_level/directory
+
+and the path template is defined as usual
+::
+
+    short_name = $[PRODUCT_NAME]_DIR/template_path_definition
+
+The defined environment variable must start with the **$PRODUCT_ROOT** environment variable.  The **$PRODUCT_ROOT** is a special environment
+variable that represents the top level directory where your svn products are installed.  You do not have to define this.  It automatically gets
+defined when the ``tree`` python package is imported and instantiated.  It attempts to identify the root software installation directory and
+sets itself to the first defined path it finds.  It looks for the following defined environment variables in order of precedence:
+
+- PRODUCT_ROOT
+- SDSS_SVN_ROOT
+- SDSS_INSTALL_PRODUCT_ROOT
+- SDSS_PRODUCT_ROOT
+- SDSS4_PRODUCT_ROOT
+
+You can also manually set the product root in Python with ``tree.set_product_root()`` method.  Or you can optionally set the `PRODUCT_ROOT`
+manually by setting the `PRODUCT_ROOT` parameter in your custom config file, ``~/.config/tree/tree.yml``
+
+As an example, let's take the addition of the MaNGA preimaging files, which are a part of the ``mangapreim`` svn software repository.
+Within the `sdsswork.cfg <https://github.com/sdss/tree/blob/master/data/sdsswork.cfg>`_ config file, we define the environment variable
+that points to the main ``trunk`` of the product in the `[MANGA]` environment section, and a new path to the pre-imaging file in the `[PATHS]`
+section.
+::
+
+    [MANGA]
+    MANGAPREIM_DIR = $PRODUCT_ROOT/data/manga/mangapreim/trunk
+
+    [PATHS]
+    mangapreimg = $MANGAPREIM_DIR/data/{designgrp}/{designid}/preimage-{mangaid}_irg.jpg
+
+If the product was also released as a tag for a public data release, and hosted on ``svn.sdss.org/public``, then you can set
+the environment variable to the proper location in the appropriate ``drXX.cfg`` file.  In our MaNGA pre-imaging example, we set the following
+within the `dr15.cfg <https://github.com/sdss/tree/blob/master/data/dr15.cfg>`_ file.
+::
+    [MANGA]
+    MANGAPREIM_DIR = $PRODUCT_ROOT/data/manga/mangapreim/tags/v2_5
+
+    [PATHS]
+    mangapreimg = $MANGAPREIM_DIR/data/{designgrp}/{designid}/preimage-{mangaid}_irg.jpg
+
+The path is now available in ``sdss_access``, with the proper versioning in place.
+::
+
+    from sdss_access.path import Path
+
+    # load the paths for sdsswork
+    path = Path()
+    path.full('mangapreimg', designid=8405, designgrp='D0084XX', mangaid='1-42007')
+    '/Users/Brian/Work/sdss/data/manga/mangapreim/trunk/data/D0084XX/8405/preimage-1-42007_irg.jpg'
+
+    # load the paths for DR15
+    path = Path(release='DR15')
+    path.full('mangapreimg', designid=8405, designgrp='D0084XX', mangaid='1-42007')
+    '/Users/Brian/Work/sdss/data/manga/mangapreim/v2_5/data/D0084XX/8405/preimage-1-42007_irg.jpg'
+
+For additional information on how to handle SVN paths with ``sdss_access``, for example, how to deal with locally checked out products
+managed with ``Modules`` environment manager, see `Accessing SVN Paths <https://sdss-access.rtfd.io/en/latest/intro.html#accessing-paths-to-data-files-in-svn>`_.
+
 Advanced Items of Note
 ----------------------
 

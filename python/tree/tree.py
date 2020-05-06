@@ -17,7 +17,7 @@ import re
 from collections import OrderedDict
 import six
 import json
-from tree import log
+from tree import log, config as cfg_params
 
 if ((sys.version_info.major == 3 and sys.version_info.minor > 2) or
         (sys.version_info.major == 2 and sys.version_info.minor >= 7)):
@@ -558,6 +558,11 @@ class Tree(object):
 
         # use an existing $PRODUCT_ROOT envvar
         product_root = os.getenv("PRODUCT_ROOT", None)
+        if product_root:
+            return product_root
+
+        # check in the config for a product root definition
+        product_root = cfg_params.get("PRODUCT_ROOT", None)
         if product_root:
             return product_root
 
