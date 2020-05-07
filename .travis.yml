@@ -13,12 +13,16 @@ python:
 - '3.5'
 - '3.6'
 - '3.7'
+- '3.8'
 
 os:
 - linux
 
 matrix:
   fast_finish: true
+  allow_failures:
+    - python: '2.7'
+    - python: '3.5'
 
 notifications:
   email: false
@@ -30,11 +34,11 @@ notifications:
 install:
 - pip install -U pip wheel --quiet
 - pip install --upgrade setuptools --quiet
-- pip install -r requirements_dev.txt --quiet
-- python setup.py install
+- pip install .[dev]
 
 script:
-- pytest python/tree/tests --cov python/tree --cov-report html
+- pytest tests --cov tree --cov-report html
 
 after_success:
 - coveralls
+- codecov

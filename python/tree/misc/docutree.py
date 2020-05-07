@@ -66,14 +66,43 @@ def _format_command(name, envvars, base=None):
 
 
 def _format_changelog(changes):
-    ''' Format a changlog for a Tree '''
+    ''' Format a changelog for a Tree '''
 
+    yield '.. role:: maroon'
+
+    # check if changelog has a PATHS section
+    has_paths = 'Changes in PATHS:' in changes
+    if has_paths:
+        path_idx = changes.index('Changes in PATHS:')
+        path_changes = changes[path_idx:]
+        changes = changes[:path_idx]
+
+    # yield lines from the Environment section
     for line in changes:
-        if 'Enviroment' in line or 'Changes' in line:
+        if 'Environment' in line or 'Changes' in line:
             yield f'**{line}**'
         elif re.search('[a-z]', line):
-            yield '* ' + _indent(line)
+            new = re.sub(r'(New\s|Updated\s|^)(.*?):', r'\1:maroon:`\2`:', line)
+            yield '* ' + new
         yield ''
+
+    # yield lines from the PATHS section
+    if has_paths:
+        # list mode
+        for line in path_changes:
+            if 'Changes' in line:
+                yield f'**{line}**'
+                yield ''
+            elif 'New' in line or 'Updated' in line:
+                yield '* ' + _indent(f'**{line.strip()}**')
+            elif re.search('[a-z]', line):
+                # nested list From To
+                if line.strip().startswith(('from', 'to')):
+                    line = line.replace('to:', '**To:**').replace('from:', '**From:**')
+                    yield _indent('    * ' + line, level=2)
+                else:
+                    name, template = line.split(':', 1)
+                    yield _indent(f'    * :maroon:`{name}`: {template}')
 
 
 def load_module(module_path, error=None, products=None):
@@ -159,7 +188,7 @@ class TreeDirective(rst.Directive):
 
         # Summarize
         result = statemachine.ViewList()
-        base = config['default']['filesystem'] if remove_sasbase else None
+        base = config['default']['FILESYSTEM'] if remove_sasbase else None
         lines = _format_command(cfg_section, config[cfg_section], base=base)
         for line in lines:
             result.append(line, source_name)
@@ -203,7 +232,7 @@ class TreeChangeDirective(rst.Directive):
         'drs': directives.unchanged_required,
         'remove-sasbase': directives.flag,
     }
-        
+
     def run(self):
         self.env = self.state.document.settings.env
 
@@ -222,7 +251,7 @@ class TreeChangeDirective(rst.Directive):
         new, old = drs.replace(' ', '').split(',')
 
         # compute and format the changelog lines
-        lines = command(new, old, remove_sas=remove_sasbase)
+        lines = command(new, old, remove_sas=remove_sasbase, to_list=True)
         title = lines[0]
         lines = lines[1:]
         lines = _format_changelog(lines)

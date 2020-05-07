@@ -8,6 +8,7 @@ etc/*.module
 etc/*.sh
 etc/*.csh
 etc/.version
+python/tree/data/*
 
 # C extensions
 *.so

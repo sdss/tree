@@ -6,6 +6,27 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.0 (unreleased)
+------------------
+
+- Major changes to environment configuration files
+- Incompatible with 2.x versions
+- Implements versioning of DR config files and `sdss_access` paths
+- Each config file now inherits from another config file using `base` keyword.
+- Each DR config now only contains new or modified definitions for that DR.
+- New configs for internal releases can now be created, e.g. mpl9.cfg.
+- Explicit case is recognized for environment names and tree ini sections
+- Deprecated and Removed sdss_paths.ini file
+- New PATHS ini section in environment config files defines `sdss_access` paths
+- Symbol for "special function" path definition has changed from `%` to `@`
+- Refactored ``compute_changelog`` function to return dictionary and compute PATHS differences
+- Added changelog compute functions ``compute_environment_changes``, and ``compute_path_changes``.
+- Added changelog print functions ``print_environment``, and ``print_paths``.
+- Moved tests out of ``tree`` python package to top level.
+- Deprecated included logger and config in favor of ``sdsstools`` logger and config.
+- Simplified python package setup.cfg and consolidated requirements files
+
+
 2.15.11 (unreleased)
 --------------------
 
@@ -16,6 +37,11 @@ Added
 ^^^^^
 - new function ``compute_changelog`` to print difference between two tree environments
 - new sphinx documentation on all DR tree environments and environment changes between DRs
+
+Changed
+^^^^^^^
+- added wave keyword to mangacube/rss paths to handle LOG/LIN switch
+- updated Tree python code to handle new cfg inheritance and versioning
 
 2.15.9 (2020-03-16)
 -------------------
@@ -30,7 +56,7 @@ Fixed
 Added
 ^^^^^
 - new method ``list_available_configs`` that lists the available config files to load with Tree
-- new method ``get_available_releases`` that builds a list of data releases from the config files 
+- new method ``get_available_releases`` that builds a list of data releases from the config files
 
 Fixed
 ^^^^^
@@ -55,16 +81,24 @@ Fixed
 2.15.6 (2019-07-26)
 -------------------
 
+Refactored
+^^^^^^^^^^
+- Modified data/cfg structure to handle versioning of envvar and path definitions
+    - data cfg files now inherit from one another
+    - deprecated sdss_paths.ini file and moved into new PATHS section in individual cfg files
+
 Added
 ^^^^^
 - new temporary path for manga images for releases MPL-8 and up
+- new method show_forest to display the environment for configs not currently loaded
+- new method list_configs to show all available configs for loading
 - new tests for setting up the tree; creating and copying module/bash files and env symlinks
 - added the option for env symlink creation into the setup_tree.py bin file
 - added option to specify default config to write into .version file
 
 Changed
 ^^^^^^^
-- replaced non-existent %designdir special function with %definitiondir 
+- replaced non-existent %designdir special function with %definitiondir
 - changed yaml loaded to use yaml.FullLoader in compliance with pyyaml 5.1
 - switching disutils.StrictVersion to more standard parse_version
 
@@ -134,6 +168,7 @@ Fixed
 * Updated versioning to sync with svn tags
 
 .. _changelog-0.1.0:
+
 0.1.0 (2017-11-29)
 ------------------
 

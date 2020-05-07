@@ -1,4 +1,4 @@
-# !usr/bin/env python
+#!usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Licensed under a 3-clause BSD license.
@@ -15,6 +15,8 @@ import argparse
 import glob
 import shutil
 import time
+import re
+import importlib.util
 
 
 def _remove_link(link):
@@ -43,7 +45,7 @@ def make_symlink(src, link):
 
 def create_index_table(environ, envdir):
     ''' create an html table
-    
+
     Parameters:
         environ (dict):
             A tree environment dictionary
@@ -71,7 +73,7 @@ def create_index_table(environ, envdir):
 
         for tree_name, tree_path in values.items():
             skipmsg = 'Skipping {0} for {1}'.format(tree_name, section)
-            if '_root' in tree_name:
+            if '_ROOT' in tree_name:
                 continue
 
             # create the src and target links
@@ -87,12 +89,12 @@ def create_index_table(environ, envdir):
                 continue
 
             # skip the sas_base_dir
-            if section == 'general' and 'sas_base_dir' in tree_name:
+            if section == 'general' and 'SAS_BASE_DIR' in tree_name:
                 print(skipmsg)
                 continue
 
             # only create symlinks
-            if section == 'general' and tree_name in ['cas_load', 'staging_data']:
+            if section == 'general' and tree_name in ['CAS_LOAD', 'STAGING_DATA']:
                 # only create links here if the target exist
                 if os.path.exists(src):
                     make_symlink(src, link)
@@ -101,7 +103,7 @@ def create_index_table(environ, envdir):
             else:
                 print('Processing {0} for {1}'.format(tree_name, section))
                 make_symlink(src, link)
-            
+
             # create the table entry
             if os.path.exists(link):
                 table += '    <tr><td><a href="{0}/">{0}/</a></td><td>-</td><td>{1}</td></tr>\n'.format(tree_name.upper(), stattime)
@@ -112,7 +114,7 @@ def create_index_table(environ, envdir):
 
 def create_index_page(environ, defaults, envdir):
     ''' create the env index html page
-    
+
     Builds the index.html page containing a table of symlinks
     to datamodel directories
 
@@ -155,9 +157,9 @@ directory, visit <a href="/datamodel/files/">the datamodel.</a></p>
 
 def create_env(environ, mirror=None, verbose=None):
     ''' create the env symlink directory structure
-    
+
     Creates the env folder filled with symlinks to datamodel directories
-    for a given tree config file.  
+    for a given tree config file.
 
     Parameters:
         environ (dict):
@@ -172,16 +174,16 @@ def create_env(environ, mirror=None, verbose=None):
     defaults['url'] = "https://data.mirror.sdss.org" if mirror else "https://data.sdss.org"
     defaults['location'] = "SDSS-IV Science Archive Mirror (SAM)" if mirror else "SDSS-IV Science Archive Server (SAS)"
 
-    if not os.path.exists(environ['general']['sas_root']):
+    if not os.path.exists(environ['general']['SAS_ROOT']):
         if verbose:
-            print("{0} doesn't exist, skipping env link creation.".format(environ['general']['sas_root']))
+            print("{0} doesn't exist, skipping env link creation.".format(environ['general']['SAS_ROOT']))
         return
 
     if verbose:
-        print("Found {0}.".format(environ['general']['sas_root']))
+        print("Found {0}.".format(environ['general']['SAS_ROOT']))
 
     # sets and creates envdir
-    envdir = os.path.join(environ['general']['sas_root'], 'env')
+    envdir = os.path.join(environ['general']['SAS_ROOT'], 'env')
     if not os.path.exists(envdir):
         os.makedirs(envdir)
     if not os.access(envdir, os.W_OK):
@@ -232,14 +234,15 @@ def write_header(term='bash', tree_dir=None, name=None):
 
     product_dir = tree_dir.rstrip('/')
     base = 'export' if term == 'bash' else 'setenv'
+    sep = '=' if term == 'bash' else ' '
 
     if term != 'modules':
         hdr = """# Set up tree/{0} for {1}
-{2} TREE_DIR {3}
-{2} TREE_VER {1}
-{2} PATH $TREE_DIR/bin:$PATH
-{2} PYTHONPATH $TREE_DIR/python:$PYTHONPATH
-                """.format(name, term, base, product_dir)
+{2} TREE_DIR{4}{3}
+{2} TREE_VER{4}{0}
+{2} PATH{4}$TREE_DIR/bin:$PATH
+{2} PYTHONPATH{4}$TREE_DIR/python:$PYTHONPATH
+                """.format(name, term, base, product_dir, sep)
     else:
         hdr = """#%Module1.0
 proc ModulesHelp {{ }} {{
@@ -311,7 +314,8 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None, default=None):
                 f.write('#\n# {0}\n#\n'.format(key))
                 # write tree names and paths
                 for tree_name, tree_path in values.items():
-                    f.write(cmd.format(tree_name.upper(), tree_path))
+                    if tree_path.startswith(os.getenv("SAS_BASE_DIR")):
+                        f.write(cmd.format(tree_name.upper(), tree_path))
 
     # write default .version file for modules
     default = default if default else name
@@ -320,6 +324,20 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None, default=None):
         version_name = os.path.join(out_dir, '.version')
         with open(version_name, 'w') as f:
             f.write(modules_version)
+
+
+def get_python_path():
+    ''' Finds and switches to the tree python package directory '''
+    # get the TREE directory
+    tree_dir = os.getenv('TREE_DIR', None)
+    if not tree_dir:
+        path = os.path.dirname(os.path.abspath(__file__))
+        tree_dir = os.path.realpath(os.path.join(path, '..'))
+    pypath = os.path.join(tree_dir, 'python')
+
+    if pypath not in sys.path:
+        sys.path.append(pypath)
+    os.chdir(pypath)
 
 
 def get_tree(config=None):
@@ -332,11 +350,16 @@ def get_tree(config=None):
     Returns:
         a Python Tree instance
     '''
-    path = os.path.dirname(os.path.abspath(__file__))
-    pypath = os.path.realpath(os.path.join(path, '..', 'python'))
-    if pypath not in sys.path:
-        sys.path.append(pypath)
-    os.chdir(pypath)
+
+    # ensure the tree package is importable
+    mod = importlib.util.find_spec('tree')
+    if not (mod and mod.origin):
+        get_python_path()
+
+    # extract the config format from either XXXX.cfg or full filepath
+    has_cfg = re.search(r'(\w+)\.cfg', config)
+    if has_cfg:
+        config = has_cfg.group()
     from tree.tree import Tree
     tree = Tree(config=config)
     return tree
@@ -355,10 +378,17 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
             if len(split_mods) > 1:
                 # select which module paths to use
                 items = ['Multiple module paths found. Choose which module paths to use '
-                         '(e.g. "1,2") or hit enter for "all": ']    
+                         '(e.g. "1,2") or hit enter for "all". Or "q" to quit: ']
                 items += ['{0}. {1}'.format(i + 1, t) for i, t in enumerate(split_mods)] + ['\n']
                 msg = '\n'.join(items)
                 selected = input(msg) or 'all'
+                # check to quit
+                if selected == 'q':
+                    if verbose:
+                        print('Quitting module copy.')
+                    return
+
+                # select choices
                 choices = range(len(split_mods)) if selected == 'all' else [
                     int(i) - 1 for i in selected.split(',')]
 
@@ -388,7 +418,7 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
 
     # copy the modules into the tree
     if verbose:
-        print('Copying modules from etc/ into {0}'.format(tree_mod))
+        print('Copying modules from {1} into {0}'.format(tree_mod, filespath))
     module_files = glob.glob(os.path.join(filespath, '*.module'))
     for mfile in module_files:
         base = os.path.splitext(os.path.basename(mfile))[0]
@@ -401,18 +431,35 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
         shutil.copy2(version, tree_mod)
 
 
-def parse_args():
+def check_output_dir(output_dir):
+    ''' Check the output directory '''
+
+    # check if output directory is within a pip package directory
+    if 'site-packages' in output_dir or output_dir.endswith('python/tree/etc'):
+        output_dir = os.path.expanduser('~/.tree/environments')
+
+    # create directory if it does not exist
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
+
+    return output_dir
+
+
+def get_parser():
     ''' Parse the arguments '''
 
-    parser = argparse.ArgumentParser(prog='setup_tree_modules', usage='%(prog)s [opts]')
+    description = ('Create bash, tsch, and module environment configuration files '
+                   'defining relevant variables for accessing data products on '
+                   'the SDSS Science Archive Server (SAS)')
+    parser = argparse.ArgumentParser(prog='setup_tree.py', description=description)
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose',
                         help='Print extra information.', default=False)
     parser.add_argument('-r', '--root', action='store', dest='root', default=os.getenv('SAS_BASE_DIR'),
-                        help='Override the value of $SAS_BASE_DIR.', metavar='SAS_BASE_DIR')
+                        help='Override the environment variable $SAS_BASE_DIR.', metavar='SAS_BASE_DIR')
     parser.add_argument('-t', '--treedir', action='store', dest='treedir', default=os.getenv('TREE_DIR'),
-                        help='Override the value of $TREE_DIR.', metavar='TREE_DIR')
+                        help='Override the environment variable $TREE_DIR.', metavar='TREE_DIR')
     parser.add_argument('-m', '--modulesdir', action='store', dest='modulesdir', default=os.getenv('MODULES_DIR'),
-                        help='Your modules directory', metavar='MODULES_DIR')
+                        help='Your modules directory.  Defaults to $MODULES_DIR', metavar='MODULES_DIR')
     parser.add_argument('-e', '--env', action='store_true', dest='env',
                         help='Create tree environment symlinks.', default=False)
     parser.add_argument('-i', '--mirror', action='store_true', dest='mirror',
@@ -420,34 +467,54 @@ def parse_args():
     parser.add_argument('-o', '--only', action='store', dest='only', metavar='[xxx].cfg',
                         default=None, help='create links for only the specified tree config.')
     parser.add_argument('-d', '--default', action='store', dest='default', default='sdsswork',
-                        help='Default config version to write into the .version file')
-    opts = parser.parse_args()
+                        help='Default config version to write into the .version file. Defaults to "sdsswork"')
+    parser.add_argument('-p', '--path', action='store', dest='path', default=None,
+                        help='Custom output path to copy environment files')
 
-    return opts
+    return parser
 
 
 def main(args):
 
     # parse arguments
-    opts = parse_args()
+    opts = get_parser().parse_args()
 
     # check for a treedir; if none found, set path to the parent directory
     if not opts.treedir:
-        opts.treedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+        # look for installed python module
+        mod = importlib.util.find_spec('tree')
+        if mod and mod.origin:
+            opts.treedir = os.path.dirname(mod.origin)
+        else:
+            opts.treedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
         os.environ['TREE_DIR'] = opts.treedir
 
     # get directories
     datadir = os.path.join(opts.treedir, 'data')
-    etcdir = os.path.join(opts.treedir, 'etc')
+    etcdir = opts.path if opts.path else os.path.join(opts.treedir, 'etc')
+    etcdir = check_output_dir(etcdir)
+
+    if opts.verbose:
+        print('TREE_DIR: ', opts.treedir)
+        print("Data Directory : ", datadir)
+        print('Output Directory: ', etcdir)
 
     # config files
     configs = glob.glob(os.path.join(datadir, '*.cfg'))
+    if not configs:
+        print('No config files found in {0}.  Cannot proceed with tree setup. '
+              'Check for correct TREE_DIR.'.format(datadir))
+        return
 
     # check for the SAS_BASE_DIR
     check_sas_base_dir(root=opts.root)
 
     # Read and write the configuration files
     for cfgfile in configs:
+        # skip basework config
+        if 'basework' in cfgfile:
+            continue
+
         tree = get_tree(config=cfgfile)
         # create env symlinks or write out tree module/bash files
         if opts.env:
@@ -460,7 +527,15 @@ def main(args):
             write_file(tree.environ, term='bash', out_dir=etcdir, tree_dir=opts.treedir)
             write_file(tree.environ, term='tsch', out_dir=etcdir, tree_dir=opts.treedir)
 
+    # check for files
+    module_files = glob.glob(os.path.join(etcdir, '*.module'))
+    if not any(module_files):
+        print('No module files created in {0}'.format(etcdir))
+    else:
+        print('Environment files created in: {0}'.format(etcdir))
+
     # Setup the modules
+    print('Copying module files...')
     copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
 
 
