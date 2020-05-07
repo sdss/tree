@@ -16,7 +16,7 @@ import glob
 import shutil
 import time
 import re
-import importlib
+import importlib.util
 
 
 def _remove_link(link):
