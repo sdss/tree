@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.0.0 (unreleased)
+3.0.0 (2020-05-07)
 ------------------
 
 - Major changes to environment configuration files
