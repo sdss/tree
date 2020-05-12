@@ -17,4 +17,15 @@ or to upgrage::
 
     pip install --upgrade sdss-tree
 
+Development
+-----------
+Clone the repo and run pip install::
+
+    git clone https://github.com/sdss/tree
+    cd tree
+    pip install .[dev]
+
+Or to run in editable mode in order to track changes from `git pulls`, run::
+
+    pip install -e .[dev]
 
