@@ -6,6 +6,13 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.2 (2020-05-21)
+------------------
+
+- Added correct path for DR9 PHOTOSWEEPS
+- Corrected APOGEE_ASTRONN path in DR16
+- Added BCAM_DATA_2S to DR16
+
 3.0.1 (2020-05-21)
 ------------------
 
