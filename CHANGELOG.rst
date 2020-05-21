@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.1 (2020-05-21)
+------------------
+
+- Added prereqs to tree module files for sdss_access/1.0.0 and sdsstools/0.1.7
+
 3.0.0 (2020-05-07)
 ------------------
 
