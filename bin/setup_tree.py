@@ -253,6 +253,12 @@ set name tree
 set product tree
 set version {1}
 conflict $product
+
+module load sdsstools/0.1.7
+prereq sdsstools/0.1.7
+module load sdss_access/1.0.0
+prereq sdss_access/1.0.0
+
 module-whatis "Sets up $product/$version in your environment"
 
 set PRODUCT_DIR {0}
