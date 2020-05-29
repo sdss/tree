@@ -323,10 +323,11 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None, default=None):
                     if tree_path.startswith(os.getenv("SAS_BASE_DIR")):
                         f.write(cmd.format(tree_name.upper(), tree_path))
 
-    # write default .version file for modules
+    # write default .version file for modules (or default for lua modules)
     default = default if default else name
     modules_version = write_version(default)
     if term == 'modules' and environ['default']['current'] == 'True':
+        # write .version file for tcl
         version_name = os.path.join(out_dir, '.version')
         with open(version_name, 'w') as f:
             f.write(modules_version)
@@ -371,7 +372,7 @@ def get_tree(config=None):
     return tree
 
 
-def copy_modules(filespath=None, modules_path=None, verbose=None):
+def copy_modules(filespath=None, modules_path=None, verbose=None, default=None):
     ''' Copy over the tree module files into your path '''
 
     # find or define a modules path
@@ -402,7 +403,8 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
                 for choice in choices:
                     mfile = split_mods[choice]
                     # run rest of method
-                    copy_modules(filespath=filespath, modules_path=mfile, verbose=verbose)
+                    copy_modules(filespath=filespath, modules_path=mfile, verbose=verbose,
+                                 default=default)
 
                 # exit the function after loop is over
                 return
@@ -431,10 +433,18 @@ def copy_modules(filespath=None, modules_path=None, verbose=None):
         tree_out = os.path.join(tree_mod, base)
         shutil.copy2(mfile, tree_out)
 
-    # copy the default version into the tree
+    # copy the default .version into the tree
     version = os.path.join(filespath, '.version')
     if os.path.isfile(version):
         shutil.copy2(version, tree_mod)
+
+    # write default file for lua
+    if default:
+        defpath = os.path.join(tree_mod, 'default')
+        realpath = default
+        if os.path.islink(defpath):
+            os.unlink(defpath)
+        os.symlink(realpath, defpath)
 
 
 def check_output_dir(output_dir):
@@ -542,7 +552,7 @@ def main(args):
 
     # Setup the modules
     print('Copying module files...')
-    copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose)
+    copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose, default=opts.default)
 
 
 if __name__ == '__main__':

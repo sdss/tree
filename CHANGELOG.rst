@@ -6,6 +6,12 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.4 (unreleased)
+------------------
+
+- Added `phase` property to python `tree`.  Tracks phase of current 'sdsswork' environment.
+- Modified module setup to create "default" symlink for lua modules
+
 3.0.3 (2020-05-29)
 ------------------
 
