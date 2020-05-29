@@ -92,6 +92,14 @@ class Tree(object):
     def __repr__(self):
         return ('Tree(sas_base_dir={0}, config={1})'.format(self.sasbasedir, self.config_name))
 
+    @property
+    def phase(self):
+        ''' Return the phase of the survey from the loaded "work" environment '''
+        phase = self.environ['default'].get('phase', None)
+        if phase and phase.isdigit():
+            phase = int(phase)
+        return phase
+
     def list_keys(self):
         ''' List the available keys you can load '''
         return [k for k in self.environ.keys() if k not in ['general', 'default']]
