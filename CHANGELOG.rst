@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.3 (2020-05-29)
+------------------
+
+- Removed specific version requirement 1.0.0 for sdss_access in module setup
+
 3.0.2 (2020-05-21)
 ------------------
 
