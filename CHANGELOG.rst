@@ -11,6 +11,7 @@ This document records the main changes to the tree code.
 
 - Added `phase` property to python `tree`.  Tracks phase of current 'sdsswork' environment.
 - Modified module setup to create "default" symlink for lua modules
+- Added `write_old_paths_inifile` method to generate a version of the old sdss_paths.ini file
 
 
 3.0.3 (2020-05-29)

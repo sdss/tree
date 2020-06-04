@@ -603,6 +603,25 @@ class Tree(object):
         os.environ['PRODUCT_ROOT'] = product_root
         self.productroot_dir = product_root
 
+    def write_old_paths_inifile(self):
+        ''' Write out an old sdss_paths ini file '''
+
+        paths_dir = os.path.join(self.treedir, 'data/sdss_paths.ini')
+        with open(paths_dir, 'w') as f:
+            f.write('# Paths for SDSS files. Each file type is given a template full path.\n')
+            f.write('# \n')
+            f.write('# This file has been deprecated as of tree/3.0.0 and sdss_access/1.0.0 \n')
+            f.write('# It should not be updated manually.  Use the tree.write_olds_paths method in \n')
+            f.write('# the python tree code to generate a new version of this file as needed.\n')
+            f.write('# \n')
+            f.write('\n')
+            f.write("[paths]\n")
+            for name, template in self.paths.items():
+                # switch special functions back to %
+                template = template.replace('@', '%')
+                # write out path, template
+                f.write('{0} = {1}\n'.format(name, template))
+
 
 def get_tree_dir(uproot_with=None):
     ''' Return the path to the tree product directory

@@ -9,6 +9,7 @@ etc/*.sh
 etc/*.csh
 etc/.version
 python/tree/data/*
+data/sdss_paths.ini
 
 # C extensions
 *.so
