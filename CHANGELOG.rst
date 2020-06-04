@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.0.4 (unreleased)
+3.0.4 (2020-06-04)
 ------------------
 
 - Added `phase` property to python `tree`.  Tracks phase of current 'sdsswork' environment.
