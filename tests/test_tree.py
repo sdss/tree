@@ -163,3 +163,15 @@ class TestTree(object):
         tree.set_product_root(root=str(temp_prod))
         assert tree.productroot_dir == str(temp_prod)
         assert os.getenv("PRODUCT_ROOT") == str(temp_prod)
+
+    def test_write_old_paths(self, faketree):
+
+        tree = Tree()
+
+        pathsfile = os.path.join(tree.treedir, 'data/sdss_paths.ini')
+        assert not os.path.exists(pathsfile)
+
+        tree.write_old_paths_inifile()
+
+        assert os.path.exists(pathsfile)
+        assert os.path.isfile(pathsfile)
