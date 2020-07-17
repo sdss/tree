@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.0.5 (unreleased)
+3.0.5 (2020-07-17)
 ------------------
 - Added MaNGA MPL-10 release config
 - Added new paths for DR16+; VACs for APOGEE_JOKER
