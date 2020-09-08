@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.6 (2020-09-07)
+------------------
+- Added dr17 release config
+- Added tree_version to bin, expected by some old/existing IDL product tags
+
 3.0.5 (2020-07-17)
 ------------------
 - Added MaNGA MPL-10 release config
