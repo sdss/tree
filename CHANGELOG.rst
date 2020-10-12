@@ -6,6 +6,12 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.7 (unreleased)
+------------------
+- Updated the path syntax for special functions to "@[function_name]|" to resolve issues with inclusion next to other characters
+- Added new sdss5 paths for apogee
+- Changed sdss5 paths for apogee from sdss4 to handle ``healpix`` grouping and simplified kwargs with special functions
+
 3.0.6 (2020-09-07)
 ------------------
 - Added dr17 release config

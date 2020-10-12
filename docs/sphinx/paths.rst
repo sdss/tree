@@ -239,9 +239,11 @@ Advanced Items of Note
     to zero-pad integer variables, or constrain number of digits.  See `{run:0>6}` as an example.
 
 **Special Functions**:
-    Some parts of the template_file_path use a "path substitution" syntax, designated as ``@function_name``.  These
-    names resolve to functions that are called by `sdss_access` during path reconstruction to perform more
-    complex substitution.  See `@platedir` in the ``plateHoles`` entry as an example.
+    Some parts of the template_file_path use a "path substitution" syntax, designated as
+    `@function_name|`; A name sandwiched between the `@` and `|` characters.  This denotes
+    that the name resolves to a function that is called by `sdss_access` during
+    path reconstruction to perform more complex substitution.  See `@platedir|` in the
+    ``plateHoles`` entry as an example.
 
 
 Submit a Pull Request
