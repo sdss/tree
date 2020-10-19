@@ -618,7 +618,7 @@ class Tree(object):
             f.write("[paths]\n")
             for name, template in self.paths.items():
                 # switch special functions back to %
-                template = template.replace('@', '%')
+                template = template.replace('@', '%').replace('|', '')
                 # write out path, template
                 f.write('{0} = {1}\n'.format(name, template))
 
