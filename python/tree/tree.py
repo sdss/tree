@@ -603,8 +603,19 @@ class Tree(object):
         os.environ['PRODUCT_ROOT'] = product_root
         self.productroot_dir = product_root
 
-    def write_old_paths_inifile(self):
-        ''' Write out an old sdss_paths ini file '''
+    def write_old_paths_inifile(self, no_pipe=None):
+        ''' Write out an old sdss_paths ini file
+
+        New syntax for special functions is "@[name]|" compared
+        to old syntax of "%[name]".  With no_pipe set to True,
+        converts the new syntax to exactly the old syntax.  If set to
+        False, will write special functions as "%[name]|".
+
+        Parameters
+        ----------
+            no_pipe : bool
+                If True, removes the special function | character
+        '''
 
         paths_dir = os.path.join(self.treedir, 'data/sdss_paths.ini')
         with open(paths_dir, 'w') as f:
@@ -618,7 +629,10 @@ class Tree(object):
             f.write("[paths]\n")
             for name, template in self.paths.items():
                 # switch special functions back to %
-                template = template.replace('@', '%').replace('|', '')
+                if no_pipe:
+                    template = template.replace('@', '%').replace('|', '')
+                else:
+                    template = template.replace('@', '%')
                 # write out path, template
                 f.write('{0} = {1}\n'.format(name, template))
 
