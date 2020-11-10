@@ -10,6 +10,7 @@
 
 from __future__ import print_function, division, absolute_import
 import pytest
+from tree import config
 from tree.tree import Tree
 import six
 import os
@@ -175,3 +176,59 @@ class TestTree(object):
 
         assert os.path.exists(pathsfile)
         assert os.path.isfile(pathsfile)
+
+    def assert_orig_sdss5_envvars(self):
+        assert os.getenv("ROBOSTRATEGY_DATA") == '/tmp/robodata'
+        assert os.getenv("ALLWISE_DIR") == '/tmp/allwise'
+        assert os.getenv("EROSITA_DIR") == '/tmp/erosita'
+
+    def assert_all_envvars(self):
+        self.assert_orig_sdss5_envvars()
+        assert 'sdsswork/sandbox/robostrategy' not in os.getenv("ROBOSTRATEGY_DATA")
+
+    def assert_subset_envvars(self):
+        assert 'sdsswork/sandbox/robostrategy' in os.getenv("ROBOSTRATEGY_DATA")
+        assert os.getenv("ROBOSTRATEGY_DATA") != '/tmp/robodata'
+        assert os.getenv("ALLWISE_DIR") == '/tmp/allwise'
+        assert os.getenv("EROSITA_DIR") == '/tmp/erosita'
+
+    def test_plant_no_update(self, monkeysdss5):
+        self.assert_orig_sdss5_envvars()
+        tree = Tree(config='sdss5')
+        self.assert_orig_sdss5_envvars()
+
+    def test_replant_update(self, monkeysdss5):
+        self.assert_orig_sdss5_envvars()
+        tree = Tree(config='sdsswork')
+        self.assert_orig_sdss5_envvars()
+        tree.replant_tree('sdss5')
+
+        assert 'sdsswork/sandbox/robostrategy' in os.getenv("ROBOSTRATEGY_DATA")
+        assert 'sdsswork/target/catalogs/allwise' in os.getenv("ALLWISE_DIR")
+        assert 'sdsswork/target/catalogs/eRosita' in os.getenv("EROSITA_DIR")
+
+    def test_replant_preserve_all_envvars(self, monkeysdss5):
+        self.assert_orig_sdss5_envvars()
+        tree = Tree(config='sdsswork')
+        tree.replant_tree('sdss5', preserve_envvars=True)
+        self.assert_all_envvars()
+
+    def test_replant_preserve_subset_envvars(self, monkeysdss5):
+        self.assert_orig_sdss5_envvars()
+        tree = Tree(config='sdsswork')
+        tree.replant_tree('sdss5', preserve_envvars=['ALLWISE_DIR', 'EROSITA_DIR'])
+        self.assert_subset_envvars()
+
+    def test_replant_preserve_all_from_config(self, monkeysdss5, monkeypatch):
+        monkeypatch.setitem(config, 'preserve_envvars', True)
+        self.assert_orig_sdss5_envvars()
+        tree = Tree(config='sdsswork')
+        tree.replant_tree('sdss5')
+        self.assert_all_envvars()
+
+    def test_replant_preserve_subset_from_config(self, monkeysdss5, monkeypatch):
+        monkeypatch.setitem(config, 'preserve_envvars', ['ALLWISE_DIR', 'EROSITA_DIR'])
+        self.assert_orig_sdss5_envvars()
+        tree = Tree(config='sdsswork')
+        tree.replant_tree('sdss5')
+        self.assert_subset_envvars()

@@ -65,7 +65,7 @@ class Tree(object):
 
     def __init__(self, config=None, key=None, uproot_with=None, update=None, exclude=None,
                  product_root=None, git=None):
-        self.config_name = config or 'sdsswork'
+        self.config_name = config or os.getenv('TREE_VER', 'sdsswork')
         self.exclude = exclude or []
         update = update or False
         self._keys = key
@@ -415,20 +415,45 @@ class Tree(object):
             elif pathname.upper() not in os.environ:
                 os.environ[pathname.upper()] = os.path.normpath(path)
 
-    def replant_tree(self, config=None, exclude=None):
-        ''' Replant the tree with a different config setup
+    def replant_tree(self, config=None, exclude=None, preserve_envvars=None):
+        """ Replant the tree with a different config setup
 
-        Parameters:
-            config (str):
+        Resets the python tree with the new config.  Automatically updates the session
+        os.environ with the new tree config environment variables.
+
+        Parameters
+        ----------
+            config : str
                 The config name to reload
-            exclude (list):
-                A list of environment variables to exclude
-                from forced updates
-        '''
+            exclude : list
+                A list of environment variables to exclude from forced updates
+            preserve_envvars : bool | list
+                Flag to indicate some or all original environment variables to preserve
+        """
 
-        # reinitialize a new Tree with a new config
+        # reinitialize a new Tree with a new config and
+        # automatically overwrite any existing envvars
         config = 'sdsswork' if not config else config
         self.__init__(key=self._keys, config=config, update=True, exclude=exclude)
+
+        # look for any preserved envvars from the configuration file
+        if not preserve_envvars:
+            preserve_envvars = self._get_preserved_envvars()
+
+        orig = self.get_orig_os_environ()
+        if preserve_envvars is True:
+            # preserve the entire original os environ
+            os.environ.update(orig)
+        elif isinstance(preserve_envvars, (list, tuple)):
+            # preserve just a subset of envvars
+            for envvar in preserve_envvars:
+                if envvar in orig:
+                    os.environ[envvar] = orig[envvar]
+
+    def _get_preserved_envvars(self):
+        """ Retrieve any list of environment variables to preserve from the tree.yml config file """
+        preserved = cfg_params.get('preserve_envvars', None)
+        return preserved
 
     def list_configs(self):
         ''' List available configs to load '''
@@ -516,7 +541,7 @@ class Tree(object):
     @staticmethod
     def get_orig_os_environ():
         ''' Returns the original os.environ '''
-        return orig_environ
+        return orig_environ.copy()
 
     def to_dict(self, collapse=True):
         ''' Convert tree environment to standard dicts
