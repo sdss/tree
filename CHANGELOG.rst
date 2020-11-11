@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.0.7 (unreleased)
+3.0.7 (2020-11-11)
 ------------------
 - Updated the path syntax for special functions to "@[function_name]|" to resolve issues with inclusion next to other characters
 - Added new sdss5 paths for apogee
