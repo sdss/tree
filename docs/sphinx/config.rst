@@ -1,6 +1,9 @@
 
 .. _config:
 
+Available Tree configurations
+=============================
+
 Tree configurations
 -------------------
 

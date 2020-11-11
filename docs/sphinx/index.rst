@@ -9,15 +9,18 @@
 
 This is the Sphinx documentation for the Python product tree
 
-Introduction
-------------
+Contents
+--------
 
-* :doc:`What's new in tree? <CHANGELOG>`
-* :doc:`Installation of python package <installation>`
-* :doc:`Introduction to the Tree <intro>`
-* :doc:`Tree environment configuration <config>`
-* :doc:`Setting up the Tree in your local enviroment <tree_setup>`
-* :doc:`Adding a new path into the Tree <paths>`
+.. toctree::
+  :maxdepth: 1
+
+  Installation of python package <installation>
+  Introduction to the Tree <intro>
+  Available configurations for the Tree <config>
+  Setting up the Tree in your local environment <tree_setup>
+  Adding a new path in the Tree <paths>
+
 
 Reference
 ---------
@@ -26,6 +29,9 @@ Reference
    :maxdepth: 1
 
    api
+   CHANGELOG
+   usage
+   tree_envs
 
 
 

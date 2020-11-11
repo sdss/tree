@@ -12,6 +12,7 @@ This document records the main changes to the tree code.
 - Added new sdss5 paths for apogee
 - Changed sdss5 paths for apogee from sdss4 to handle ``healpix`` grouping and simplified kwargs with special functions
 - Updating the code to write out old sdss_paths.ini file.
+- Added ``preserve_envvars`` options to ``replant_tree`` to preserve users original environment variables
 
 3.0.6 (2020-09-07)
 ------------------

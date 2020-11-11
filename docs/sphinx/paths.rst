@@ -184,7 +184,7 @@ sets itself to the first defined path it finds.  It looks for the following defi
 - SDSS_PRODUCT_ROOT
 - SDSS4_PRODUCT_ROOT
 
-You can also manually set the product root in Python with ``tree.set_product_root()`` method.  Or you can optionally set the `PRODUCT_ROOT`
+You can also manually set the product root in Python with `.Tree.set_product_root()` method.  Or you can optionally set the `PRODUCT_ROOT`
 manually by setting the `PRODUCT_ROOT` parameter in your custom config file, ``~/.config/tree/tree.yml``
 
 As an example, let's take the addition of the MaNGA preimaging files, which are a part of the ``mangapreim`` svn software repository.
@@ -203,6 +203,7 @@ If the product was also released as a tag for a public data release, and hosted 
 the environment variable to the proper location in the appropriate ``drXX.cfg`` file.  In our MaNGA pre-imaging example, we set the following
 within the `dr15.cfg <https://github.com/sdss/tree/blob/master/data/dr15.cfg>`_ file.
 ::
+
     [MANGA]
     MANGAPREIM_DIR = $PRODUCT_ROOT/data/manga/mangapreim/tags/v2_5
 
