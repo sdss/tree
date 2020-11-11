@@ -12,7 +12,8 @@ from __future__ import absolute_import
 import os
 import shutil
 import pytest
-
+import importlib
+import tree.tree as treemod
 
 def make_dirs(path):
     (path / 'dr14/manga/spectro/redux/v2_1_2').mkdir(parents=True)
@@ -41,3 +42,11 @@ def faketree(monkeypatch, tmp_path):
     mdir = p / 'modules'
     mdir.mkdir(parents=True)
     monkeypatch.setenv('MODULES_DIR', str(mdir))
+
+
+@pytest.fixture()
+def monkeysdss5(monkeypatch):
+    monkeypatch.setenv('ALLWISE_DIR', '/tmp/allwise')
+    monkeypatch.setenv('EROSITA_DIR', '/tmp/erosita')
+    monkeypatch.setenv('ROBOSTRATEGY_DATA', '/tmp/robodata')
+    importlib.reload(treemod)

@@ -6,16 +6,15 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.0.7 (unreleased)
-------------------
-- Updated the path syntax for special functions to "@[function_name]|" to resolve issues with inclusion next to other characters
-- Added new sdss5 paths for apogee
-- Changed sdss5 paths for apogee from sdss4 to handle ``healpix`` grouping and simplified kwargs with special functions
-
-3.0.6 (2020-09-07)
+3.0.6 (2020-11-11)
 ------------------
 - Added dr17 release config
 - Added tree_version to bin, expected by some old/existing IDL product tags
+- Updated the path syntax for special functions to "@[function_name]|" to resolve issues with inclusion next to other characters
+- Added new sdss5 paths for apogee
+- Changed sdss5 paths for apogee from sdss4 to handle ``healpix`` grouping and simplified kwargs with special functions
+- Updating the code to write out old sdss_paths.ini file.
+- Added ``preserve_envvars`` options to ``replant_tree`` to preserve users original environment variables
 
 3.0.5 (2020-07-17)
 ------------------

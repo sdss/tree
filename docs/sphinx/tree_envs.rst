@@ -1,5 +1,8 @@
 
-:tocdepth: 1
+:tocdepth: 2
+
+Tree Environments
+=================
 
 .. _sdsswork:
 

@@ -181,6 +181,19 @@ To control where `setup_tree` creates the environment files, specify the ``--pat
     # specify a custom output path
     setup_tree.py -v -p /my_output/environment/configs/
 
+Generating the old sdss_paths.ini file
+--------------------------------------
+
+Starting with ``tree 3.0``, the old ``sdss_paths.ini`` file, was deprecated and removed in favor of defining ``sdss_access`` paths within
+each tree environment configuration file to allow for versioning of path definitions.  Some applications may still require the old
+``sdss_paths.ini`` file.  To generate the legacy file, use `.Tree.write_old_paths_inifile`.  This will produce the old in the proper location
+to be usable by legacy codes.  It will generate the file for the currently loaded environment
+::
+
+    >>> # generate an old paths ini file for sdsswork
+    >>> tree = Tree('sdsswork')
+    >>> tree.write_old_paths_inifile()
+
 
 Creating Environment Symlinks
 =============================
