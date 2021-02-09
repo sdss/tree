@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.7 (unreleased)
+------------------
+- Added method ``get_release_from_config`` to convert a given tree ``config_name`` into its release name.
+- Added a new ``release`` attribute, accessible on a ``Tree`` instance.
+
 3.0.6 (2020-11-11)
 ------------------
 - Added dr17 release config

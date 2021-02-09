@@ -147,6 +147,16 @@ class TestTree(object):
         else:
             assert 'WORK' in rels
 
+    @pytest.mark.parametrize('config, release',
+                             [('sdsswork', 'WORK'),
+                              ('mpl8', 'MPL8'),
+                              ('sdss5', 'WORK'),
+                              ('dr15', 'DR15')])
+    def test_config_to_release(self, config, release):
+        tree = Tree(config)
+        assert tree.config_name == config
+        assert tree.release == release
+
     @pytest.mark.parametrize('collapse', [(True), (False)])
     def test_to_dict(self, tree, collapse):
         envdict = tree.to_dict(collapse=collapse)

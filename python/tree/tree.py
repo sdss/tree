@@ -76,6 +76,7 @@ class Tree(object):
     def __init__(self, config=None, key=None, uproot_with=None, update=None, exclude=None,
                  product_root=None, git=None):
         self.config_name = config or os.getenv('TREE_VER', 'sdsswork')
+        self.release = self.get_release_from_config()
         self.exclude = exclude or []
         update = update or False
         self._keys = key
@@ -100,7 +101,7 @@ class Tree(object):
         self.set_product_root(root=product_root, git=git)
 
     def __repr__(self):
-        return ('Tree(sas_base_dir={0}, config={1})'.format(self.sasbasedir, self.config_name))
+        return ('Tree(sas_base_dir={0}, config={1}, release={2})'.format(self.sasbasedir, self.config_name, self.release))
 
     @property
     def phase(self):
@@ -569,6 +570,22 @@ class Tree(object):
                 # reduce alll xxxxwork cfgs to a single "work" release
                 releases.append('WORK')
         return releases
+
+    def get_release_from_config(self) -> str:
+        """ Get a release name from a config
+
+        Convert a config name into its valid release name. All
+        "work" config, i.e. "sdsswork", belong to the "WORK" release.
+
+        Returns
+        -------
+        str
+            the release name
+        """
+        release = self.config_name.upper()
+        if 'work' in self.config_name or self.config_name == 'sdss5':
+            release = 'WORK'
+        return release
 
     @staticmethod
     def reset_os_environ():
