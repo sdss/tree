@@ -10,6 +10,8 @@ This document records the main changes to the tree code.
 ------------------
 - Added method ``get_release_from_config`` to convert a given tree ``config_name`` into its release name.
 - Added a new ``release`` attribute, accessible on a ``Tree`` instance.
+- Fixing the mangarss path template with proper "wave" keyword arg, similar to mangacube
+- Adding new tree config for MaNGA release MPL-11
 
 3.0.6 (2020-11-11)
 ------------------
