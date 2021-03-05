@@ -6,6 +6,9 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.0.8 (unreleased)
+------------------
+
 3.0.7 (2020-03-05)
 ------------------
 - Added method ``get_release_from_config`` to convert a given tree ``config_name`` into its release name.
