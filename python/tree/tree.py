@@ -720,6 +720,27 @@ class Tree(object):
                 # write out path, template
                 f.write('{0} = {1}\n'.format(name, template))
 
+    def check_missing_path_envvars(self):
+        """ Checks paths envars against main envvar list
+
+        Extracts the used environment variables from all the 
+        sdss_access path definitions in tree.paths, and checks them 
+        against the list of defined environment variables in tree.environ.  
+        Returns a list of any path environment variables that are 
+        missing from the valid definitions in the environment.  
+        
+        Returns
+        -------
+        list
+            A list of missing environment variables
+        """
+        # get the list of environment variables
+        envvars = self.to_dict().keys()
+        
+        # get the list of access paths and extract envvars
+        paths = self.paths.values()
+        path_envvars = set(re.findall(r'\$(.*?)\/', '\t'.join(paths)))
+        return [i for i in path_envvars if i not in envvars]
 
 def get_tree_dir(uproot_with=None):
     ''' Return the path to the tree product directory

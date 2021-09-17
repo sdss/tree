@@ -242,3 +242,9 @@ class TestTree(object):
         tree = Tree(config='sdsswork')
         tree.replant_tree('sdss5')
         self.assert_subset_envvars()
+        
+    def test_missing_path_envvars(self, tree):
+        # remove an envvar
+        tree.environ['MANGA'].pop("MANGA_SWIM")
+        missing = tree.check_missing_path_envvars()
+        assert "MANGA_SWIM" in missing
