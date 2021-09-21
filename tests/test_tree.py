@@ -11,7 +11,7 @@
 from __future__ import print_function, division, absolute_import
 import pytest
 from tree import config
-from tree.tree import Tree
+from tree.tree import Tree, get_envvar_history, get_path_history
 import six
 import os
 
@@ -248,3 +248,17 @@ class TestTree(object):
         tree.environ['MANGA'].pop("MANGA_SWIM")
         missing = tree.check_missing_path_envvars()
         assert "MANGA_SWIM" in missing
+
+
+def test_get_path_history():
+    im = get_path_history('mangaimage')
+    assert im['dr12'] is None
+    assert im['dr17'] == '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png'
+    assert im['dr16'] == '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png'
+
+
+def test_get_envvar_history():
+    swim = get_envvar_history('MANGA_SWIM')
+    assert swim['dr15'] is None
+    assert 'sas/dr16/manga/swim' in swim['dr16']
+    assert swim['sdss5'] is None
