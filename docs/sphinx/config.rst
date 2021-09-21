@@ -11,7 +11,8 @@ The SDSS tree provides multiple environment path configurations.  The current av
 configurations are the following:
 
 * :ref:`sdsswork <sdsswork>` - the latest working configuration
-* :ref:`DR16 <dr16>` - the environment configuration for public data release 16
+* :ref:`DR17 <dr17>` - the environment configuration for public data release 17
+* :ref:`DR16 <dr16>`
 * :ref:`DR15 <dr15>`
 * :ref:`DR14 <dr14>`
 * :ref:`DR13 <dr13>`
@@ -24,6 +25,11 @@ configurations are the following:
 
 How has the Tree evolved over Data Releases
 -------------------------------------------
+
+.. changelog:: tree.changelog:compute_changelog
+   :prog: changes
+   :drs: dr17, dr16
+   :remove-sasbase:
 
 .. changelog:: tree.changelog:compute_changelog
    :prog: changes
