@@ -23,6 +23,8 @@ configurations are the following:
 * :ref:`DR18<dr8>`
 * :ref:`sdss5<sdss5>` - the temporary SDSS-V configuration
 
+.. _tree_evolve:
+
 How has the Tree evolved over Data Releases
 -------------------------------------------
 
