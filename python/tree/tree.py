@@ -765,3 +765,80 @@ def get_tree_dir(uproot_with=None):
         treedir = treefilepath
         os.environ['TREE_DIR'] = treedir
     return treedir
+
+
+def _get_history(name: str, cfg_type: str) -> dict:
+    """ Get the history of a path or environment variable
+
+    Searches all Tree config files for the definition of a specified
+    environment variable or access path name.
+
+    Parameters
+    ----------
+    name : str
+        The name of the path or environment variable
+    cfg_type : str
+        The type of config variable to access, either 'path' or 'envvar'
+
+    Returns
+    -------
+    dict
+        The definitions of the requested parameter in the tree config files
+
+    Raises
+    ------
+    ValueError
+        when cfg_type is not 'path' or 'envvar'
+    """
+
+    if cfg_type not in ['envvar', 'path']:
+        raise ValueError('cfg_type can only be "envvar" or "path"')
+
+    output = {}
+    for cfg in Tree.list_available_configs():
+        if 'basework' in cfg:
+            continue
+        t=Tree(cfg)
+        if cfg_type == 'envvar':
+            data = t.to_dict()
+        elif cfg_type == 'path':
+            data = t.paths
+        output[cfg.split('.')[0]] = data.get(name, None)
+    return output
+
+def get_envvar_history(name: str) -> dict:
+    """ Get the history of a given environment variable
+
+    Returns a dictionary of the given environment variable definition in all 
+    available tree config files.
+
+    Parameters
+    ----------
+    name : str
+        The name of the environment variable
+
+    Returns
+    -------
+    dict
+        The environment variable definitions in each tree config file
+    """
+    return _get_history(name, cfg_type='envvar')
+
+
+def get_path_history(name: str) -> dict:
+    """ Get the history of a given access path name
+
+    Returns a dictionary of the given acess path definition in all 
+    available tree config files.
+
+    Parameters
+    ----------
+    name : str
+        The name of the access path
+
+    Returns
+    -------
+    dict
+        The path definitions in each tree config file
+    """
+    return _get_history(name, cfg_type='path')
