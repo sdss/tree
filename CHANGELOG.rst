@@ -8,6 +8,8 @@ This document records the main changes to the tree code.
 
 3.0.8 (unreleased)
 ------------------
+- Updating tree config for dr17 VACs
+- Added new Sphinx doc page for computing changes in the tree
 
 3.0.7 (2020-03-05)
 ------------------
