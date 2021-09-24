@@ -25,7 +25,17 @@ For example, to lookup all available defintions for the ``MANGA_HI`` environment
 
     >>> # return all available definitions for the MANGA_HI environment variable
     >>> get_envvar_history('MANGA_HI')
-    {'dr7': None,
+    {'bosswork': None,
+     'mpl3': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'mpl4': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'mpl5': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'mpl6': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'mpl7': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'mpl8': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'mpl9': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'mpl10': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'mpl11': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
+     'dr7': None,
      'dr8': None,
      'dr9': None,
      'dr10': None,
@@ -36,16 +46,6 @@ For example, to lookup all available defintions for the ``MANGA_HI`` environment
      'dr15': '/Users/Brian/Work/sdss/sas/dr15/manga/HI',
      'dr16': '/Users/Brian/Work/sdss/sas/dr16/manga/HI',
      'dr17': '/Users/Brian/Work/sdss/sas/dr17/manga/HI',
-     'bosswork': None,
-     'mpl10': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
-     'mpl11': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
-     'mpl3': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
-     'mpl4': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
-     'mpl5': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
-     'mpl6': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
-     'mpl7': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
-     'mpl8': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
-     'mpl9': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI',
      'sdss5': None,
      'sdsswork': '/Users/Brian/Work/sdss/sas/mangawork/manga/HI'}
 
@@ -56,7 +56,17 @@ For example, to lookup all available defintions for the ``mangaimage`` access pa
 
     >>> # return all available definitions for the mangaimage access path name
     >>> get_path_history('mangaimage')
-    {'dr7': None,
+    {'bosswork': None,
+     'mpl3': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
+     'mpl4': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
+     'mpl5': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
+     'mpl6': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
+     'mpl7': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
+     'mpl8': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
+     'mpl9': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
+     'mpl10': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
+     'mpl11': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
+     'dr7': None,
      'dr8': None,
      'dr9': None,
      'dr10': None,
@@ -67,19 +77,8 @@ For example, to lookup all available defintions for the ``mangaimage`` access pa
      'dr15': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
      'dr16': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
      'dr17': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
-     'bosswork': None,
-     'mpl10': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
-     'mpl11': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
-     'mpl3': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
-     'mpl4': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
-     'mpl5': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
-     'mpl6': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
-     'mpl7': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png',
-     'mpl8': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
-     'mpl9': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png',
      'sdss5': None,
      'sdsswork': '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png'}
-
 
 Compute a complete changelog
 ----------------------------

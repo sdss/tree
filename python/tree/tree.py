@@ -17,6 +17,7 @@ import re
 from collections import OrderedDict
 import six
 import json
+import datetime
 from tree import log, config as cfg_params
 
 if ((sys.version_info.major == 3 and sys.version_info.minor > 2) or
@@ -110,6 +111,13 @@ class Tree(object):
         if phase and phase.isdigit():
             phase = int(phase)
         return phase
+    
+    @property
+    def release_date(self):
+        ''' Return the release date of the tree configuration '''
+        rd = self.environ['default'].get('release_date', 'None')
+        if rd != 'None':
+            return datetime.date.fromisoformat(rd)
 
     def list_keys(self):
         ''' List the available keys you can load '''
@@ -492,8 +500,7 @@ class Tree(object):
     def list_configs(self):
         ''' List available configs to load '''
 
-        files = [os.path.basename(f) for f in self._cfg_files if 'basework.cfg' not in f]
-        return files
+        return self.list_available_configs()
 
     def show_forest(self, config=None):
         ''' Show the environment for a specified config
@@ -522,6 +529,42 @@ class Tree(object):
         if len(configs) == 1:
             return cfgs[cfg_name]
         return cfgs
+    
+    @staticmethod
+    def _sort_configs(release: str = 'dr', cfgs: list = None) -> list:
+        """ Sort the list of configs by a release group
+
+        Sorts the list of configs by a release group, e.g. 
+        'DR', 'MPL', or "IPL". Within each group sorts by the integer
+        number of the release.
+
+        Parameters
+        ----------
+        release : str, optional
+            The release group name, by default 'dr'
+        cfgs : list, optional
+            The input list of configs, by default None
+
+        Returns
+        -------
+        list
+            A sorted list of configs
+
+        Raises
+        ------
+        ValueError
+            when the release group is not recognized
+        """
+        release = release.lower()
+        if release not in ['dr', 'mpl', 'ipl']:
+            raise ValueError(f'{release} is not a valid release group')
+
+        # sort the release subset of config files
+        relsort = sorted([i for i in cfgs if release in i],
+                        key=lambda t: int(re.findall(f'{release}(.*?).cfg', t)[0]))
+        rest = [[i] for i in cfgs if release not in i]
+        rest.insert(1, relsort)
+        return sum(rest, [])
 
     @staticmethod
     def list_available_configs():
@@ -532,15 +575,14 @@ class Tree(object):
 
         # look up the config files from the data directory
         data_path = os.path.join(treedir, 'data')
-        cfgs = [i for i in os.listdir(data_path) if i.endswith('.cfg')]
+        cfgs = [i for i in os.listdir(data_path) if i.endswith('.cfg') and 'basework' not in i]
         cfgs.sort()
 
-        # sort the DR subset of config files
-        drsort = sorted([i for i in cfgs if 'dr' in i],
-                        key=lambda t: int(re.findall('dr(.*?).cfg', t)[0]))
-        rest = [[i] for i in cfgs if 'dr' not in i]
-        rest.insert(1, drsort)
-        sorted_cfgs = sum(rest, [])
+        # sort each release subset of config files
+        sorted_cfgs = Tree._sort_configs(release='dr', cfgs=cfgs)
+        sorted_cfgs = Tree._sort_configs(release='mpl', cfgs=sorted_cfgs)
+        sorted_cfgs = Tree._sort_configs(release='ipl', cfgs=sorted_cfgs)
+
         return sorted_cfgs
 
     @classmethod
