@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.0.8 (unreleased)
+3.1.0 (unreleased)
 ------------------
 - Updating tree config for dr17 VACs
 - Added new Sphinx doc page for computing changes in the tree
