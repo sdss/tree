@@ -6,6 +6,10 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.1.1 (2021-12-05)
+------------------
+- Added missing MANGA_SPECTRA_TEMPLATES to dr15 config.
+
 3.1.0 (2021-09-24)
 ------------------
 - Updating tree config for dr17 VACs
