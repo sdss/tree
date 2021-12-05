@@ -6,6 +6,26 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.1.1 (2021-12-05)
+------------------
+- Added missing MANGA_SPECTRA_TEMPLATES to dr15 config.
+
+3.1.0 (2021-09-24)
+------------------
+- Updating tree config for dr17 VACs
+- Added new Sphinx doc page for computing changes in the tree
+- Adds ``release_date`` to tree configs for DR and MPLs.  Unreleased configs have ``release_date`` set to None.
+- Adds new ``release_date`` property to ``Tree`` which returns the release date as a ``datetime.date`` object.
+- Expanding ``Tree.list_available_configs`` to sort by "DR", "MPL" and "IPL".
+- Deprecating ``Tree.list_configs`` in favor of ``Tree.list_available_configs``
+
+3.0.7 (2020-03-05)
+------------------
+- Added method ``get_release_from_config`` to convert a given tree ``config_name`` into its release name.
+- Added a new ``release`` attribute, accessible on a ``Tree`` instance.
+- Fixing the mangarss path template with proper "wave" keyword arg, similar to mangacube
+- Adding new tree config for MaNGA release MPL-11
+
 3.0.6 (2020-11-11)
 ------------------
 - Added dr17 release config
