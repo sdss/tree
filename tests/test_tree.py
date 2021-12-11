@@ -11,7 +11,7 @@
 from __future__ import print_function, division, absolute_import
 import pytest
 from tree import config
-from tree.tree import Tree
+from tree.tree import Tree, get_envvar_history, get_path_history
 import six
 import os
 
@@ -147,6 +147,16 @@ class TestTree(object):
         else:
             assert 'WORK' in rels
 
+    @pytest.mark.parametrize('config, release',
+                             [('sdsswork', 'WORK'),
+                              ('mpl8', 'MPL8'),
+                              ('sdss5', 'WORK'),
+                              ('dr15', 'DR15')])
+    def test_config_to_release(self, config, release):
+        tree = Tree(config)
+        assert tree.config_name == config
+        assert tree.release == release
+
     @pytest.mark.parametrize('collapse', [(True), (False)])
     def test_to_dict(self, tree, collapse):
         envdict = tree.to_dict(collapse=collapse)
@@ -232,3 +242,23 @@ class TestTree(object):
         tree = Tree(config='sdsswork')
         tree.replant_tree('sdss5')
         self.assert_subset_envvars()
+        
+    def test_missing_path_envvars(self, tree):
+        # remove an envvar
+        tree.environ['MANGA'].pop("MANGA_SWIM")
+        missing = tree.check_missing_path_envvars()
+        assert "MANGA_SWIM" in missing
+
+
+def test_get_path_history():
+    im = get_path_history('mangaimage')
+    assert im['dr12'] is None
+    assert im['dr17'] == '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/images/{ifu}.png'
+    assert im['dr16'] == '$MANGA_SPECTRO_REDUX/{drpver}/{plate}/{dir3d}/images/{ifu}.png'
+
+
+def test_get_envvar_history():
+    swim = get_envvar_history('MANGA_SWIM')
+    assert swim['dr15'] is None
+    assert 'sas/dr16/manga/swim' in swim['dr16']
+    assert swim['sdss5'] is None

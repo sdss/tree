@@ -20,6 +20,7 @@ Contents
   Available configurations for the Tree <config>
   Setting up the Tree in your local environment <tree_setup>
   Adding a new path in the Tree <paths>
+  Tracking changes in the Tree <changes>
 
 
 Reference

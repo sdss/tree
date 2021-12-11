@@ -16,10 +16,22 @@ This is the default configuration loaded.  It defines the current set of environ
    :title: sdsswork
    :remove-sasbase:
 
+.. _dr17:
+
+DR17
+----
+
+This is the configuration for data release 17
+
+.. datamodel:: tree.tree:Tree
+   :prog: dr17
+   :title: dr17
+   :remove-sasbase:
+
 .. _dr16:
 
 DR16
---------
+----
 
 This is the configuration for data release 16
 
@@ -31,7 +43,7 @@ This is the configuration for data release 16
 .. _dr15:
 
 DR15
---------
+----
 
 This is the configuration for data release 15
 
@@ -43,7 +55,7 @@ This is the configuration for data release 15
 .. _dr14:
 
 DR14
---------
+----
 
 This is the configuration for data release 14
 
@@ -55,7 +67,7 @@ This is the configuration for data release 14
 .. _dr13:
 
 DR13
---------
+----
 
 This is the configuration for data release 13
 
@@ -67,7 +79,7 @@ This is the configuration for data release 13
 .. _dr12:
 
 DR12
---------
+----
 
 This is the configuration for data release 12
 
@@ -79,7 +91,7 @@ This is the configuration for data release 12
 .. _dr11:
 
 DR11
---------
+----
 
 This is the configuration for data release 11
 
@@ -91,7 +103,7 @@ This is the configuration for data release 11
 .. _dr10:
 
 DR10
---------
+----
 
 This is the configuration for data release 10
 
@@ -103,7 +115,7 @@ This is the configuration for data release 10
 .. _dr9:
 
 DR9
---------
+---
 
 This is the configuration for data release 9
 
@@ -115,7 +127,7 @@ This is the configuration for data release 9
 .. _dr8:
 
 DR8
---------
+---
 
 This is the configuration for data release 8
 
