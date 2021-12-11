@@ -486,14 +486,13 @@ def get_parser():
                         help='Default config version to write into the .version file. Defaults to "sdsswork"')
     parser.add_argument('-p', '--path', action='store', dest='path', default=None,
                         help='Custom output path to copy environment files')
+    parser.add_argument('-f', '--force', action='store_true', dest='verbose',
+                        help='Force overwrite of existing modulefiles', default=False)
 
     return parser
 
 
-def main(args):
-
-    # parse arguments
-    opts = get_parser().parse_args()
+def main(opts):
 
     # check for a treedir; if none found, set path to the parent directory
     if not opts.treedir:
@@ -556,4 +555,8 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+
+    # parse arguments
+    opts = get_parser().parse_args()
+
+    main(opts)
