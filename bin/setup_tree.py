@@ -415,11 +415,11 @@ def copy_modules(filespath=None, modules_path=None, verbose=None, default=None, 
 
     # check for the tree module directory
     tree_mod = os.path.join(modules_path, 'tree')
-    if not os.path.isdir(tree_mod) or force:
+    if not os.path.isdir(tree_mod):
         if verbose:
             print('Creating module tree directory: {0}'.format(tree_mod))
         os.makedirs(tree_mod)
-    else:
+    elif not force:
         doit = input('{0} already exists! Overwrite? (y/n) \n'.format(tree_mod)) or 'n'
         if doit == 'n':
             return
