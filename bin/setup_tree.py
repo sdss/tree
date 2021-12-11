@@ -558,5 +558,4 @@ if __name__ == '__main__':
 
     # parse arguments
     opts = get_parser().parse_args()
-
     main(opts)
