@@ -486,7 +486,7 @@ def get_parser():
                         help='Default config version to write into the .version file. Defaults to "sdsswork"')
     parser.add_argument('-p', '--path', action='store', dest='path', default=None,
                         help='Custom output path to copy environment files')
-    parser.add_argument('-f', '--force', action='store_true', dest='verbose',
+    parser.add_argument('-f', '--force', action='store_true', dest='force',
                         help='Force overwrite of existing modulefiles', default=False)
 
     return parser
