@@ -372,7 +372,7 @@ def get_tree(config=None):
     return tree
 
 
-def copy_modules(filespath=None, modules_path=None, verbose=None, default=None):
+def copy_modules(filespath=None, modules_path=None, verbose=None, default=None, force=None):
     ''' Copy over the tree module files into your path '''
 
     # find or define a modules path
@@ -415,7 +415,7 @@ def copy_modules(filespath=None, modules_path=None, verbose=None, default=None):
 
     # check for the tree module directory
     tree_mod = os.path.join(modules_path, 'tree')
-    if not os.path.isdir(tree_mod):
+    if not os.path.isdir(tree_mod) or force:
         if verbose:
             print('Creating module tree directory: {0}'.format(tree_mod))
         os.makedirs(tree_mod)
@@ -551,7 +551,7 @@ def main(opts):
 
     # Setup the modules
     print('Copying module files...')
-    copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose, default=opts.default)
+    copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose, default=opts.default, force=opts.force)
 
 
 if __name__ == '__main__':
