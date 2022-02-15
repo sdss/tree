@@ -254,8 +254,8 @@ set product tree
 set version {1}
 conflict $product
 
-module load sdsstools/0.1.7
-prereq sdsstools/0.1.7
+module load sdsstools
+prereq sdsstools
 module load sdss_access
 prereq sdss_access
 
