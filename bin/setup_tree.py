@@ -254,8 +254,8 @@ set product tree
 set version {1}
 conflict $product
 
-module load sdsstools/0.1.7
-prereq sdsstools/0.1.7
+module load sdsstools
+prereq sdsstools
 module load sdss_access
 prereq sdss_access
 
@@ -372,7 +372,7 @@ def get_tree(config=None):
     return tree
 
 
-def copy_modules(filespath=None, modules_path=None, verbose=None, default=None):
+def copy_modules(filespath=None, modules_path=None, verbose=None, default=None, force=None):
     ''' Copy over the tree module files into your path '''
 
     # find or define a modules path
@@ -419,7 +419,7 @@ def copy_modules(filespath=None, modules_path=None, verbose=None, default=None):
         if verbose:
             print('Creating module tree directory: {0}'.format(tree_mod))
         os.makedirs(tree_mod)
-    else:
+    elif not force:
         doit = input('{0} already exists! Overwrite? (y/n) \n'.format(tree_mod)) or 'n'
         if doit == 'n':
             return
@@ -486,14 +486,13 @@ def get_parser():
                         help='Default config version to write into the .version file. Defaults to "sdsswork"')
     parser.add_argument('-p', '--path', action='store', dest='path', default=None,
                         help='Custom output path to copy environment files')
+    parser.add_argument('-f', '--force', action='store_true', dest='force',
+                        help='Force overwrite of existing modulefiles', default=False)
 
     return parser
 
 
-def main(args):
-
-    # parse arguments
-    opts = get_parser().parse_args()
+def main(opts):
 
     # check for a treedir; if none found, set path to the parent directory
     if not opts.treedir:
@@ -552,8 +551,11 @@ def main(args):
 
     # Setup the modules
     print('Copying module files...')
-    copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose, default=opts.default)
+    copy_modules(filespath=etcdir, modules_path=opts.modulesdir, verbose=opts.verbose, default=opts.default, force=opts.force)
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+
+    # parse arguments
+    opts = get_parser().parse_args()
+    main(opts)
