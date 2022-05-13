@@ -6,6 +6,10 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.1.2 (2022-05-13)
+------------------
+- Includes updates and changes to sdss5 paths and envvars
+
 3.1.1 (2021-12-05)
 ------------------
 - Added missing MANGA_SPECTRA_TEMPLATES to dr15 config.
