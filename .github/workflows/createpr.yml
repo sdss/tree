@@ -14,12 +14,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: dm_update_tree
 
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
         with:
+          source_branch: ""
           destination_branch: "master"
           pr_title: "New tree paths"
           pr_body: ":crown: *An automated PR*"
