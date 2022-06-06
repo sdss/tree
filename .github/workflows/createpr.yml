@@ -1,0 +1,32 @@
+# this action creates a new pull request when any new branch dmgen-fs-* is pushed.
+# these branch names are used when new datamodels are generated.
+
+name: Add New Paths
+
+on:
+  push:
+    branches:
+      - dm_update_tree
+
+jobs:
+  createpr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "master"
+          pr_title: "New tree paths"
+          pr_body: ":crown: *An automated PR*"
+          pr_reviewer: "havok2063"
+          pr_label: "auto-pr,enhancement"
+          pr_draft: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Output PR URL
+        run: echo ${{steps.open-pr.outputs.pr_url}}
+      - name: Output PR Number
+        run: echo ${{steps.open-pr.outputs.pr_number}}
