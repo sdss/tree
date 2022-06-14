@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - dm_update_tree
+    paths:
+      - 'data/**.cfg'
 
 jobs:
   createpr:
@@ -22,7 +24,9 @@ jobs:
           source_branch: ""
           destination_branch: "master"
           pr_title: "New tree paths"
-          pr_body: ":crown: *An automated PR*"
+          pr_body: |
+            :crown: *An automated PR*
+            This PR adds new paths into the tree ini config files.
           pr_reviewer: "havok2063"
           pr_label: "auto-pr,enhancement"
           pr_draft: true
