@@ -242,12 +242,35 @@ class TestTree(object):
         tree = Tree(config='sdsswork')
         tree.replant_tree('sdss5')
         self.assert_subset_envvars()
-        
+
     def test_missing_path_envvars(self, tree):
         # remove an envvar
         tree.environ['MANGA'].pop("MANGA_SWIM")
         missing = tree.check_missing_path_envvars()
         assert "MANGA_SWIM" in missing
+
+    @pytest.mark.parametrize('file, envvar',
+                             [('mangawork/manga/spectro/redux/v3_1_1/8485/file.txt', 'MANGA_SPECTRO_REDUX'),
+                              ('ebosswork/eboss/file.txt', 'EBOSS_ROOT'),
+                              ('file.txt', 'SAS_BASE_DIR'),
+                              ('/root/dir/file.txt', None)],
+                             ids=['manga', 'eboss', 'sas', 'none'])
+    def test_identify_envvar(self, faketree, tree, file, envvar):
+        """ test we can identify an envvar from a file """
+        path = os.path.join(faketree, file)
+        ee = tree.identify_envvar(path)
+        assert envvar == ee
+
+    @pytest.mark.parametrize('envvar, sec',
+                             [('MANGA_SPECTRO_REDUX', 'MANGA'),
+                              ('EBOSS_ROOT', 'EBOSS'),
+                              ('SAS_BASE_DIR', 'general'),
+                              ('NO_ENVVAR', None)],
+                             ids=['manga', 'eboss', 'sas', 'none'])
+    def test_identify_section(self, tree, envvar, sec):
+        """ test we can identify an ini section from an envvar """
+        ss = tree.identify_section(envvar)
+        assert sec == ss
 
 
 def test_get_path_history():

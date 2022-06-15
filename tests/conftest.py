@@ -42,6 +42,7 @@ def faketree(monkeypatch, tmp_path):
     mdir = p / 'modules'
     mdir.mkdir(parents=True)
     monkeypatch.setenv('MODULES_DIR', str(mdir))
+    yield str(p)
 
 
 @pytest.fixture()

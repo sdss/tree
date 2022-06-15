@@ -111,7 +111,7 @@ class Tree(object):
         if phase and phase.isdigit():
             phase = int(phase)
         return phase
-    
+
     @property
     def release_date(self):
         ''' Return the release date of the tree configuration '''
@@ -529,12 +529,12 @@ class Tree(object):
         if len(configs) == 1:
             return cfgs[cfg_name]
         return cfgs
-    
+
     @staticmethod
     def _sort_configs(release: str = 'dr', cfgs: list = None) -> list:
         """ Sort the list of configs by a release group
 
-        Sorts the list of configs by a release group, e.g. 
+        Sorts the list of configs by a release group, e.g.
         'DR', 'MPL', or "IPL". Within each group sorts by the integer
         number of the release.
 
@@ -765,12 +765,12 @@ class Tree(object):
     def check_missing_path_envvars(self):
         """ Checks paths envars against main envvar list
 
-        Extracts the used environment variables from all the 
-        sdss_access path definitions in tree.paths, and checks them 
-        against the list of defined environment variables in tree.environ.  
-        Returns a list of any path environment variables that are 
-        missing from the valid definitions in the environment.  
-        
+        Extracts the used environment variables from all the
+        sdss_access path definitions in tree.paths, and checks them
+        against the list of defined environment variables in tree.environ.
+        Returns a list of any path environment variables that are
+        missing from the valid definitions in the environment.
+
         Returns
         -------
         list
@@ -778,11 +778,25 @@ class Tree(object):
         """
         # get the list of environment variables
         envvars = self.to_dict().keys()
-        
+
         # get the list of access paths and extract envvars
         paths = self.paths.values()
         path_envvars = set(re.findall(r'\$(.*?)\/', '\t'.join(paths)))
         return [i for i in path_envvars if i not in envvars]
+
+    def identify_envvar(self, file):
+        """ Identifies the environment variable used in a file path """
+        env = None
+        for env, val in reversed(list(self.to_dict().items())):
+             if val in file:
+                 return env
+
+    def identify_section(self, envvar):
+        """ Identifies the tree ini section from an environment variable """
+        sec = None
+        for sec, envs in self.environ.items():
+             if envvar in envs:
+                 return sec
 
 def get_tree_dir(uproot_with=None):
     ''' Return the path to the tree product directory
@@ -851,7 +865,7 @@ def _get_history(name: str, cfg_type: str) -> dict:
 def get_envvar_history(name: str) -> dict:
     """ Get the history of a given environment variable
 
-    Returns a dictionary of the given environment variable definition in all 
+    Returns a dictionary of the given environment variable definition in all
     available tree config files.
 
     Parameters
@@ -870,7 +884,7 @@ def get_envvar_history(name: str) -> dict:
 def get_path_history(name: str) -> dict:
     """ Get the history of a given access path name
 
-    Returns a dictionary of the given acess path definition in all 
+    Returns a dictionary of the given acess path definition in all
     available tree config files.
 
     Parameters
