@@ -6,6 +6,10 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.1.3 (unreleased)
+------------------
+- Add methods ``identify_envvar`` and ``identify_section`` to ``Tree`` class.
+
 3.1.2 (2022-05-13)
 ------------------
 - Includes updates and changes to sdss5 paths and envvars
