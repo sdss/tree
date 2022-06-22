@@ -800,7 +800,7 @@ class Tree(object):
         """ Identifies the tree ini section from an environment variable """
         sec = None
         # looks if envvar exactly in list of sections
-        for tsec, envs in self.environ.items():
+        for tsec, envs in reversed(sorted(self.environ.items())):
              if envvar in envs:
                  sec = tsec
                  break
@@ -820,7 +820,7 @@ class Tree(object):
                 envlist = sorted(self.to_dict().keys())
                 sec_guess = rapidfuzz.process.extractOne(envvar, envlist, score_cutoff=70)
                 if sec_guess:
-                    return self.identify_section(self, sec_guess[0])
+                    return self.identify_section(sec_guess[0])
             else:
                 log.warning('rapidfuzz package is not installed. Cannot make a guess.')
                 return sec
