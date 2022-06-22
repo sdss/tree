@@ -20,6 +20,11 @@ import json
 import datetime
 from tree import log, config as cfg_params
 
+try:
+    import rapidfuzz
+except ImportError:
+    rapidfuzz = None
+
 if ((sys.version_info.major == 3 and sys.version_info.minor > 2) or
         (sys.version_info.major == 2 and sys.version_info.minor >= 7)):
     from configparser import ConfigParser as SafeConfigParser
@@ -791,12 +796,35 @@ class Tree(object):
              if val in file:
                  return env
 
-    def identify_section(self, envvar):
+    def identify_section(self, envvar, guess=False):
         """ Identifies the tree ini section from an environment variable """
         sec = None
-        for sec, envs in self.environ.items():
+        # looks if envvar exactly in list of sections
+        for tsec, envs in self.environ.items():
              if envvar in envs:
-                 return sec
+                 sec = tsec
+                 break
+
+             # guess based on if envvar starts with section name
+             if guess and envvar.startswith(tsec):
+                 sec = tsec
+                 break
+
+        # return section name if found
+        if sec:
+            return sec
+
+        # if still no identified or guessed section, guess with rapidfuzz
+        if guess:
+            if rapidfuzz:
+                envlist = sorted(self.to_dict().keys())
+                sec_guess = rapidfuzz.process.extractOne(envvar, envlist, score_cutoff=70)
+                if sec_guess:
+                    return self.identify_section(self, sec_guess[0])
+            else:
+                log.warning('rapidfuzz package is not installed. Cannot make a guess.')
+                return sec
+
 
 def get_tree_dir(uproot_with=None):
     ''' Return the path to the tree product directory
