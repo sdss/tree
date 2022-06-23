@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.1.3 (unreleased)
+3.1.3 (2022-06-23)
 ------------------
 - Add methods ``identify_envvar`` and ``identify_section`` to ``Tree`` class.
 
