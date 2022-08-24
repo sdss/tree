@@ -272,6 +272,18 @@ class TestTree(object):
         ss = tree.identify_section(envvar)
         assert sec == ss
 
+    @pytest.mark.parametrize('envvar, sec',
+                             [('MANGA_SPECTRO_REDUX', 'MANGA'),
+                              ('MANGA_NEWVAC', 'MANGA'),
+                              ('EBOSS_JOKER', 'EBOSS'),
+                              ('SAS_BASE_DIR', 'general'),
+                              ('APOGEE_CRYSTAL', 'APOGEE'),
+                              ('APOGEECRYSTAL', 'APOGEE')],
+                             ids=['manga1', 'manga2', 'eboss', 'sas', 'apogee1', 'apogee2'])
+    def test_identify_section_guess(self, tree, envvar, sec):
+        ss = tree.identify_section(envvar, guess=True)
+        assert sec == ss
+
 
 def test_get_path_history():
     im = get_path_history('mangaimage')
