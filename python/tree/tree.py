@@ -610,7 +610,7 @@ class Tree(object):
                 continue
 
             b = i.split('.cfg', 1)[0]
-            if 'dr' in b or 'mpl' in b:
+            if 'dr' in b or 'mpl' in b or 'ipl' in b:
                 # uppercase any DR or MPLs
                 releases.append(b.upper())
             elif 'work' in b and 'WORK' not in releases:
