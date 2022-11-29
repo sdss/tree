@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.1.4 (unreleased)
+------------------
+- Adding new config for IPL-1
+- Updating many paths within sdss5.cfg
+
 3.1.3 (2022-06-23)
 ------------------
 - Add methods ``identify_envvar`` and ``identify_section`` to ``Tree`` class.
