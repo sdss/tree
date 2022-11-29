@@ -174,6 +174,16 @@ def create_env(environ, mirror=None, verbose=None):
     defaults['url'] = "https://data.mirror.sdss.org" if mirror else "https://data.sdss.org"
     defaults['location'] = "SDSS-IV Science Archive Mirror (SAM)" if mirror else "SDSS-IV Science Archive Server (SAS)"
 
+    if 'general' not in environ:
+        if verbose:
+            print("No 'general' section found in tree environ. Skipping env link creation.")
+        return
+
+    if 'SAS_ROOT' not in environ['general']:
+        if verbose:
+            print("No 'SAS_ROOT' found in 'general' tree environ section. Skipping env link creation.")
+        return
+
     if not os.path.exists(environ['general']['SAS_ROOT']):
         if verbose:
             print("{0} doesn't exist, skipping env link creation.".format(environ['general']['SAS_ROOT']))
