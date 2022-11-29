@@ -16,6 +16,18 @@ This is the default configuration loaded.  It defines the current set of environ
    :title: sdsswork
    :remove-sasbase:
 
+.. _dr18:
+
+DR18
+----
+
+This is the configuration for data release 18
+
+.. datamodel:: tree.tree:Tree
+   :prog: dr18
+   :title: dr18
+   :remove-sasbase:
+
 .. _dr17:
 
 DR17
@@ -147,4 +159,17 @@ This is the temporary, development, configuration for SDSS-V
 .. datamodel:: tree.tree:Tree
    :prog: sdss5
    :title: sdss5
+   :remove-sasbase:
+
+
+.. _ipl1:
+
+IPL-1
+-----
+
+This is the configuration for IPL-1
+
+.. datamodel:: tree.tree:Tree
+   :prog: ipl-1
+   :title: ipl-1
    :remove-sasbase:
