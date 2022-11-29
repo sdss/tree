@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.1.4 (unreleased)
+3.1.4 (2022-11-29)
 ------------------
 - Adding new config for IPL-1
 - Updating many paths within sdss5.cfg
