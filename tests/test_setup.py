@@ -129,6 +129,30 @@ def test_create_files(tree, config):
     assert os.path.exists(os.path.join(moduledir, config))
 
 
+def test_no_mod_deps(tree):
+    """ test that the module deps are not in module file """
+    etcdir = os.path.join(os.getenv('TREE_DIR'), 'etc')
+    stdout = run_cmd(args=[])
+    files = glob.glob(os.path.join(etcdir, 'dr18.module'))
+    assert os.path.exists(os.path.join(etcdir, 'dr18.module'))
+    with open(files[0], 'r') as f:
+        data = f.read()
+        assert "module load sdsstools" not in data
+        assert "prereq sdss_access" not in data
+
+
+def test_add_mod_deps(tree):
+    """ test that the module deps are not in module file """
+    etcdir = os.path.join(os.getenv('TREE_DIR'), 'etc')
+    stdout = run_cmd(args=['-a'])
+    files = glob.glob(os.path.join(etcdir, 'dr18.module'))
+    assert os.path.exists(os.path.join(etcdir, 'dr18.module'))
+    with open(files[0], 'r') as f:
+        data = f.read()
+        assert "module load sdsstools" in data
+        assert "prereq sdss_access" in data
+
+
 @pytest.fixture()
 def resetmod(monkeypatch):
     mdir = os.environ.get('MODULES_DIR')

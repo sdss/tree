@@ -225,7 +225,7 @@ def check_sas_base_dir(root=None):
     os.environ['SAS_BASE_DIR'] = sasbasedir
 
 
-def write_header(term='bash', tree_dir=None, name=None):
+def write_header(term='bash', tree_dir=None, name=None, add_mod_deps=False):
     ''' Write proper file header in a given shell format
 
     Parameters:
@@ -246,6 +246,15 @@ def write_header(term='bash', tree_dir=None, name=None):
     base = 'export' if term == 'bash' else 'setenv'
     sep = '=' if term == 'bash' else ' '
 
+    # add the optional depdendecies
+    deps = """
+module load sdsstools
+prereq sdsstools
+module load sdss_access
+prereq sdss_access
+    """ if add_mod_deps else ""
+
+
     if term != 'modules':
         hdr = """# Set up tree/{0} for {1}
 {2} TREE_DIR{4}{3}
@@ -264,10 +273,7 @@ set product tree
 set version {1}
 conflict $product
 
-module load sdsstools
-prereq sdsstools
-module load sdss_access
-prereq sdss_access
+{2}
 
 module-whatis "Sets up $product/$version in your environment"
 
@@ -277,7 +283,7 @@ setenv [string toupper $product]_VER $version
 prepend-path PATH $PRODUCT_DIR/bin
 prepend-path PYTHONPATH $PRODUCT_DIR/python
 
-                """.format(product_dir, name)
+                """.format(product_dir, name, deps)
 
     return hdr.strip()
 
@@ -288,7 +294,8 @@ def write_version(name):
     return modules_version
 
 
-def write_file(environ, term='bash', out_dir=None, tree_dir=None, default=None):
+def write_file(environ, term='bash', out_dir=None, tree_dir=None,
+               default=None, add_mod_deps=None):
     ''' Write a tree environment file
 
     Loops over the tree environ and writes them out to a bash, tsch, or
@@ -310,7 +317,7 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None, default=None):
 
     # get the proper name, header and file extension
     name = environ['default']['name']
-    header = write_header(term=term, name=name, tree_dir=tree_dir)
+    header = write_header(term=term, name=name, tree_dir=tree_dir, add_mod_deps=add_mod_deps)
     exts = {'bash': '.sh', 'tsch': '.csh', 'modules': '.module'}
     ext = exts[term]
 
@@ -498,7 +505,8 @@ def get_parser():
                         help='Custom output path to copy environment files')
     parser.add_argument('-f', '--force', action='store_true', dest='force',
                         help='Force overwrite of existing modulefiles', default=False)
-
+    parser.add_argument('-a', '--add-module-deps', action='store_true', dest='add_mod_deps',
+                        help='Add the sdsstools and sdss-access module prereq dependencies', default=False)
     return parser
 
 
@@ -548,7 +556,7 @@ def main(opts):
                 continue
             create_env(tree.environ, mirror=opts.mirror)
         else:
-            write_file(tree.environ, term='modules', out_dir=etcdir, tree_dir=opts.treedir, default=opts.default)
+            write_file(tree.environ, term='modules', out_dir=etcdir, tree_dir=opts.treedir, default=opts.default, add_mod_deps=opts.add_mod_deps)
             write_file(tree.environ, term='bash', out_dir=etcdir, tree_dir=opts.treedir)
             write_file(tree.environ, term='tsch', out_dir=etcdir, tree_dir=opts.treedir)
 
