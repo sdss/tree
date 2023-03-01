@@ -24,6 +24,7 @@ configurations are the following:
 * :ref:`DR8 <dr8>`
 * :ref:`sdss5 <sdss5>` - the latest working configuration for SDSS-V
 * :ref:`ipl1 <ipl1>` - the IPL-1 configuration for SDSS-V
+* :ref:`ipl2 <ipl2>` - the IPL-2 configuration for SDSS-V
 
 .. _tree_evolve:
 
