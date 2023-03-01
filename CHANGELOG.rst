@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-3.1.5 (unreleased)
+3.1.5 (2023-03-01)
 ------------------
 - Added new config for IPL-2
 - Make ``sdsstool`` and ``sdss_access`` module dependencies optional in ``setup_tree``
