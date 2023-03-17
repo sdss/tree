@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.1.6 (unreleased)
+------------------
+- Fixing dr18 mos target envvar bug to MOS_TARGET
+- Adding SDSS_HIPS envvar and moc path to sdss5 config
+
 3.1.5 (2023-03-01)
 ------------------
 - Added new config for IPL-2
