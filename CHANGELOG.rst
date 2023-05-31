@@ -11,7 +11,7 @@ This document records the main changes to the tree code.
 - General refactor and cleanup of the tree configs
 - Removes MaNGA internal mpl configs
 - Removes bosswork and sdsswork configs
-- Renames sdss5 config to sdsswork
+- Renames sdss5 config to sdsswork, making sdss5 the default work setup
 - Module creation creates a sdss5 module symlink to sdsswork
 
 3.1.7 (2023-05-31)
