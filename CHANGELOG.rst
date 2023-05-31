@@ -6,6 +6,12 @@ Change Log
 
 This document records the main changes to the tree code.
 
+3.1.7 (2023-05-31)
+------------------
+- Tag before package cleanup and refactor
+- Adds some initial paths for LVM DRP
+- Updates confSummmary config paths for sdsscore
+
 3.1.6 (2023-03-27)
 ------------------
 - Fixing dr18 mos target envvar bug to MOS_TARGET
