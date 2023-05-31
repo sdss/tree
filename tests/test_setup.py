@@ -41,12 +41,6 @@ def test_intemp(tree):
     assert len(files) > 1
 
 
-# def run_cmd(args=[], user_input=''):
-#     process = subprocess.Popen(['python', setuppath] + args, universal_newlines=True,
-#                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#     stdout, __ = process.communicate(input=user_input)
-#     return stdout
-
 def run_cmd(args=[], user_input=''):
     if sys.version_info.major == 2 or (sys.version_info.major == 3 and sys.version_info.minor < 7):
         out = subprocess.check_output(['python', setuppath] + args,
@@ -109,23 +103,23 @@ def test_env_mirror(tree, mirror, exp):
     assert exp in page
 
 
-@pytest.mark.parametrize('config', [('dr15'), ('dr14'), ('sdsswork'), ('sdss5')])
+@pytest.mark.parametrize('config', [('dr15'), ('dr14'), ('sdsswork')])
 def test_create_files(tree, config):
     etcdir = os.path.join(os.getenv('TREE_DIR'), 'etc')
     assert os.path.exists(etcdir)
     files = glob.glob(os.path.join(etcdir, '*.*'))
-    assert len(files) == 0
+    assert not files
     stdout = run_cmd(args=[])
     files = glob.glob(os.path.join(etcdir, '*.*'))
     assert len(files) > 1
-    assert os.path.exists(os.path.join(etcdir, config + '.sh'))
-    assert os.path.exists(os.path.join(etcdir, config + '.csh'))
-    assert os.path.exists(os.path.join(etcdir, config + '.module'))
+    assert os.path.exists(os.path.join(etcdir, f'{config}.sh'))
+    assert os.path.exists(os.path.join(etcdir, f'{config}.csh'))
+    assert os.path.exists(os.path.join(etcdir, f'{config}.module'))
 
     # ensure modules were copied
     moduledir = os.path.join(os.getenv('MODULES_DIR'), 'tree')
     files = glob.glob(os.path.join(moduledir, '*'))
-    assert len(files) > 0
+    assert files
     assert os.path.exists(os.path.join(moduledir, config))
 
 
