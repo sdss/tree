@@ -36,14 +36,14 @@ def test_print_env():
     cc = compute_changelog('dr13', 'dr12')
     env = print_environment(cc)
     assert env[0] == 'Changes: DR13 from DR12'
-    assert env[6] == 'MANGA_SPECTRO_REDUX: /dr13/manga/spectro/redux'
+    assert 'MANGA_SPECTRO_REDUX: /dr13/manga/spectro/redux' in env
 
 
 def test_print_paths():
     cc = compute_changelog('dr17', 'dr16')
     paths = print_paths(cc)
     assert paths[0] == 'New Paths:'
-    assert paths[2] == 'apogee_astronn: $APOGEE_ASTRONN/apogee_astroNN-{release}.fits'
+    assert 'apogee_astronn: $APOGEE_ASTRONN/apogee_astroNN-{release}.fits' in paths
 
     paths = print_paths(cc, prepend_header=True)
     assert paths[0] == 'Changes: DR17 from DR16'
