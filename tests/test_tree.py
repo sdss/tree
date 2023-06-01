@@ -30,14 +30,14 @@ class TestTree(object):
         assert tree.treedir is not None
         assert isinstance(tree.treedir, six.string_types)
         assert tree.environ is not None
-        assert 'APO' in tree.environ
+        assert 'DATA' in tree.environ
         assert 'sdsswork' == tree.environ['default']['name']
 
-    @pytest.mark.parametrize('keys', [('manga'), ('MANGA'), (['manga', 'apogee'])],
-                             ids=['manga', 'capmanga', 'apomanga'])
+    @pytest.mark.parametrize('keys', [('bhm'), ('BHM'), (['mwm', 'MWM'])],
+                             ids=['bhm', 'capbhm', 'mwm'])
     def test_load_keys(self, keys):
         t = Tree(key=keys)
-        assert 'APO' not in t.environ
+        assert 'DATA' not in t.environ
         assert 'default' in t.environ
         assert 'general' in t.environ
         keys = keys if isinstance(keys, list) else [keys]
@@ -61,44 +61,44 @@ class TestTree(object):
     @pytest.mark.parametrize('dr', [('dr15')])
     def test_load_with_update(self, tree, dr):
         assert 'sdsswork' in tree.environ['default']['name']
-        assert 'mangawork' in tree.environ['MANGA']['MANGA_ROOT']
+        assert 'sdsswork/bhm' in tree.environ['BHM']['BHM_ROOT']
         tree = Tree(config=dr, update=True)
         self._assert_paths(tree, dr=dr)
 
     @pytest.mark.parametrize('dr', [('dr15')])
     def test_replant_tree(self, tree, dr):
         assert 'sdsswork' in tree.environ['default']['name']
-        assert 'mangawork' in tree.environ['MANGA']['MANGA_ROOT']
+        assert 'sdsswork/bhm' in tree.environ['BHM']['BHM_ROOT']
         tree.replant_tree(dr)
         self._assert_paths(tree, dr=dr)
 
     def test_custom_paths_remain(self, monkeypatch):
         # set custom environ variable
-        name = 'MANGA_QUICK'
-        path = '/tmp/work/manga/quick'
+        name = 'BHM_SANDBOX'
+        path = '/tmp/work/bhm/sandbox'
         monkeypatch.setitem(os.environ, name, path)
         assert os.environ[name] == path
         tree = Tree()
         assert os.environ[name] == path
-        assert path != tree.environ['MANGA'][name]
+        assert path != tree.environ['BHM'][name]
 
     def test_custom_paths_donotupdate(self, monkeypatch, tree):
-        name = 'MANGA_QUICK'
-        path = '/tmp/work/manga/quick'
+        name = 'BHM_SANDBOX'
+        path = '/tmp/work/bhm/sandbox'
         monkeypatch.setitem(os.environ, name, path)
         assert os.environ[name] == path
         tree.replant_tree('sdsswork')
         assert os.environ[name] != path
-        assert os.environ[name] == tree.environ['MANGA'][name]
+        assert os.environ[name] == tree.environ['BHM'][name]
 
     def test_custom_paths_update_with_exclude(self, monkeypatch, tree):
-        name = 'MANGA_QUICK'
-        path = '/tmp/work/manga/quick'
+        name = 'BHM_SANDBOX'
+        path = '/tmp/work/bhm/sandbox'
         monkeypatch.setitem(os.environ, name, path)
         assert os.environ[name] == path
-        tree.replant_tree('sdsswork', exclude=['MANGA_QUICK'])
+        tree.replant_tree('sdsswork', exclude=['BHM_SANDBOX'])
         assert os.environ[name] == path
-        assert path != tree.environ['MANGA'][name]
+        assert path != tree.environ['BHM'][name]
 
     def test_paths(self, tree):
         assert 'PATHS' not in tree.environ
@@ -110,11 +110,11 @@ class TestTree(object):
         orig_os = tree.get_orig_os_environ()
         hassas = orig_os.get("SAS_ROOT", None)
         if hassas:
-            assert 'mangawork' in orig_os.get("MANGA_ROOT")
+            assert 'sdsswork' in orig_os.get("BHM_ROOT")
         else:
-            assert 'MANGA_ROOT' not in orig_os
+            assert 'BHM_ROOT' not in orig_os
 
-        assert 'mangawork' in os.getenv("MANGA_ROOT")
+        assert 'sdsswork/bhm' in os.getenv("BHM_ROOT")
         tree.replant_tree('dr15')
         if hassas:
             assert 'dr15' not in orig_os.get("MANGA_ROOT")
@@ -149,8 +149,7 @@ class TestTree(object):
 
     @pytest.mark.parametrize('config, release',
                              [('sdsswork', 'WORK'),
-                              ('mpl8', 'MPL8'),
-                              ('sdss5', 'WORK'),
+                              ('ipl1', 'IPL1'),
                               ('dr15', 'DR15')])
     def test_config_to_release(self, config, release):
         tree = Tree(config)
@@ -161,12 +160,12 @@ class TestTree(object):
     def test_to_dict(self, tree, collapse):
         envdict = tree.to_dict(collapse=collapse)
         if collapse:
-            assert 'MANGA' not in envdict
-            assert 'MANGA_ROOT' in envdict
+            assert 'BHM' not in envdict
+            assert 'BHM_ROOT' in envdict
         else:
-            assert 'MANGA' in envdict
-            assert 'MANGA_ROOT' not in envdict
-            assert 'MANGA_ROOT' in envdict['MANGA']
+            assert 'BHM' in envdict
+            assert 'BHM_ROOT' not in envdict
+            assert 'BHM_ROOT' in envdict['BHM']
 
     def test_set_product_root(self, tmp_path, tree):
         temp_prod = tmp_path / 'software'
@@ -245,16 +244,16 @@ class TestTree(object):
 
     def test_missing_path_envvars(self, tree):
         # remove an envvar
-        tree.environ['MANGA'].pop("MANGA_SWIM")
+        tree.environ['BHM'].pop("BHM_EFEDS_SPECCOMP")
         missing = tree.check_missing_path_envvars()
-        assert "MANGA_SWIM" in missing
+        assert "BHM_EFEDS_SPECCOMP" in missing
 
     @pytest.mark.parametrize('file, envvar',
-                             [('mangawork/manga/spectro/redux/v3_1_1/8485/file.txt', 'MANGA_SPECTRO_REDUX'),
-                              ('ebosswork/eboss/file.txt', 'EBOSS_ROOT'),
+                             [('sdsswork/bhm/boss/spectro/redux/v6_0_9/8485/file.txt', 'BOSS_SPECTRO_REDUX'),
+                              ('sdsswork/mwm/file.txt', 'MWM_ROOT'),
                               ('file.txt', 'SAS_BASE_DIR'),
                               ('/root/dir/file.txt', None)],
-                             ids=['manga', 'eboss', 'sas', 'none'])
+                             ids=['bhm', 'mwm', 'sas', 'none'])
     def test_identify_envvar(self, faketree, tree, file, envvar):
         """ test we can identify an envvar from a file """
         path = os.path.join(faketree, file)
@@ -262,23 +261,23 @@ class TestTree(object):
         assert envvar == ee
 
     @pytest.mark.parametrize('envvar, sec',
-                             [('MANGA_SPECTRO_REDUX', 'MANGA'),
-                              ('EBOSS_ROOT', 'EBOSS'),
+                             [('BOSS_SPECTRO_REDUX', 'BHM'),
+                              ('MWM_ROOT', 'MWM'),
                               ('SAS_BASE_DIR', 'general'),
                               ('NO_ENVVAR', None)],
-                             ids=['manga', 'eboss', 'sas', 'none'])
+                             ids=['bhm', 'mwm', 'sas', 'none'])
     def test_identify_section(self, tree, envvar, sec):
         """ test we can identify an ini section from an envvar """
         ss = tree.identify_section(envvar)
         assert sec == ss
 
     @pytest.mark.parametrize('envvar, sec',
-                             [('MANGA_SPECTRO_REDUX', 'MANGA'),
-                              ('MANGA_NEWVAC', 'MANGA'),
-                              ('EBOSS_JOKER', 'EBOSS'),
+                             [('BOSS_SPECTRO_REDUX', 'BHM'),
+                              ('BHM_NEWVAC', 'BHM'),
+                              ('MOS_TARGET', 'MOS'),
                               ('SAS_BASE_DIR', 'general'),
-                              ('APOGEE_CRYSTAL', 'APOGEE'),
-                              ('APOGEECRYSTAL', 'APOGEE')],
+                              ('MWM_CRYSTAL', 'MWM'),
+                              ('APOGEE_ASPCAP', 'MWM')],
                              ids=['manga1', 'manga2', 'eboss', 'sas', 'apogee1', 'apogee2'])
     def test_identify_section_guess(self, tree, envvar, sec):
         ss = tree.identify_section(envvar, guess=True)
@@ -296,4 +295,4 @@ def test_get_envvar_history():
     swim = get_envvar_history('MANGA_SWIM')
     assert swim['dr15'] is None
     assert 'sas/dr16/manga/swim' in swim['dr16']
-    assert swim['sdss5'] is None
+    assert swim['sdsswork'] is None

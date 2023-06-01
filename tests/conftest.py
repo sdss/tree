@@ -15,6 +15,9 @@ import pytest
 import importlib
 import tree.tree as treemod
 
+pytest_plugins = 'sphinx.testing.fixtures'
+collect_ignore = ["roots"]
+
 def make_dirs(path):
     (path / 'dr14/manga/spectro/redux/v2_1_2').mkdir(parents=True)
     (path / 'dr15/manga/spectro/redux/v2_4_3').mkdir(parents=True)

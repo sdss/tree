@@ -22,7 +22,6 @@ configurations are the following:
 * :ref:`DR10 <dr10>`
 * :ref:`DR9 <dr9>`
 * :ref:`DR8 <dr8>`
-* :ref:`sdss5 <sdss5>` - the latest working configuration for SDSS-V
 * :ref:`ipl1 <ipl1>` - the IPL-1 configuration for SDSS-V
 * :ref:`ipl2 <ipl2>` - the IPL-2 configuration for SDSS-V
 
