@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-4.0.0 (unreleased)
+4.0.0 (2023-06-01)
 ------------------
 - General refactor and cleanup of the tree configs
 - Removes MaNGA internal mpl configs
