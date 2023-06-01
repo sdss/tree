@@ -32,6 +32,7 @@ sdss docs.build
 # open the docs locally in a browser
 sdss docs.show
 ```
+Documentation is automatically built and pushed to Read The Docs.
 
 ## Testing
 Tests are created using `pytest`.  Navigate to the `tests` directory from the top level and run with `pytest`.
@@ -42,7 +43,9 @@ pytest
 
 ## Creating Releases
 
-New releases of `sdss-tree` are created automatically when new tags are pushed to Github.  See the [Create Release](.github/workflows/release.yml) Github Action and [Releases](https://github.com/sdss/tree/releases) for the list.
+New releases of `sdss-tree` are created automatically, and pushed to [PyPi](https://pypi.org/project/sdss-tree/), when new tags are pushed to Github.  See the [Create Release](.github/workflows/release.yml) Github Action and [Releases](https://github.com/sdss/tree/releases) for the list.
+
+New tag names follow the Python semantic versioning syntax, i.e. `X.Y.Z`.
 
 
 ## Useful links
