@@ -148,20 +148,6 @@ This is the configuration for data release 8
    :title: dr8
    :remove-sasbase:
 
-
-.. _sdss5:
-
-SDSS-V
-------
-
-This is the temporary, development, configuration for SDSS-V
-
-.. datamodel:: tree.tree:Tree
-   :prog: sdss5
-   :title: sdss5
-   :remove-sasbase:
-
-
 .. _ipl1:
 
 IPL-1
