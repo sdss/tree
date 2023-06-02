@@ -13,12 +13,31 @@ Releases, i.e. ``dr16.cfg``.  See full documentation at http://sdss-tree.readthe
 
 ## Developer Install
 
-To install tree for development:
+### Local Install
+
+To install tree for development locally:
 
 ```
 git clone https://github.com/sdss/tree
 cd tree
 pip install -e ".[dev,docs]"
+```
+
+### Install at Utah
+
+To install at Utah for use with modules,
+```
+git clone https://github.com/sdss/tree main
+cd main
+python bin/setup_tree.py -v
+```
+Replace `main` with the desired branch or tag name as needed. Also, see the instructions on the [Wiki](https://wiki.sdss.org/display/DATA/tree#tree-InstallationofthetreeproductatUtah)
+
+### Install as a Dependency
+
+To install as a Python package dedendency for software use, install the latest tag straight from PyPi:
+```
+pip install sdss-tree
 ```
 
 ## Build Sphinx Docs
