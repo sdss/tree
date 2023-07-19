@@ -6,6 +6,10 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.0.2 (unreleased)
+------------------
+- Adding new paths for main LVM data products
+
 4.0.1 (2023-07-13)
 ------------------
 - Change to LVM path template for master frames; consolidates master paths into one template
