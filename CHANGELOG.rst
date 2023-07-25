@@ -6,7 +6,7 @@ Change Log
 
 This document records the main changes to the tree code.
 
-4.0.2 (unreleased)
+4.0.2 (2023-07-25)
 ------------------
 - Adding new paths for main LVM data products
 
