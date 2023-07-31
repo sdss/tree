@@ -465,7 +465,7 @@ def copy_modules(filespath=None, modules_path=None, verbose=None, default=None, 
 
     # create a symlink from sdsswork to sdss5
     path5 = os.path.join(tree_mod, 'sdss5')
-    if os.path.islink(path5):
+    if os.path.isfile(path5) or os.path.islink(path5):
         os.unlink(path5)
     os.symlink('sdsswork', path5)
 
