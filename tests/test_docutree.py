@@ -18,11 +18,11 @@ def test_docutree(app, status, warning):
     dmdoc = app.srcdir / "_build/html/contents.html"
     assert dmdoc.exists()
 
-    tt =  dmdoc.read_text()
+    tt = dmdoc.read_text()
 
     # check for datamodel directive stuff
     assert '<section id="datamodel">' in tt
-    assert '<h2>SDSS<a class="headerlink" href="#sdss" title="Permalink to this heading">¶</a></h2>' in tt
+    assert '<h2>SDSS<a class="headerlink" href="#sdss" title="Link to this heading">¶</a></h2>' in tt
     assert "<td><p>MANGA_SPECTRO_REDUX</p></td>\n<td><p>/dr17/manga/spectro/redux</p></td>" in tt
 
     # check for changelog directive stuff
