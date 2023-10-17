@@ -171,7 +171,9 @@ This is the configuration for IPL-2
    :prog: ipl-2
    :title: ipl-2
    :remove-sasbase:
-   
+
+.. _ipl3:
+
 IPL-3
 -----
 
