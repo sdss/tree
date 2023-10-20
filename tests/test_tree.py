@@ -296,3 +296,10 @@ def test_get_envvar_history():
     assert swim['dr15'] is None
     assert 'sas/dr16/manga/swim' in swim['dr16']
     assert swim['sdsswork'] is None
+
+
+def test_ipl3_config():
+    tree = Tree(config='ipl3')
+    assert 'MWM_ASTRA' in tree.environ['MWM']
+    assert 'ipl-3/spectro/astra' in tree.environ['MWM']['MWM_ASTRA']
+    assert tree.paths['astraAllStarBest'] == '$MWM_ASTRA/{v_astra}/summary/astraAllStarBest-{v_astra}.fits'

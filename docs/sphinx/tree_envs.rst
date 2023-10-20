@@ -171,3 +171,16 @@ This is the configuration for IPL-2
    :prog: ipl-2
    :title: ipl-2
    :remove-sasbase:
+
+.. _ipl3:
+
+IPL-3
+-----
+
+This is the configuration for IPL-3
+
+.. datamodel:: tree.tree:Tree
+   :prog: ipl-3
+   :title: ipl-3
+   :remove-sasbase:
+
