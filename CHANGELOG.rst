@@ -6,6 +6,13 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.0.4 (unreleased)
+------------------
+
+4.0.3 (11-02-2023)
+------------------
+- Adding new IPL-3 config and paths
+
 4.0.2 (2023-07-25)
 ------------------
 - Adding new paths for main LVM data products
