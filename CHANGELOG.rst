@@ -6,8 +6,9 @@ Change Log
 
 This document records the main changes to the tree code.
 
-4.0.4 (unreleased)
+4.0.4 (11-21-2023)
 ------------------
+- Adding LVM guider frames to sdsswork
 
 4.0.3 (11-02-2023)
 ------------------
