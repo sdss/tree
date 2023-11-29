@@ -6,6 +6,10 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.0.5 (11-29-2023)
+------------------
+- Adding tilegrp to LVM DRP paths
+
 4.0.4 (11-21-2023)
 ------------------
 - Adding LVM guider frames to sdsswork
