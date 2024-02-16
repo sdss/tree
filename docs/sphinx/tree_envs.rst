@@ -184,6 +184,8 @@ This is the configuration for IPL-3
    :title: ipl-3
    :remove-sasbase:
 
+.. _ipl4:
+
 IPL-4
 -----
 
