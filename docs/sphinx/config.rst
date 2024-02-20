@@ -25,6 +25,7 @@ configurations are the following:
 * :ref:`ipl1 <ipl1>` - the IPL-1 configuration for SDSS-V
 * :ref:`ipl2 <ipl2>` - the IPL-2 configuration for SDSS-V
 * :ref:`ipl3 <ipl3>` - the IPL-3 configuration for SDSS-V
+* :ref:`ipl4 <ipl4>` - the IPL-4 configuration for SDSS-V
 
 .. _tree_evolve:
 

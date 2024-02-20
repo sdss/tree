@@ -184,3 +184,14 @@ This is the configuration for IPL-3
    :title: ipl-3
    :remove-sasbase:
 
+.. _ipl4:
+
+IPL-4
+-----
+
+This is the configuration for IPL-4
+
+.. datamodel:: tree.tree:Tree
+   :prog: ipl-4
+   :title: ipl-4
+   :remove-sasbase:
