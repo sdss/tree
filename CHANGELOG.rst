@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.0.6 (03-08-2024)
+------------------
+- Initial IPL-4 config
+- New or Updated paths for IPL-3
+
 4.0.5 (11-29-2023)
 ------------------
 - Adding tilegrp to LVM DRP paths
