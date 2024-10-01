@@ -840,7 +840,12 @@ def get_tree_dir(uproot_with=None):
         The path to the tree python product directory
     '''
     treedir = os.environ.get('TREE_DIR', None) if not uproot_with else uproot_with
-    if not treedir:
+    
+    if treedir:
+        if uproot_with: log.warning("Set tree_dir = uproot_with = {0}".format(tree_dir))
+        else: log.warning("Set tree_dir = $TREE_DIR = {0}".format(tree_dir))
+    else:
+
         treefilepath = os.path.dirname(os.path.abspath(__file__))
         if 'python/' in treefilepath:
             treedir = treefilepath.rsplit('/', 2)[0]
@@ -848,6 +853,15 @@ def get_tree_dir(uproot_with=None):
             treedir = treefilepath
         treedir = treefilepath
         os.environ['TREE_DIR'] = treedir
+        log.warning("Set tree_dir = {0}".format(tree_dir))
+        
+    if treedir:
+        data_dir = os.path.join(tree_dir, 'data')
+        sdsswork_cfg_file = os.path.join(data_dir, 'sdsswork.cfg')
+        log.warning("Check exists tree_dir = {0}".format(os.path.exists((tree_dir)))
+        log.warning("Check exists tree data_dir = {0}".format(os.path.exists((tree_dir)))
+        log.warning("Check exists tree sdsswork_cfg_file = {0}".format(os.path.exists((sdsswork_cfg_file)))
+
     return treedir
 
 
