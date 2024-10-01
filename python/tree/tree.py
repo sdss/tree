@@ -842,8 +842,8 @@ def get_tree_dir(uproot_with=None):
     treedir = os.environ.get('TREE_DIR', None) if not uproot_with else uproot_with
     
     if treedir:
-        if uproot_with: log.warning("Set tree_dir = uproot_with = {0}".format(tree_dir))
-        else: log.warning("Set tree_dir = $TREE_DIR = {0}".format(tree_dir))
+        if uproot_with: log.warning("Set tree_dir = uproot_with = {0}".format(treedir))
+        else: log.warning("Set tree_dir = $TREE_DIR = {0}".format(treedir))
     else:
 
         treefilepath = os.path.dirname(os.path.abspath(__file__))
@@ -856,11 +856,11 @@ def get_tree_dir(uproot_with=None):
         log.warning("Set tree_dir = {0}".format(tree_dir))
         
     if treedir:
-        data_dir = os.path.join(tree_dir, 'data')
+        data_dir = os.path.join(treedir, 'data')
         sdsswork_cfg_file = os.path.join(data_dir, 'sdsswork.cfg')
-        log.warning("Check exists tree_dir = {0}".format(os.path.exists((tree_dir)))
-        log.warning("Check exists tree data_dir = {0}".format(os.path.exists((tree_dir)))
-        log.warning("Check exists tree sdsswork_cfg_file = {0}".format(os.path.exists((sdsswork_cfg_file)))
+        log.warning("Check exists tree_dir = {0}".format(os.path.exists((treedir))))
+        log.warning("Check exists tree data_dir = {0}".format(os.path.exists((data_dir))))
+        log.warning("Check exists tree sdsswork_cfg_file = {0}".format(os.path.exists((sdsswork_cfg_file))))
 
     return treedir
 
