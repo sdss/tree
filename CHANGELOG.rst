@@ -6,6 +6,18 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.0.8 (unreleased)
+------------------
+- Removed use of deprecated `distutils`
+
+4.0.7 (12-04-2024)
+------------------
+- Added new paths for guider and fvc images
+- Added confSummary paths
+- Updates to dr19 config
+- Removed component field from astra paths
+- Updated apogee paths for darks/flats to remove "corr" field
+
 4.0.6 (03-08-2024)
 ------------------
 - Initial IPL-4 config

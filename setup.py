@@ -4,12 +4,11 @@
 #
 
 
-import distutils.dir_util
+import shutil
 from setuptools import setup
 
 # Copy data files into the python/tree/data directory
-tmp = distutils.dir_util.copy_tree('data', 'python/tree/data')
+tmp = shutil.copytree('data', 'python/tree/data', dirs_exist_ok=True)
 
 
 setup()
-
