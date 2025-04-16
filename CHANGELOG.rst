@@ -12,6 +12,7 @@ This document records the main changes to the tree code.
 4.0.8 (04-16-2024)
 ------------------
 - Removed use of deprecated `distutils`
+- Updated github actions
 
 4.0.7 (12-04-2024)
 ------------------
