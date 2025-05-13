@@ -1,9 +1,0 @@
-# Guider and FVC image paths
-gimg_apo = $GCAM_DATA_N/{mjd}/gimg-gfa{camnum:d}n-{expnum:0>4}.fits
-#gimg_lco = $GCAM_DATA_S/{mjd}/gimg-gfa{camnum:d}s-{expnum:0>4}.fits
-proc_gimg_apo = $GCAM_DATA_N/{mjd}/proc-gimg-gfa{camnum:d}n-{expnum:0>4}.fits
-#proc_gimg_lco = $GCAM_DATA_S/{mjd}/proc-gimg-gfa{camnum:d}s-{expnum:0>4}.fits
-fimg_apo = $FCAM_DATA_N/{mjd}/fimg-fvc{camnum:d}n-{expnum:0>4}.fits
-#fimg_lco = $FCAM_DATA_S/{mjd}/fimg-fvc{camnum:d}s-{expnum:0>4}.fits
-proc_fimg_apo = $FCAM_DATA_N/{mjd}/proc-fimg-fvc{camnum:d}n-{expnum:0>4}.fits
-#proc_fimg_lco = $FCAM_DATA_S/{mjd}/proc-fimg-fvc{camnum:d}s-{expnum:0>4}.fits
