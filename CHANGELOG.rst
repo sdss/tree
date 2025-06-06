@@ -7,7 +7,7 @@ Change Log
 This document records the main changes to the tree code.
 
 4.0.9 (unreleased)
-----------------
+------------------
 - Updating paths for DR19: apogee, astra, vacs, etc
 
 4.0.8 (04-16-2024)
