@@ -300,6 +300,6 @@ def test_get_envvar_history():
 
 def test_ipl3_config():
     tree = Tree(config='ipl3')
-    assert 'MWM_ASTRA' in tree.environ['MWM']
-    assert 'ipl-3/spectro/astra' in tree.environ['MWM']['MWM_ASTRA']
-    assert tree.paths['astraAllStarASPCAP'] == '$MWM_ASTRA/{v_astra}/summary/astraAllStarASPCAP-{v_astra}.fits'
+    assert 'MWM_ASTRA' in tree.environ['SPECTRO']
+    assert 'ipl-3/spectro/astra' in tree.environ['SPECTRO']['MWM_ASTRA']
+    assert tree.paths['astraAllStarASPCAP'] == '$MWM_ASTRA/{v_astra}/summary/astraAllStarASPCAP-{v_astra}.fits.gz'
