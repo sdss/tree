@@ -15,7 +15,6 @@ import sys
 import glob
 import re
 from collections import OrderedDict
-import six
 import json
 import datetime
 from tree import log, config as cfg_params
@@ -220,7 +219,7 @@ class Tree(object):
         # check initial argument
         cfgname = (config or self.config_name)
         cfgname = 'sdsswork' if cfgname is None else cfgname
-        assert isinstance(cfgname, six.string_types), 'config name must be a string'
+        assert isinstance(cfgname, str), 'config name must be a string'
         cfgname = cfgname.lower()
 
         config_name = cfgname if cfgname.endswith('.cfg') else '{0}.cfg'.format(cfgname)
