@@ -6,11 +6,12 @@ Change Log
 
 This document records the main changes to the tree code.
 
-4.0.9 (unreleased)
+4.0.9 (06-18-2025)
 ------------------
 - Updating paths for DR19: apogee, astra, vacs, etc
+- Basic project maintenance
 
-4.0.8 (04-16-2024)
+4.0.8 (04-16-2025)
 ------------------
 - Removed use of deprecated `distutils`
 - Updated github actions

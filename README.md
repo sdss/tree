@@ -20,8 +20,11 @@ To install tree for development locally:
 ```
 git clone https://github.com/sdss/tree
 cd tree
+python bin/copy_data.py
 pip install -e ".[dev,docs]"
 ```
+
+`python bin/copy_data.py` must be run ahead of any package install or builds with `python -m build` to ensure the config files are properly in place.
 
 ### Install at Utah
 
@@ -71,6 +74,3 @@ New tag names follow the Python semantic versioning syntax, i.e. `X.Y.Z`.
 - GitHub: https://github.com/sdss/tree
 - Documentation: https://sdss-tree.readthedocs.org
 - Issues: https://github.com/sdss/tree/issues
-
-
-

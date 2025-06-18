@@ -42,6 +42,7 @@ jobs:
 
             - name: Build package
               run: |
+                python bin/copy_data.py
                 python -m build
 
             - name: Publish to PyPI
