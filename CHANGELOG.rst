@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.0.10 (07-10-2025)
+------------------
+- Updating paths for DR19: vacs
+- Fix DR19 Release Date for public access
+
 4.0.9 (06-18-2025)
 ------------------
 - Updating paths for DR19: apogee, astra, vacs, etc
