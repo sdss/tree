@@ -6,6 +6,10 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.1.0 (10-23-2025)
+------------------
+- Added new IPL-4 config
+
 4.0.10 (07-10-2025)
 ------------------
 - Updating paths for DR19: vacs
