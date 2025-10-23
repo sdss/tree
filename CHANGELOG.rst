@@ -6,6 +6,9 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.1.1 (unreleased)
+------------------
+
 4.1.0 (10-23-2025)
 ------------------
 - Added new IPL-4 config
