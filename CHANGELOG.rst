@@ -6,8 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
-4.1.2 (unreleased)
+4.1.2 (03-26-2026)
 ------------------
+- Add new paths for DR19
+- Add new paths for DR20 and IPL-4
+- Update new paths for mos mini-db
 
 4.1.1 (10-23-2025)
 ------------------
