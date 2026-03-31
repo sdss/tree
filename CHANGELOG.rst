@@ -6,6 +6,11 @@ Change Log
 
 This document records the main changes to the tree code.
 
+main
+----
+- Fix ``MOS_ROOT`` and ``MOS_TARGET`` environment variables in ``sdsswork``.
+
+
 4.1.2 (03-26-2026)
 ------------------
 - Add new paths for DR19
