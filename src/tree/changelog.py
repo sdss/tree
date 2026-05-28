@@ -11,15 +11,25 @@
 # Modified By: Brian Cherinka
 
 
-from __future__ import print_function, division, absolute_import
+from __future__ import absolute_import, division, print_function
+
 import os
+
 import six
+
 from tree import Tree
 
 
-def compute_changelog(new, old, pprint=None, to_list=None, remove_sas=True, include_paths=True,
-                      paths_only=None):
-    ''' Compute the difference between two Tree environments
+def compute_changelog(
+    new,
+    old,
+    pprint=None,
+    to_list=None,
+    remove_sas=True,
+    include_paths=True,
+    paths_only=None,
+):
+    """Compute the difference between two Tree environments
 
     Finds and prints the difference between two tree environment
     configurations.  Accepts either string names of config files, e.g.
@@ -53,7 +63,7 @@ def compute_changelog(new, old, pprint=None, to_list=None, remove_sas=True, incl
         >>> # print the differences DR16 and DR15
         >>> diffs = compute_changelog('dr16', 'dr15', pprint=True)
         >>> print(diffs)
-    '''
+    """
 
     # compute the environment changelog dictionary
     cl_dict = compute_environment_changes(new, old, remove_sas=remove_sas)
@@ -66,7 +76,7 @@ def compute_changelog(new, old, pprint=None, to_list=None, remove_sas=True, incl
     # return PATHS section only
     if paths_only:
         cl_dict = cl_dict.copy()
-        cl_dict.pop('environment')
+        cl_dict.pop("environment")
         if pprint or to_list:
             return print_paths(cl_dict, to_string=not to_list, prepend_header=paths_only)
         return cl_dict
@@ -78,7 +88,7 @@ def compute_changelog(new, old, pprint=None, to_list=None, remove_sas=True, incl
 
 
 def compute_environment_changes(new, old, remove_sas=True):
-    ''' Compute the difference between two Tree environments
+    """Compute the difference between two Tree environments
 
     Compares two tree environment configurations and returns a
     dictionary with keys `new`, `removed`, and `changes` indicating
@@ -98,8 +108,8 @@ def compute_environment_changes(new, old, remove_sas=True):
 
     Returns:
         A dictionary of relevant changes between the two releases
-    '''
-    dd = {'environment': {'new': {}, 'changes': {}, 'removed': {}}}
+    """
+    dd = {"environment": {"new": {}, "changes": {}, "removed": {}}}
 
     if isinstance(new, six.string_types):
         new = Tree(config=new.lower())
@@ -109,34 +119,34 @@ def compute_environment_changes(new, old, remove_sas=True):
 
     new_envs = new.environ.keys()
     old_envs = old.environ.keys()
-    new_name = new.environ['default']['name']
-    old_name = old.environ['default']['name']
+    new_name = new.environ["default"]["name"]
+    old_name = old.environ["default"]["name"]
     sas = os.getenv("SAS_BASE_DIR")
 
-    dd['releases'] = {'new': new_name, 'old': old_name}
+    dd["releases"] = {"new": new_name, "old": old_name}
 
     # find unique new enviroments
     unique_new_envs = set(new_envs) - set(old_envs)
     for env in unique_new_envs:
-        dd['environment']['new'][env] = {}
+        dd["environment"]["new"][env] = {}
         for k, v in new.environ[env].items():
             if remove_sas:
                 v = v.split(sas)[-1]
-            dd['environment']['new'][env][k.upper()] = v
+            dd["environment"]["new"][env][k.upper()] = v
 
     # find unique old enviroments
     unique_old_envs = set(old_envs) - set(new_envs)
     for env in unique_old_envs:
-        dd['environment']['removed'][env] = {}
+        dd["environment"]["removed"][env] = {}
         for k, v in old.environ[env].items():
             if remove_sas:
                 v = v.split(sas)[-1]
-            dd['environment']['removed'][env][k.upper()] = v
+            dd["environment"]["removed"][env][k.upper()] = v
 
     # find new or updated environment variables
     for env in new_envs:
         # skip the default
-        if env == 'default' or env not in old.environ:
+        if env == "default" or env not in old.environ:
             continue
         uniq_vars = set(new.environ[env].keys()) - set(old.environ[env].keys())
         if not uniq_vars:
@@ -148,24 +158,27 @@ def compute_environment_changes(new, old, remove_sas=True):
         if not changes:
             continue
 
-        dd['environment']['changes'][env] = {}
+        dd["environment"]["changes"][env] = {}
         for k, v in new.environ[env].items():
             vold = old.environ[env].get(k, None)
             if vold:
                 vbase = v.split(os.path.join(sas, new_name))[-1]
                 voldbase = vold.split(os.path.join(sas, old_name))[-1]
                 if vbase != voldbase:
-                    dd['environment']['changes'][env][k.upper()] = {'from': voldbase, 'to': vbase}
+                    dd["environment"]["changes"][env][k.upper()] = {
+                        "from": voldbase,
+                        "to": vbase,
+                    }
             else:
                 if remove_sas:
                     v = v.split(sas)[-1]
-                dd['environment']['changes'][env][k.upper()] = v
+                dd["environment"]["changes"][env][k.upper()] = v
 
     return dd
 
 
 def compute_path_changes(new, old, prepend_header=None):
-    ''' Compute the difference between two Tree PATH sections
+    """Compute the difference between two Tree PATH sections
 
     Compares two tree PATH ini sections from the given environment
     configurations and returns  adictionary with keys `new`, and `updated`,
@@ -184,9 +197,9 @@ def compute_path_changes(new, old, prepend_header=None):
 
     Returns:
         A dictionary of relevant changes between the two releases
-    '''
+    """
 
-    dd = {'paths': {'new': {}, 'updated': {}}}
+    dd = {"paths": {"new": {}, "updated": {}}}
 
     if isinstance(new, six.string_types):
         new = Tree(config=new.lower())
@@ -198,16 +211,16 @@ def compute_path_changes(new, old, prepend_header=None):
     old_templates = old.paths
 
     # diffs = []
-    if prepend_header and 'releases' not in dd:
-        new_name = new.environ['default']['name']
-        old_name = old.environ['default']['name']
-        dd['releases'] = {'new': new_name, 'old': old_name}
+    if prepend_header and "releases" not in dd:
+        new_name = new.environ["default"]["name"]
+        old_name = old.environ["default"]["name"]
+        dd["releases"] = {"new": new_name, "old": old_name}
 
     unique_new = sorted(set(new_templates) - set(old_templates))
 
     if unique_new:
         for path in unique_new:
-            dd['paths']['new'][path] = new_templates[path]
+            dd["paths"]["new"][path] = new_templates[path]
 
     # changes
     changed = []
@@ -218,13 +231,13 @@ def compute_path_changes(new, old, prepend_header=None):
     if changed:
         for item in changed:
             name, newt, oldt = item
-            dd['paths']['updated'][name] = {'from': oldt, 'to': newt}
+            dd["paths"]["updated"][name] = {"from": oldt, "to": newt}
 
     return dd
 
 
 def print_environment(changes, to_string=None):
-    ''' Print the environment changelog
+    """Print the environment changelog
 
     Formats the changelog into a print-friendly list of
     strings.
@@ -237,54 +250,54 @@ def print_environment(changes, to_string=None):
 
     Returns:
         A string list of print-formatted changes
-    '''
+    """
 
-    new_name = changes['releases']['new']
-    old_name = changes['releases']['old']
+    new_name = changes["releases"]["new"]
+    old_name = changes["releases"]["old"]
 
-    diffs = ['Changes: {0} from {1}'.format(new_name.upper(), old_name.upper())]
-    diffs.append(' ')
+    diffs = ["Changes: {0} from {1}".format(new_name.upper(), old_name.upper())]
+    diffs.append(" ")
 
     # print unique new enviroments
-    for env, values in changes['environment']['new'].items():
-        diffs.append('New Environment: {0}'.format(env.upper()))
-        diffs.append('----------------------')
+    for env, values in changes["environment"]["new"].items():
+        diffs.append("New Environment: {0}".format(env.upper()))
+        diffs.append("----------------------")
         for key, val in values.items():
-            diffs.append('{0}: {1}'.format(key, val))
-        diffs.append(' ')
+            diffs.append("{0}: {1}".format(key, val))
+        diffs.append(" ")
 
     # print unique old enviroments
-    for env, values in changes['environment']['removed'].items():
-        diffs.append('Removed Environment: {0}'.format(env.upper()))
-        diffs.append('----------------------')
+    for env, values in changes["environment"]["removed"].items():
+        diffs.append("Removed Environment: {0}".format(env.upper()))
+        diffs.append("----------------------")
         for key, val in values.items():
-            diffs.append('{0}: {1}'.format(key, val))
-        diffs.append(' ')
+            diffs.append("{0}: {1}".format(key, val))
+        diffs.append(" ")
 
     # print new or updated environment variables
-    for env, values in changes['environment']['changes'].items():
-        diffs.append('Changes in {0}:'.format(env.upper()))
-        diffs.append('----------------------')
+    for env, values in changes["environment"]["changes"].items():
+        diffs.append("Changes in {0}:".format(env.upper()))
+        diffs.append("----------------------")
         for key, val in values.items():
             if isinstance(val, dict):
-                diffs.append('Updated {0}: {1} from {2}'.format(key, val['to'], val['from']))
+                diffs.append("Updated {0}: {1} from {2}".format(key, val["to"], val["from"]))
             else:
-                diffs.append('New {0}: {1}'.format(key, val))
-        diffs.append(' ')
+                diffs.append("New {0}: {1}".format(key, val))
+        diffs.append(" ")
 
-    if 'paths' in changes:
-        diffs.append('Changes in PATHS:')
-        diffs.append('-----------------')
+    if "paths" in changes:
+        diffs.append("Changes in PATHS:")
+        diffs.append("-----------------")
         path_changes = print_paths(changes)
         diffs.extend(path_changes)
 
     if to_string:
-        diffs = '\n'.join(diffs)
+        diffs = "\n".join(diffs)
     return diffs
 
 
 def print_paths(changes, to_string=None, prepend_header=None):
-    ''' Print the path changelog
+    """Print the path changelog
 
     Formats the changelog into a print-friendly list of
     strings.
@@ -297,33 +310,33 @@ def print_paths(changes, to_string=None, prepend_header=None):
 
     Returns:
         A string list of print-formatted changes
-    '''
+    """
 
     diffs = []
-    if prepend_header and 'releases' in changes:
-        new_name = changes['releases']['new']
-        old_name = changes['releases']['old']
-        diffs = ['Changes: {0} from {1}'.format(new_name.upper(), old_name.upper())]
-        diffs.append(' ')
+    if prepend_header and "releases" in changes:
+        new_name = changes["releases"]["new"]
+        old_name = changes["releases"]["old"]
+        diffs = ["Changes: {0} from {1}".format(new_name.upper(), old_name.upper())]
+        diffs.append(" ")
 
     # print unique new paths
-    if changes['paths']['new']:
-        diffs.append('New Paths:')
-        diffs.append('----------')
-        for name, template in changes['paths']['new'].items():
-            diffs.append('{0}: {1}'.format(name, template))
+    if changes["paths"]["new"]:
+        diffs.append("New Paths:")
+        diffs.append("----------")
+        for name, template in changes["paths"]["new"].items():
+            diffs.append("{0}: {1}".format(name, template))
 
     # changes
-    if changes['paths']['updated']:
-        diffs.append(' ')
-        diffs.append('Updated Paths:')
-        diffs.append('--------------')
-        for name, vals in changes['paths']['updated'].items():
-            diffs.append('{0}: '.format(name))
-            diffs.append('   from: {0}'.format(vals['from']))
-            diffs.append('   to: {0}'.format(vals['to']))
+    if changes["paths"]["updated"]:
+        diffs.append(" ")
+        diffs.append("Updated Paths:")
+        diffs.append("--------------")
+        for name, vals in changes["paths"]["updated"].items():
+            diffs.append("{0}: ".format(name))
+            diffs.append("   from: {0}".format(vals["from"]))
+            diffs.append("   to: {0}".format(vals["to"]))
 
     if to_string:
-        diffs = '\n'.join(diffs)
+        diffs = "\n".join(diffs)
 
     return diffs

@@ -30,7 +30,7 @@ Reference
    :maxdepth: 1
 
    api
-   CHANGELOG
+   changelog
    usage
    tree_envs
 
