@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 
+import pathlib
+
 import pytest
-from sphinx.testing.path import path
 
 
 @pytest.fixture(scope="session")
 def rootdir():
-    return path(__file__).parent.abspath() / "roots"
+    return pathlib.Path(__file__).parent.absolute() / "roots"
 
 
 @pytest.mark.sphinx(testroot="docutree")
