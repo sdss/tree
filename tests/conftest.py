@@ -16,7 +16,7 @@ import pytest
 import tree.tree as treemod
 
 
-pytest_plugins = "sphinx.testing.fixtures"
+pytest_plugins = ("sphinx.testing.fixtures",)
 collect_ignore = ["roots"]
 
 
