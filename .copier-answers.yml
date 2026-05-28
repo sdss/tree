@@ -1,0 +1,16 @@
+# Changes here will be overwritten by Copier
+_commit: 3.0.0
+_src_path: https://github.com/sdss/python_template
+author_email: bcherinka@stsci.edu
+author_name: Brian Cherinka
+build_docker_image: false
+framework_deps: false
+github_organization: sdss
+github_username: albireox
+license: BSD-3-Clause
+minimum_python_version: '3.11'
+package_name: tree
+project_description: Control and setup of SDSS tree environment and modules
+project_name: sdss-tree
+push_to_github: false
+sync_project: false
