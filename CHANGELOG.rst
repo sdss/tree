@@ -6,8 +6,10 @@ Change Log
 
 This document records the main changes to the tree code.
 
-main
-----
+4.1.3 (06-03-2026)
+------------------
+- Updates paths for DR20
+- Added `ftype` kwargs to support parquet and fits files for same product
 - Fix ``MOS_ROOT`` and ``MOS_TARGET`` environment variables in ``sdsswork``.
 
 
