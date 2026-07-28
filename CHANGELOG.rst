@@ -6,6 +6,10 @@ Change Log
 
 This document records the main changes to the tree code.
 
+4.1.4 (07-28-2026)
+------------------
+- Added new paths for DR20
+
 4.1.3 (06-03-2026)
 ------------------
 - Updates paths for DR20
