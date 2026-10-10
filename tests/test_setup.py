@@ -112,7 +112,7 @@ def test_env_only(tree, name):
 def test_env_mirror(tree, mirror, exp):
     envdir = os.path.join(tree.environ["general"]["SAS_BASE_DIR"], "dr15/env")
     args = ["-e", "-i"] if mirror else ["-e"]
-    stdout = run_cmd(args=args)
+    run_cmd(args=args)
     index = os.path.join(envdir, "index.html")
     page = read_index(index)
     assert exp in page
@@ -124,7 +124,7 @@ def test_create_files(tree, config):
     assert os.path.exists(etcdir)
     files = glob.glob(os.path.join(etcdir, "*.*"))
     assert not files
-    stdout = run_cmd(args=[])
+    run_cmd(args=[])
     files = glob.glob(os.path.join(etcdir, "*.*"))
     assert len(files) > 1
     assert os.path.exists(os.path.join(etcdir, f"{config}.sh"))
@@ -141,7 +141,7 @@ def test_create_files(tree, config):
 def test_no_mod_deps(tree):
     """test that the module deps are not in module file"""
     etcdir = os.path.join(os.getenv("TREE_DIR"), "etc")
-    stdout = run_cmd(args=[])
+    run_cmd(args=[])
     files = glob.glob(os.path.join(etcdir, "dr18.module"))
     assert os.path.exists(os.path.join(etcdir, "dr18.module"))
     with open(files[0], "r") as f:
@@ -153,7 +153,7 @@ def test_no_mod_deps(tree):
 def test_add_mod_deps(tree):
     """test that the module deps are not in module file"""
     etcdir = os.path.join(os.getenv("TREE_DIR"), "etc")
-    stdout = run_cmd(args=["-a"])
+    run_cmd(args=["-a"])
     files = glob.glob(os.path.join(etcdir, "dr18.module"))
     assert os.path.exists(os.path.join(etcdir, "dr18.module"))
     with open(files[0], "r") as f:
@@ -201,7 +201,7 @@ def test_emptymodulepath(tree, resetmod, config, inputs):
         else:
             assert os.path.exists(os.path.join(mpath, "tree"))
 
-    stdout = run_cmd(args=[], user_input=inputs)
+    run_cmd(args=[], user_input=inputs)
 
     if inputs == "1":
         # assert only first module path gets copied
