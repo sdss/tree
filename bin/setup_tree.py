@@ -260,7 +260,7 @@ prereq sdss_access
 {2} TREE_DIR{4}{3}
 {2} TREE_VER{4}{0}
 {2} PATH{4}$TREE_DIR/bin:$PATH
-{2} PYTHONPATH{4}$TREE_DIR/python:$PYTHONPATH
+{2} PYTHONPATH{4}$TREE_DIR/src:$PYTHONPATH
                 """.format(name, term, base, product_dir, sep)
     else:
         hdr = """#%Module1.0
@@ -281,7 +281,7 @@ set PRODUCT_DIR {0}
 setenv [string toupper $product]_DIR $PRODUCT_DIR
 setenv [string toupper $product]_VER $version
 prepend-path PATH $PRODUCT_DIR/bin
-prepend-path PYTHONPATH $PRODUCT_DIR/python
+prepend-path PYTHONPATH $PRODUCT_DIR/src
 
                 """.format(product_dir, name, deps)
 
@@ -351,17 +351,18 @@ def write_file(environ, term='bash', out_dir=None, tree_dir=None,
 
 
 def get_python_path():
-    ''' Finds and switches to the tree python package directory '''
-    # get the TREE directory
-    tree_dir = os.getenv('TREE_DIR', None)
-    if not tree_dir:
-        path = os.path.dirname(os.path.abspath(__file__))
-        tree_dir = os.path.realpath(os.path.join(path, '..'))
-    pypath = os.path.join(tree_dir, 'python')
+    ''' Add the tree Python source directory to sys.path '''
+    script_root = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+    tree_dir = os.getenv('TREE_DIR')
+    search_roots = [script_root]
+    if tree_dir and os.path.realpath(tree_dir) != script_root:
+        search_roots.append(tree_dir)
 
-    if pypath not in sys.path:
-        sys.path.append(pypath)
-    os.chdir(pypath)
+    for root in search_roots:
+        for package_dir in ('src', 'python'):
+            pypath = os.path.join(root, package_dir)
+            if os.path.isdir(os.path.join(pypath, 'tree')) and pypath not in sys.path:
+                sys.path.insert(0, pypath)
 
 
 def get_tree(config=None):
@@ -518,15 +519,26 @@ def get_parser():
 
 def main(opts):
 
-    # check for a treedir; if none found, set path to the parent directory
+    # Resolve the product root from an editable install, a regular install,
+    # or the checkout containing this script.
     if not opts.treedir:
-        # look for installed python module
         mod = importlib.util.find_spec('tree')
         if mod and mod.origin:
-            opts.treedir = os.path.dirname(mod.origin)
+            package_dir = os.path.dirname(os.path.abspath(mod.origin))
+            source_root = os.path.realpath(os.path.join(package_dir, '..', '..'))
+            if (
+                os.path.basename(os.path.dirname(package_dir)) == 'src'
+                and os.path.isfile(os.path.join(source_root, 'pyproject.toml'))
+                and os.path.isfile(os.path.join(source_root, 'bin', 'setup_tree.py'))
+            ):
+                opts.treedir = source_root
+            else:
+                opts.treedir = package_dir
         else:
-            opts.treedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
-        os.environ['TREE_DIR'] = opts.treedir
+            opts.treedir = os.path.realpath(
+                os.path.join(os.path.dirname(__file__), '..')
+            )
+    os.environ['TREE_DIR'] = opts.treedir
 
     # get directories
     datadir = os.path.join(opts.treedir, 'data')
