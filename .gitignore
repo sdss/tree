@@ -3,16 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# tree files in etc/
-etc/*.module
-etc/*.sh
-etc/*.csh
-etc/.version
-python/tree/data/*
-data/sdss_paths.ini
-
 # C extensions
 *.so
+
+.DS_Store
 
 # Distribution / packaging
 .Python
@@ -71,7 +65,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-docs/sphinx/_build
+docs/sphinx/_build/
 
 # PyBuilder
 target/
@@ -109,3 +103,9 @@ ENV/
 # mypy
 .mypy_cache/
 
+# Vim temporary files
+*~
+*.swp
+*.swo
+
+.vscode/
