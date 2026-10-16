@@ -16,6 +16,18 @@ This is the default configuration loaded.  It defines the current set of environ
    :title: sdsswork
    :remove-sasbase:
 
+.. _dr20:
+
+DR20
+----
+
+This is the configuration for data release 20
+
+.. datamodel:: tree.tree:Tree
+   :prog: dr20
+   :title: dr20
+   :remove-sasbase:
+
 .. _dr19:
 
 DR19
