@@ -1,6 +1,6 @@
-# tree
+# sdss-tree
 
-![Versions](https://img.shields.io/badge/python->3.7-blue)
+![Versions](https://img.shields.io/badge/python->=3.11-blue)
 [![Documentation Status](https://readthedocs.org/projects/sdss-tree/badge/?version=latest)](https://sdss-tree.readthedocs.io/en/latest/?badge=latest)
 [![Build Sphinx Documentation](https://github.com/sdss/tree/actions/workflows/sphinxbuild.yml/badge.svg)](https://github.com/sdss/tree/actions/workflows/sphinxbuild.yml)
 [![Build and Test](https://github.com/sdss/tree/actions/workflows/build.yml/badge.svg)](https://github.com/sdss/tree/actions/workflows/build.yml)
@@ -15,51 +15,56 @@ Releases, i.e. ``dr16.cfg``.  See full documentation at http://sdss-tree.readthe
 
 ### Local Install
 
-To install tree for development locally:
+Install [uv](https://docs.astral.sh/uv/), then clone the repository and sync its dependencies:
 
-```
+```bash
 git clone https://github.com/sdss/tree
 cd tree
-python bin/copy_data.py
-pip install -e ".[dev,docs]"
+uv sync --all-groups
 ```
 
-`python bin/copy_data.py` must be run ahead of any package install or builds with `python -m build` to ensure the config files are properly in place.
+This creates a local `.venv`, installs the checkout in editable mode, and installs the development, test, and documentation dependencies. The configuration files are packaged from `src/tree/data`; the top-level `data/` symlink remains for legacy checkout usage.
 
 ### Install at Utah
 
 To install at Utah for use with modules,
-```
+
+```bash
 git clone https://github.com/sdss/tree main
 cd main
-python bin/setup_tree.py -v
+uv sync
+uv run python bin/setup_tree.py -v
 ```
+
 Replace `main` with the desired branch or tag name as needed. Also, see the instructions on the [Wiki](https://wiki.sdss.org/display/DATA/tree#tree-InstallationofthetreeproductatUtah)
 
 ### Install as a Dependency
 
-To install as a Python package dedendency for software use, install the latest tag straight from PyPi:
-```
-pip install sdss-tree
+To add the latest PyPI release to a project managed by uv:
+
+```bash
+uv add sdss-tree
 ```
 
-## Build Sphinx Docs
+## Documentation
 
-Within the top level repo directory, run the `sdsstools` commands:
-```
-# build the Sphinx documentation
-sdss docs.build
+Install the documentation dependencies and run the live Nox session from the repository root:
 
-# open the docs locally in a browser
-sdss docs.show
+```bash
+uv sync --group docs
+uv run nox -s docs-live
 ```
+
+This starts `sphinx-autobuild`, opens the documentation in a browser, and rebuilds it as source files change.
+
 Documentation is automatically built and pushed to Read The Docs.
 
 ## Testing
-Tests are created using `pytest`.  Navigate to the `tests` directory from the top level and run with `pytest`.
-```
-cd tests
-pytest
+
+Run the test suite from the repository root with:
+
+```bash
+uv run pytest
 ```
 
 ## Creating Releases
